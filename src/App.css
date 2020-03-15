@@ -79,9 +79,9 @@ input[type=checkbox] {
   padding: 30px;
 }
 
-.forum-likes {
+.forum-header {
   display: block;
-  align-items:right;
+  
 }
 
 .forum-title {
@@ -94,7 +94,7 @@ input[type=checkbox] {
   text-align: left;
 }
 
-.forum-date {
+.forum-footer {
   display: block;
   text-align: right;
 }
