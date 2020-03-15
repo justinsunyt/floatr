@@ -53,8 +53,9 @@
 }
 
 input[type=checkbox] {
+  vertical-align: bottom;
   margin-right: 10px;
-  font-size: 30px;
+  font-size: 10px;
 }
 
 .forum {
@@ -81,7 +82,11 @@ input[type=checkbox] {
 
 .forum-header {
   display: block;
-  
+}
+
+.forum-like {
+  display: block;
+  text-align: right;
 }
 
 .forum-title {

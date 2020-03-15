@@ -1,24 +1,24 @@
 const forumData = [
     {
         id: 1,
-        likes: 10,
         title: "Unit 10 Study Guide",
         text: "https://google.com",
         date: new Date(2020, 3, 14),
         creator: "Josh",
         class: "Chemistry Honors",
+        likes: ["Justin"],
         comments: {
             "Justin": "Thanks!"
         }
     },
     {
         id: 2,
-        likes: 69,
         title: "Book PDF",
         text: "Don't buy the book from the bookstore! It's here for free...",
         date: new Date(2020, 3, 10),
         creator: "Anonymous",
         class: "English II",
+        likes: ["Josh", "Hope"],
         comments: {
             "Josh": "Thanks for the tip!"
         }
@@ -31,6 +31,7 @@ const forumData = [
         date: new Date(2020, 3, 12),
         creator: "Anonymous",
         class:"Chemistry Honors",
+        likes: [],
         comments: {}
     },
     {
@@ -41,6 +42,7 @@ const forumData = [
         date: new Date(2020, 3, 9),
         creator: "Hope",
         class:"Precalculus Honors",
+        likes: ["Josh", "Justin"],
         comments: {}
     },
     {
@@ -51,6 +53,7 @@ const forumData = [
         date: new Date(2020, 3, 14),
         creator: "Anonymous",
         class:"World and Europe II",
+        likes: ["Justin"],
         comments: {}
     }
 ]
