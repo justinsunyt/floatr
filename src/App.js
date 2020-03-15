@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import TodoList from './Components/TodoList'
+import Forum from './Components/Forum'
 
 function App() {
   return (
     <div>
-      <TodoList />
+      <Forum />
     </div>
   );
 }

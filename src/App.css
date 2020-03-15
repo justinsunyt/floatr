@@ -56,3 +56,45 @@ input[type=checkbox] {
   margin-right: 10px;
   font-size: 30px;
 }
+
+.forum {
+  background-color: white;
+  margin: auto;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  border: 1px solid #efefef;
+  box-shadow:
+  /* The top layer shadow */
+      0 1px 1px rgba(0,0,0,0.15),
+          /* The second layer */
+      0 10px 0 -5px #eee,
+          /* The second layer shadow */
+      0 10px 1px -4px rgba(0,0,0,0.15),
+          /* The third layer */
+      0 20px 0 -10px #eee,
+          /* The third layer shadow */
+      0 20px 1px -9px rgba(0,0,0,0.15);
+  padding: 30px;
+}
+
+.forum-likes {
+  display: block;
+  align-items:right;
+}
+
+.forum-title {
+  display: block;
+  align-items: center;
+}
+
+.forum-text {
+  display: block;
+  text-align: left;
+}
+
+.forum-date {
+  display: block;
+  text-align: right;
+}
