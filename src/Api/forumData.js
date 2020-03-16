@@ -25,7 +25,6 @@ const forumData = [
     },
     {
         id: 3,
-        likes: 1,
         title: "Confusing Chem Lab",
         text: "I don't get this Thermodynamics thing at all. Can someone help?",
         date: new Date(2020, 3, 12),
@@ -36,7 +35,6 @@ const forumData = [
     },
     {
         id: 4,
-        likes: 20,
         title: "Class Name Suggestion",
         text: "Please comment some class name suggestions for class next week!",
         date: new Date(2020, 3, 9),
@@ -47,7 +45,6 @@ const forumData = [
     },
     {
         id: 5,
-        likes: 8,
         title: "Video on What We Learned in Class",
         text: "https://youtube.com",
         date: new Date(2020, 3, 14),
