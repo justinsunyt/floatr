@@ -11,11 +11,10 @@ function Forum() {
     const [forumPosts, setForum] = useState(forumData)
     let liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
     
-    function updateForumData(data) {
+    function fetchForumData(data) {
         for (let value of Object.values(data)) {
             forumData = value
         }
-        forumData.shift()
         console.log(forumData)
         setForum(forumData)
     }
@@ -33,29 +32,29 @@ function Forum() {
                         })
                         newPost.likes = filteredLikes
                     } else {
+                        if (!newPost.likes) {
+                            newPost.likes = []
+                        }
                         newPost.likes.push(username)
                     }
                 }
                 return newPost
             })
+            forumRef.set({"forumData": updatedForum})
             return updatedForum
         })
-        console.log(forumPosts)  
+        console.log(forumPosts)
+        liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
+        
     }
 
     useEffect(() => {
         forumRef.once("value")
         .then(snap => {
-            updateForumData(snap.val()) 
+            fetchForumData(snap.val()) 
             console.log(snap.val())
         })
-        
     }, [])
-
-    useEffect(() => {
-        liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
-        console.log(liked)
-    }, [forumPosts])
 
     const forum = forumPosts.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
   
