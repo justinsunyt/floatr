@@ -5,9 +5,10 @@ function ForumPost(props) {
     const liked = props.liked
     const title = props.post.title
     const text = props.post.text
-    const year = props.post.date.getFullYear()
-    const month = props.post.date.getMonth()
-    const day = props.post.date.getDate()
+    const date = new Date(props.post.date)
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const day = date.getDate()
     const creator = props.post.creator
     const numLikes = props.post.likes.length
     const numComments = Object.keys(props.post.comments).length
