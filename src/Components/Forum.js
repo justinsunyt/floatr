@@ -5,28 +5,20 @@ import ForumPost from './ForumPost'
 const username = "Justin"
 
 function Forum() {
-    const rootRef = firebase.database().ref("taskfloat")
-    const forumRef = rootRef.child("forumData")
+    const forumRef = firebase.database().ref()
     let forumData = []
-    forumRef.once("value")
-        .then(snap => {
-            snap.forEach(childSnap => {
-                let child = {}
-                let childKey
-                let childVal
-                childSnap.forEach(grandChildSnap => {
-                    childKey = grandChildSnap.key
-                    childVal = grandChildSnap.val()
-                    child[childKey] = childVal
-                    console.log(childKey, childVal)
-                })
-                console.log(child)
-                forumData.push(child)
-            })
-        })
     
     const [forumPosts, setForum] = useState(forumData)
     let liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
+    
+    function updateForumData(data) {
+        for (let value of Object.values(data)) {
+            forumData = value
+        }
+        forumData.shift()
+        console.log(forumData)
+        setForum(forumData)
+    }
 
     function handleChange(id) {
         setForum(prevForum => {
@@ -52,11 +44,20 @@ function Forum() {
     }
 
     useEffect(() => {
+        forumRef.once("value")
+        .then(snap => {
+            updateForumData(snap.val()) 
+            console.log(snap.val())
+        })
+        
+    }, [])
+
+    useEffect(() => {
         liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
         console.log(liked)
-    })
+    }, [forumPosts])
 
-    const forum = forumPosts.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange}/>)
+    const forum = forumPosts.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
   
     return(
         <div className='forum'>
