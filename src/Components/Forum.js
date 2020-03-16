@@ -1,9 +1,30 @@
 import React, {useState, useEffect} from 'react'
+import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
-import forumData from '../Api/forumData'
+// import forumData from '../Api/forumData'
 const username = "Justin"
 
 function Forum() {
+    const rootRef = firebase.database().ref("taskfloat")
+    const forumRef = rootRef.child("forumData")
+    let forumData = []
+    forumRef.once("value")
+        .then(snap => {
+            snap.forEach(childSnap => {
+                let child = {}
+                let childKey
+                let childVal
+                childSnap.forEach(grandChildSnap => {
+                    childKey = grandChildSnap.key
+                    childVal = grandChildSnap.val()
+                    child[childKey] = childVal
+                    console.log(childKey, childVal)
+                })
+                console.log(child)
+                forumData.push(child)
+            })
+        })
+    
     const [forumPosts, setForum] = useState(forumData)
     let liked = forumPosts.map(post => (post.likes.includes(username)) ? true : false)
 
@@ -35,7 +56,7 @@ function Forum() {
         console.log(liked)
     })
 
-    const forum = forumPosts.map((post, index) => <ForumPost key={post.id} post={post} liked={liked[index]} handleChange={handleChange}/>)
+    const forum = forumPosts.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange}/>)
   
     return(
         <div className='forum'>
