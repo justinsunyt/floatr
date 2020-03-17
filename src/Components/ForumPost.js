@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 function ForumPost(props) {
     const id = props.post.id
@@ -13,6 +14,11 @@ function ForumPost(props) {
     const numLikes = props.post.likes.length
     const numComments = Object.keys(props.post.comments).length
     const className = props.post.class
+
+    const linkStyle = {
+        color: 'black',
+        textDecoration: 'none'
+    }
 
     return (
         <div className="forum-post">
@@ -29,16 +35,22 @@ function ForumPost(props) {
                     />
                 <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
             </div> 
-            <div className="forum-title">   
-                <h2 className="forum-title">{title}</h2>
+            <div className="forum-title">
+                <Link to={'/post/'+ id} style={linkStyle}>  
+                    <h2 className="forum-title">{title}</h2>
+                </Link>
             </div>
             
             <div className="forum-text">
-                <p>{text}</p>
+                <Link to={'/post/'+ id} style={linkStyle}>
+                    <p>{text}</p>
+                </Link>
             </div> 
             <div className="forum-footer">
                 <p>Posted by <i>{creator} - {month} / {day} / {year}</i></p>
-                <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
+                <Link to={'/post/'+ id} style={linkStyle}>
+                    <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
+                </Link>
             </div>
             <hr />  
         </div>
