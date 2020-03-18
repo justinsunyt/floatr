@@ -118,8 +118,7 @@ function ForumDetail({match}) {
                 <div className="forum-footer">
                     <p>Posted by <i>{creator} - {month} / {day} / {year}</i></p>
                     <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
-                </div>
-                <hr />  
+                </div> 
             </div>
         </div>
     )

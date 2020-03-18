@@ -52,14 +52,8 @@
   text-align: right;
 }
 
-input[type=checkbox] {
-  vertical-align: bottom;
-  margin-right: 10px;
-  font-size: 10px;
-}
-
 .forum {
-  background-color: white;
+  background-color: #f7feff;
   margin: auto;
   width: 50%;
   display: flex;
@@ -102,4 +96,17 @@ input[type=checkbox] {
 .forum-footer {
   display: block;
   text-align: right;
+}
+
+input[type=checkbox] {
+  vertical-align: bottom;
+  margin-right: 10px;
+  font-size: 10px;
+}
+
+hr {
+  border: none;
+  background-color: #5a67d8;
+  color: #5a67d8;
+  height: 1px;
 }
