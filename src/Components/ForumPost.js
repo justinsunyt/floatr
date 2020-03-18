@@ -8,12 +8,13 @@ function ForumPost(props) {
     const text = props.post.text
     const date = new Date(props.post.date)
     const year = date.getFullYear()
-    const month = date.getMonth()
+    const month = date.getMonth() + 1
     const day = date.getDate()
     const creator = props.post.creator
     const numLikes = props.post.likes.length
     const numComments = Object.keys(props.post.comments).length
     const className = props.post.class
+    const classId = props.post.classId
 
     const linkStyle = {
         color: "black",
@@ -21,21 +22,23 @@ function ForumPost(props) {
     }
 
     return (
-        <Link to={'/post/'+ id} style={linkStyle}>
-            <div className="forum-post">
-                <div className="forum-header">
-                    <p align="left">from {className}</p>
-                </div>
-                <div className="forum-like"> 
-                    <label align="right">
-                        <input 
-                            type="checkbox" 
-                            checked={liked} 
-                            onChange={() => props.handleChange(id)}
-                            align="right"
-                        />
-                    <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
-                </div> 
+        <div className="forum-post">
+            <div className="forum-header">
+                <Link to={'/class/' + classId} style={linkStyle}>
+                    <p align="left">from <u>{className}</u></p>
+                </Link>
+            </div>
+            <div className="forum-like"> 
+                <label align="right">
+                    <input 
+                        type="checkbox" 
+                        checked={liked} 
+                        onChange={() => props.handleChange(id)}
+                        align="right"
+                    />
+                <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
+            </div>
+            <Link to={'/post/' + id} style={linkStyle}>  
                 <div className="forum-title">
                     <h2 className="forum-title">{title}</h2>
                 </div>
@@ -47,9 +50,9 @@ function ForumPost(props) {
                     <p>Posted by <i>{creator} - {month} / {day} / {year}</i></p>
                     <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
                 </div>
-                <hr />  
-            </div>
-        </Link>
+            </Link>
+            <hr />  
+        </div>
     )
 }
 

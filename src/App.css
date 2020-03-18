@@ -98,6 +98,11 @@
   text-align: right;
 }
 
+.class-title {
+  margin: auto;
+  text-align: center;
+}
+
 input[type=checkbox] {
   vertical-align: bottom;
   margin-right: 10px;

@@ -3,29 +3,60 @@ import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
 const username = "Justin"
 
-function Forum() {
-    const forumRef = firebase.database().ref()
+function Forum(props) {
+    const filter = props.filter
+    const rootRef = firebase.database().ref()
     const [forumState, setForumState] = useState([])
+    const [classState, setClassState] = useState([])
+    const [filteredState, setFilteredState] = useState([])
     // initialize forumState
 
-    let liked = forumState.map(post => (post.likes.includes(username)) ? true : false)
+    let liked = filteredState.map(post => (post.likes.includes(username)) ? true : false)
+    let classes = []
     // initialize liked array for checkbox prop
     console.log("Liked:")
     console.log(liked)
 
-    function fetchForumData(data) {
+    function fetchData(data) {
+        let counter = 0
         for (let value of Object.values(data)) {
-            for (let i = 0; i < value.length; i++) {
-                if (value[i]["comments"] === undefined){
-                    value[i]["comments"] = {}
+            if (counter == 0) {
+                setClassState(value)
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i]["students"].includes(username)) {
+                        classes.push(value[i]["id"])
+                    }
                 }
-                // initialize "comments" if undefined
-                if (value[i]["likes"] === undefined){
-                    value[i]["likes"] = []
-                }
-                // initialize "likes" if undefined
             }
-            setForumState(value)
+            if (counter == 1) {
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i]["comments"] === undefined){
+                        value[i]["comments"] = {}
+                    }
+                    // initialize "comments" if undefined
+                    if (value[i]["likes"] === undefined){
+                        value[i]["likes"] = []
+                    }
+                    // initialize "likes" if undefined
+                }
+                setForumState(value)
+                let filteredForum = value
+                if (typeof filter == "number") {
+                   filteredForum = value.filter(val => {
+                       if (val["classId"] == filter) {
+                           return val
+                       }
+                   })     
+                } else {
+                    filteredForum = value.filter(val => {
+                        if (classes.includes(val["classId"])) {
+                            return val
+                        }
+                    })
+                }
+                setFilteredState(filteredForum)
+            }
+            counter ++
         }  
     }
 
@@ -56,7 +87,7 @@ function Forum() {
                 return newPost
             })
             console.log("Writing data to Firebase, change: " + change)
-            forumRef.set({"forumData": updatedForum})
+            rootRef.set({"classData": classState, "forumData": updatedForum})
             console.log("Succesfully wrote data")
             return updatedForum
         })
@@ -65,16 +96,16 @@ function Forum() {
     }
 
     useEffect(() => {
-        forumRef.once("value")
+        rootRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())
-            fetchForumData(snap.val())
+            fetchData(snap.val())
         })
         // fetch forum data when component mounts
     }, [])
 
-    const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
+    const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
   
     return(
         <div className='forum'>
