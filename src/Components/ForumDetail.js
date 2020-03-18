@@ -1,9 +1,10 @@
 import React, {useState, useEffect} from 'react'
 import * as firebase from 'firebase'
+import {Link} from 'react-router-dom'
 const username = 'Justin'
 
 function ForumDetail({match}) {
-    const forumRef = firebase.database().ref()
+    const rootRef = firebase.database().ref()
     const [forumState, setForumState] = useState([{
         "class" : "",
         "comments" : {},
@@ -14,6 +15,7 @@ function ForumDetail({match}) {
         "text" : "",
         "title" : ""
     }])
+    const [classState, setClassState] = useState([])
     const [id, setId] = useState(0)
 
     let liked = forumState.map(post => (post.likes.includes(username)) ? true : false)
@@ -22,27 +24,40 @@ function ForumDetail({match}) {
     let text = forumState[id].text
     let date = new Date (forumState[id].date)
     let year = date.getFullYear()
-    let month = date.getMonth()
+    let month = date.getMonth() + 1
     let day = date.getDate()
     let creator = forumState[id].creator
     let numLikes = forumState[id].likes.length
     let numComments = Object.keys(forumState[id].comments).length
     let className = forumState[id].class
+    let classId = forumState[id].classId
 
-    function fetchForumData(data) {
+    const linkStyle = {
+        color: "black",
+        textDecoration: "none"
+    }
+
+    function fetchData(data) {
+        let counter = 0
         for (let value of Object.values(data)) {
-            for (let i = 0; i < value.length; i++) {
-                if (value[i]["comments"] === undefined){
-                    value[i]["comments"] = {}
-                }
-                // initialize "comments" if undefined
-                if (value[i]["likes"] === undefined){
-                    value[i]["likes"] = []
-                }
-                // initialize "likes" if undefined
+            if (counter == 0) {
+                setClassState(value)
             }
-            setForumState(value)
-            setId(match.params.id)
+            if (counter == 1) {
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i]["comments"] === undefined){
+                        value[i]["comments"] = {}
+                    }
+                    // initialize "comments" if undefined
+                    if (value[i]["likes"] === undefined){
+                        value[i]["likes"] = []
+                    }
+                    // initialize "likes" if undefined
+                }
+                setForumState(value)
+                setId(match.params.id)
+            }
+            counter ++
         }
     }
 
@@ -74,7 +89,7 @@ function ForumDetail({match}) {
                 return newPost
             })
             console.log("Writing data to Firebase, change: " + change)
-            forumRef.set({"forumData": updatedForum})
+            rootRef.set({"classData": classState, "forumData": updatedForum})
             console.log("Succesfully wrote data")
             return updatedForum
         })
@@ -83,11 +98,11 @@ function ForumDetail({match}) {
     }
 
     useEffect(() => {
-        forumRef.once("value")
+        rootRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())
-            fetchForumData(snap.val())
+            fetchData(snap.val())
         })
         // fetch forum data when component mounts 
     }, [])
@@ -96,7 +111,9 @@ function ForumDetail({match}) {
         <div className="forum">
             <div className="forum-post">
                 <div className="forum-header">
-                    <p align="left">from {className}</p>
+                    <Link to={'/class/' + classId} style={linkStyle}>
+                        <p align="left">from <u>{className}</u></p>
+                    </Link>
                 </div>
                 <div className="forum-like"> 
                     <label align="right">

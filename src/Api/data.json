@@ -1,6 +1,7 @@
 {
     "forumData" : [{
         "class" : "Chemistry Honors",
+        "classId" : 1,
         "comments" : {
             "Justin" : "Thanks!"
         },
@@ -12,6 +13,7 @@
         "title" : "Unit 10 Study Guide"
     }, {
         "class" : "English II",
+        "classId" : 2,
         "comments" : {
             "Josh" : "Awesome!"
         },
@@ -23,6 +25,7 @@
         "title" : "Book PDF"
     }, {
         "class" : "Chemistry Honors",
+        "classId" : 1,
         "comments" : {},
         "creator" : "Anonymous",
         "date" : "2020-3-12",
@@ -32,6 +35,7 @@
         "title" : "Confusing Chem Lab"
     }, {
         "class" : "Precalculus Honors",
+        "classId" : 0,
         "comments" : {
             "Josh" : "Awesome!"
         },
@@ -43,6 +47,7 @@
         "title" : "Class Name Suggestion"
     }, {
         "class" : "World and Europe II",
+        "classId" : 3,
         "comments" : {},
         "creator" : "Anonymous",
         "date" : "2020-3-14",
@@ -50,6 +55,37 @@
         "likes" : [ "Justin" ],
         "text" : "https://youtube.com",
         "title" : "Video on What We Learned in Class"
-    } ]
-  }
+    }, {
+        "class" : "AP Computer Science A",
+        "classId" : 4,
+        "comments" : {},
+        "creator" : "Anonymous",
+        "date" : "2020-3-14",
+        "id" : 5,
+        "likes" : [ "Josh" ],
+        "text" : "Check this out: https://amazon.com",
+        "title" : "Cool stuff"
+    } ],
+    "classData" : [{
+        "name" : "Precalculus Honors",
+        "id" : 0,
+        "students" : ["Justin", "Josh", "Hope"]
+    }, {
+        "name" : "Chemistry Honors",
+        "id" : 1,
+        "students" : ["Justin", "Josh"]
+    }, {
+        "name" : "English II",
+        "id" : 2,
+        "students" : ["Justin", "Josh", "Hope"]
+    }, {
+        "name" : "World and Europe II",
+        "id" : 3,
+        "students" : ["Justin"]
+    }, {
+        "name" : "AP Computer Science A",
+        "id" : 4,
+        "students" : ["Josh"]
+    }]
+}
   
