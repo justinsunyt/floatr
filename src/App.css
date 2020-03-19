@@ -98,8 +98,10 @@
   text-align: right;
 }
 
-.class-title {
+.class-header {
   margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
   text-align: center;
 }
 
