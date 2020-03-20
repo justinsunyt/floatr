@@ -3,12 +3,15 @@ import './App.css'
 import Forum from './Components/Forum'
 import ForumDetail from './Components/ForumDetail'
 import ClassDetail from './Components/ClassDetail'
+import Nav from './Components/Nav'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 
 function App() {
   return (
     <Router>
       <div>
+        <Nav />
+        <br />
         <Switch>
           <Route path="/" exact render={() => <Forum filter={"all"}/>} />
           <Route path="/post/:id" component={ForumDetail}/>
