@@ -100,9 +100,17 @@
 
 .class-header {
   margin: auto;
-  margin-top: 50px;
+  margin-top: 25px;
   margin-bottom: 50px;
   text-align: center;
+}
+
+.nav-links {
+  width: 15%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
 }
 
 input[type=checkbox] {
@@ -116,4 +124,14 @@ hr {
   background-color: #5a67d8;
   color: #5a67d8;
   height: 1px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 3vh;
+  max-height: 5vh;
+  background-color: white;
+  border-bottom: 2px solid #efefef;
 }
