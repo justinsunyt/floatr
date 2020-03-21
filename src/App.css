@@ -105,6 +105,13 @@
   text-align: center;
 }
 
+.profile-header {
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
 .nav-links {
   width: 15%;
   display: flex;

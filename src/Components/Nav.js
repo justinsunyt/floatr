@@ -14,7 +14,7 @@ function Nav() {
 
     return (
         <nav>
-            <Link to={'/forum'} style={logoStyle}>
+            <Link to={'/'} style={logoStyle}>
                 <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
