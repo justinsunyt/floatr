@@ -16,6 +16,7 @@ function App() {
         <Switch>
           
           <Route path="/" exact component={Homepage}/>} 
+          <Route path="/forum:id" exact render={() => <Forum filter={"all"}/>} />
           <Route path="/post/:id" component={ForumDetail}/>
           <Route path="/class/:id" component={ClassDetail}/>
         </Switch>

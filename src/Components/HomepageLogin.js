@@ -1,7 +1,10 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
+import {Link, Redirect, withRouter} from 'react-router-dom'
 import firebase from 'firebase'
 
+
+
+    
 
 function Homepage()
 {
@@ -21,8 +24,11 @@ function Homepage()
                     var token = result.credential.accessToken;
                     // The signed-in user info.
                     var user = result.user;
-                    // then stuff
-                    console.log(user);
+              
+
+                    // once logged in do stuff
+                   
+                   
 
                   }).catch(function(error) {
                     // Handle Errors here.
