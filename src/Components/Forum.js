@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
-const username = "Justin"
+import {AuthContext} from '../Auth'
 
 function Forum(props) {
     const filter = props.filter
@@ -9,9 +9,10 @@ function Forum(props) {
     const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([])
     const [filteredState, setFilteredState] = useState([])
-    // initialize forumState
+    const {currentUser} = useContext(AuthContext)
+    const userId = currentUser.uid
 
-    let liked = filteredState.map(post => (post.likes.includes(username)) ? true : false)
+    let liked = filteredState.map(post => (post.likes.includes(userId)) ? true : false)
     let classes = []
     // initialize liked array for checkbox prop
     console.log("Liked:")
@@ -23,7 +24,7 @@ function Forum(props) {
             if (counter == 0) {
                 setClassState(value)
                 for (let i = 0; i < value.length; i++) {
-                    if (value[i]["students"].includes(username)) {
+                    if (value[i]["students"].includes(userId)) {
                         classes.push(value[i]["id"])
                     }
                 }
@@ -66,9 +67,9 @@ function Forum(props) {
             const updatedForum = prevForum.map(post => {
                 let newPost = post
                 if (post.id == id) {
-                    if (post.likes.includes(username)) {
+                    if (post.likes.includes(userId)) {
                         const filteredLikes = post.likes.filter(value => {
-                            if (value != username) {
+                            if (value != userId) {
                                 return value
                             }
                         })
@@ -79,7 +80,7 @@ function Forum(props) {
                         if (!newPost.likes) {
                             newPost.likes = []
                         }
-                        newPost.likes.push(username)
+                        newPost.likes.push(userId)
                         change = "liked post"
                         // if post is unliked, like post
                     }

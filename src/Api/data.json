@@ -3,34 +3,37 @@
         "class" : "Chemistry Honors",
         "classId" : 1,
         "comments" : {
-            "Justin" : "Thanks!"
+            "Justin Sun" : "Thanks!"
         },
-        "creator" : "Josh",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Justin Sun",
         "date" : "2020-3-15",
         "id" : 0,
-        "likes" : [ "Justin", "Josh" ],
+        "likes" : [ "69uP7MEccCMAbcKRD11zwa5cVvD2" ],
         "text" : "https://google.com",
         "title" : "Unit 10 Study Guide"
     }, {
         "class" : "English II",
         "classId" : 2,
         "comments" : {
-            "Josh" : "Awesome!"
+            "Joshua Cheng" : "Awesome!"
         },
-        "creator" : "Anonymous",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Anoynmous",
         "date" : "2020-3-10",
         "id" : 1,
-        "likes" : [ "Hope", "Josh" ],
+        "likes" : [],
         "text" : "Don't buy the book from the bookstore! It's here for free...",
         "title" : "Book PDF"
     }, {
         "class" : "Chemistry Honors",
         "classId" : 1,
         "comments" : {},
-        "creator" : "Anonymous",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Justin Sun",
         "date" : "2020-3-12",
         "id" : 2,
-        "likes" : [],
+        "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
         "text" : "I don't get this Thermodynamics thing at all. Can someone help?",
         "title" : "Confusing Chem Lab"
     }, {
@@ -39,49 +42,52 @@
         "comments" : {
             "Josh" : "Awesome!"
         },
-        "creator" : "Hope",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Justin Sun",
         "date" : "2020-3-9",
         "id" : 3,
-        "likes" : [ "Justin", "Josh" ],
+        "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
         "text" : "Please comment some class name suggestions for class next week!",
         "title" : "Class Name Suggestion"
     }, {
         "class" : "World and Europe II",
         "classId" : 3,
         "comments" : {},
-        "creator" : "Anonymous",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Anonymous",
         "date" : "2020-3-14",
         "id" : 4,
-        "likes" : [ "Justin" ],
+        "likes" : [],
         "text" : "https://youtube.com",
         "title" : "Video on What We Learned in Class"
     }, {
         "class" : "AP Computer Science A",
         "classId" : 4,
         "comments" : {},
-        "creator" : "Anonymous",
+        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorDisplayName" : "Anonymous",
         "date" : "2020-3-14",
         "id" : 5,
-        "likes" : [ "Josh" ],
+        "likes" : [],
         "text" : "Check this out: https://amazon.com",
         "title" : "Cool stuff"
     } ],
     "classData" : [{
         "name" : "Precalculus Honors",
         "id" : 0,
-        "students" : ["Justin", "Josh", "Hope"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
     }, {
         "name" : "Chemistry Honors",
         "id" : 1,
-        "students" : ["Justin", "Josh"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
     }, {
         "name" : "English II",
         "id" : 2,
-        "students" : ["Justin", "Josh", "Hope"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
     }, {
         "name" : "World and Europe II",
         "id" : 3,
-        "students" : ["Justin"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
     }, {
         "name" : "AP Computer Science A",
         "id" : 4,

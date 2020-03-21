@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {Link} from 'react-router-dom'
-const username = 'Justin'
+import {AuthContext} from '../Auth'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
@@ -17,8 +17,10 @@ function ForumDetail({match}) {
     }])
     const [classState, setClassState] = useState([])
     const [id, setId] = useState(0)
+    const {currentUser} = useContext(AuthContext)
+    const userId = currentUser.uid
 
-    let liked = forumState.map(post => (post.likes.includes(username)) ? true : false)
+    let liked = forumState.map(post => (post.likes.includes(userId)) ? true : false)
 
     let title = forumState[id].title
     let text = forumState[id].text
@@ -26,7 +28,7 @@ function ForumDetail({match}) {
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()
-    let creator = forumState[id].creator
+    let creatorDisplayName = forumState[id].creatorDisplayName
     let numLikes = forumState[id].likes.length
     let numComments = Object.keys(forumState[id].comments).length
     let className = forumState[id].class
@@ -67,9 +69,9 @@ function ForumDetail({match}) {
             const updatedForum = prevForum.map(post => {
                 let newPost = post
                 if (post.id == id) {
-                    if (post.likes.includes(username)) {
+                    if (post.likes.includes(userId)) {
                         const filteredLikes = post.likes.filter(value => {
-                            if (value != username) {
+                            if (value != userId) {
                                 return value
                             }
                         })
@@ -80,7 +82,7 @@ function ForumDetail({match}) {
                         if (!newPost.likes) {
                             newPost.likes = []
                         }
-                        newPost.likes.push(username)
+                        newPost.likes.push(userId)
                         change = "liked post"
                         // if post is unliked, like post
                     }
@@ -133,7 +135,7 @@ function ForumDetail({match}) {
                     <p>{text}</p>
                 </div> 
                 <div className="forum-footer">
-                    <p>Posted by <i>{creator} - {month} / {day} / {year}</i></p>
+                    <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
                     <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
                 </div> 
             </div>
