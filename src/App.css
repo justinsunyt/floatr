@@ -105,6 +105,27 @@
   text-align: center;
 }
 
+.class-list {
+  margin: auto;
+  text-align:center;
+}
+
+.profile-header {
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.profile-details {
+  text-align: center;
+}
+
+.profile-pic {
+  width: 200px;
+  height: 200px;
+}
+
 .nav-links {
   width: 15%;
   display: flex;
