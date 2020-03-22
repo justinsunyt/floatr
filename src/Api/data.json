@@ -40,13 +40,13 @@
         "class" : "Precalculus Honors",
         "classId" : 0,
         "comments" : {
-            "Josh" : "Awesome!"
+            "Justin Sun" : "Cool"
         },
-        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
-        "creatorDisplayName" : "Justin Sun",
+        "creatorId" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
+        "creatorDisplayName" : "Joshua Cheng",
         "date" : "2020-3-9",
         "id" : 3,
-        "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
+        "likes" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"],
         "text" : "Please comment some class name suggestions for class next week!",
         "title" : "Class Name Suggestion"
     }, {
@@ -64,7 +64,7 @@
         "class" : "AP Computer Science A",
         "classId" : 4,
         "comments" : {},
-        "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "creatorId" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
         "creatorDisplayName" : "Anonymous",
         "date" : "2020-3-14",
         "id" : 5,
@@ -75,23 +75,23 @@
     "classData" : [{
         "name" : "Precalculus Honors",
         "id" : 0,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
     }, {
         "name" : "Chemistry Honors",
         "id" : 1,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
     }, {
         "name" : "English II",
         "id" : 2,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
     }, {
         "name" : "World and Europe II",
         "id" : 3,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
     }, {
         "name" : "AP Computer Science A",
         "id" : 4,
-        "students" : ["Josh"]
+        "students" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
     }]
 }
   
