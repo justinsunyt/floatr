@@ -1,13 +1,14 @@
 import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
+import { createPortal } from 'react-dom'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
     const [forumState, setForumState] = useState([{
         "class" : "",
-        "comments" : {},
+        "comments" : [],
         "creator" : "",
         "date" : "",
         "id" : 0,
@@ -17,8 +18,10 @@ function ForumDetail({match}) {
     }])
     const [classState, setClassState] = useState([])
     const [id, setId] = useState(0)
+    const [commentState, setCommentState] = useState("")
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const userDisplayName = currentUser.displayName
 
     let liked = forumState.map(post => (post.likes.includes(userId)) ? true : false)
 
@@ -30,7 +33,8 @@ function ForumDetail({match}) {
     let day = date.getDate()
     let creatorDisplayName = forumState[id].creatorDisplayName
     let numLikes = forumState[id].likes.length
-    let numComments = Object.keys(forumState[id].comments).length
+    let comments = forumState[id].comments
+    let numComments = forumState[id].comments.length
     let className = forumState[id].class
     let classId = forumState[id].classId
 
@@ -48,7 +52,7 @@ function ForumDetail({match}) {
             if (counter == 1) {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
-                        value[i]["comments"] = {}
+                        value[i]["comments"] = []
                     }
                     // initialize "comments" if undefined
                     if (value[i]["likes"] === undefined){
@@ -63,40 +67,74 @@ function ForumDetail({match}) {
         }
     }
 
-    function handleChange() {
+    function handleChange(event) {
+        const {value, type} = event.target
         let change = ""
-        setForumState(prevForum => {
-            const updatedForum = prevForum.map(post => {
-                let newPost = post
-                if (post.id == id) {
-                    if (post.likes.includes(userId)) {
-                        const filteredLikes = post.likes.filter(value => {
-                            if (value != userId) {
-                                return value
+        if (type === "checkbox") {
+            setForumState(prevForum => {
+                const updatedForum = prevForum.map(post => {
+                    let newPost = post
+                    if (post.id == id) {
+                        if (post.likes.includes(userId)) {
+                            const filteredLikes = post.likes.filter(value => {
+                                if (value != userId) {
+                                    return value
+                                }
+                            })
+                            newPost.likes = filteredLikes
+                            change = "unliked post"
+                            // if post is liked, unlike post
+                        } else {
+                            if (!newPost.likes) {
+                                newPost.likes = []
                             }
-                        })
-                        newPost.likes = filteredLikes
-                        change = "unliked post"
-                        // if post is liked, unlike post
-                    } else {
-                        if (!newPost.likes) {
-                            newPost.likes = []
+                            newPost.likes.push(userId)
+                            change = "liked post"
+                            // if post is unliked, like post
                         }
-                        newPost.likes.push(userId)
-                        change = "liked post"
-                        // if post is unliked, like post
                     }
-                }
-                console.log(newPost)
-                return newPost
+                    console.log(newPost)
+                    return newPost
+                })
+                console.log("Writing data to Firebase, change: " + change)
+                rootRef.set({"classData": classState, "forumData": updatedForum})
+                console.log("Succesfully wrote data")
+                return updatedForum
             })
-            console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum})
-            console.log("Succesfully wrote data")
-            return updatedForum
-        })
+        }
+        else if (type === "textarea") {
+            setCommentState(value)
+        }
         console.log("New state:")
         console.log(forumState)
+    }
+
+    function handleSubmit() {
+        if (commentState == "") {
+            alert("You cannot comment nothing")
+        } else {
+            let change = ""
+            setForumState(prevForum => {
+                const updatedForum = prevForum.map(post => {
+                    let newPost = post
+                    if (post.id == id) {
+                        let newComment = {}
+                        newComment[userDisplayName] = commentState
+                        newPost.comments.push(newComment)
+                    }
+                    change = "new comment"
+                    console.log(newPost)
+                    return newPost
+                })
+                console.log("Writing data to Firebase, change: " + change)
+                rootRef.set({"classData": classState, "forumData": updatedForum})
+                console.log("Succesfully wrote data")
+                return updatedForum
+            })
+            console.log("New state:")
+            console.log(forumState)
+            document.getElementById("comment").value = "Comment here"
+        }
     }
 
     useEffect(() => {
@@ -109,35 +147,62 @@ function ForumDetail({match}) {
         // fetch forum data when component mounts 
     }, [])
 
+    const commentSection = comments.map(comment => {
+        let user = ""
+        let commentContent = ""
+        for (const [u, c] of Object.entries(comment)) {
+            user = u
+            commentContent = c
+        }
+        return(
+            <div>
+                <p><b>{user}</b></p>
+                <p>{commentContent}</p>
+                <br/>
+            </div>
+        )
+    })
+
     return (
-        <div className="forum">
-            <div className="forum-post">
-                <div className="forum-header">
-                    <Link to={'/class/' + classId} style={linkStyle}>
-                        <p align="left">from <u>{className}</u></p>
-                    </Link>
+        <div>
+            <div className="forum">
+                <div className="forum-post">
+                    <div className="forum-header">
+                        <Link to={'/class/' + classId} style={linkStyle}>
+                            <p align="left">from <u>{className}</u></p>
+                        </Link>
+                    </div>
+                    <div className="forum-like"> 
+                        <label align="right">
+                            <input 
+                                type="checkbox" 
+                                checked={liked[id]} 
+                                onChange={handleChange}
+                                align="right"
+                            />
+                        <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
+                    </div> 
+                    <div className="forum-title">
+                        <h2 className="forum-title">{title}</h2>
+                    </div>
+                    
+                    <div className="forum-text">
+                        <p>{text}</p>
+                    </div> 
+                    <div className="forum-footer">
+                        <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
+                        <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
+                    </div>
                 </div>
-                <div className="forum-like"> 
-                    <label align="right">
-                        <input 
-                            type="checkbox" 
-                            checked={liked[id]} 
-                            onChange={() => handleChange()}
-                            align="right"
-                        />
-                    <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
-                </div> 
-                <div className="forum-title">
-                    <h2 className="forum-title">{title}</h2>
-                </div>
-                
-                <div className="forum-text">
-                    <p>{text}</p>
-                </div> 
-                <div className="forum-footer">
-                    <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
-                    <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
-                </div> 
+            </div>
+            <div className="comment-input">
+                <form>
+                    <textarea name="comment" id="comment" onChange={handleChange}>Comment here</textarea>    
+                </form>
+                <button onClick={handleSubmit}>Comment</button>
+            </div>    
+            <div className="comment-section">
+                {commentSection}
             </div>
         </div>
     )

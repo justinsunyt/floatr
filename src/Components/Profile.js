@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
+import Forum from './Forum'
 
 function Profile() {
     const {currentUser} = useContext(AuthContext)
     console.log(currentUser)
+    const userId = currentUser.uid
     const displayName = currentUser.displayName
     const profilePic = currentUser.photoURL
 
@@ -17,7 +19,10 @@ function Profile() {
             <div className="profile-details">
                 <img src={profilePic} className={"profile-pic"}/>
                 <h3>{displayName}</h3>
-            </div> 
+            </div>
+            <div>
+                <Forum filter={userId} />
+            </div>
         </div>
     )
 }
