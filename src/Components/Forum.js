@@ -32,7 +32,7 @@ function Forum(props) {
             if (counter == 1) {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
-                        value[i]["comments"] = {}
+                        value[i]["comments"] = []
                     }
                     // initialize "comments" if undefined
                     if (value[i]["likes"] === undefined){
@@ -48,7 +48,16 @@ function Forum(props) {
                            return val
                        }
                    })     
-                } else {
+                }
+                else if (filter == userId){
+                    filteredForum = value.filter(val => {
+                        if (val["creatorId"] == userId) {
+                            return val
+                        }
+                    })
+                }
+                else
+                {
                     filteredForum = value.filter(val => {
                         if (classes.includes(val["classId"])) {
                             return val

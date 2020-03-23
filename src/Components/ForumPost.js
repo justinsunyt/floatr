@@ -13,7 +13,7 @@ function ForumPost(props) {
     const creatorId = props.post.creatorId
     const creatorDisplayName = props.post.creatorDisplayName
     const numLikes = props.post.likes.length
-    const numComments = Object.keys(props.post.comments).length
+    const numComments = props.post.comments.length
     const className = props.post.class
     const classId = props.post.classId
 
