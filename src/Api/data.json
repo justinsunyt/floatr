@@ -76,23 +76,23 @@
     "classData" : [{
         "name" : "Precalculus Honors",
         "id" : 0,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "Chemistry Honors",
         "id" : 1,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "English II",
         "id" : 2,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "World and Europe II",
         "id" : 3,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "AP Computer Science A",
         "id" : 4,
-        "students" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"]
+        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }]
 }
   

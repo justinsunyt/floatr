@@ -24,12 +24,12 @@ function ForumPost(props) {
 
     return (
         <div className="forum-post">
-            <div className="forum-header">
+            <div className="post-header">
                 <Link to={'/class/' + classId} style={linkStyle}>
                     <p align="left">from <u>{className}</u></p>
                 </Link>
             </div>
-            <div className="forum-like"> 
+            <div className="post-like"> 
                 <label align="right">
                     <input 
                         type="checkbox" 
@@ -40,14 +40,14 @@ function ForumPost(props) {
                 <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
             </div>
             <Link to={'/post/' + id} style={linkStyle}>  
-                <div className="forum-title">
-                    <h2 className="forum-title">{title}</h2>
+                <div className="post-title">
+                    <h2>{title}</h2>
                 </div>
                 
-                <div className="forum-text">
+                <div className="post-text">
                     <p>{text}</p>
                 </div> 
-                <div className="forum-footer">
+                <div className="post-footer">
                     <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
                     <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
                 </div>
