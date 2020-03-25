@@ -5,6 +5,7 @@ import {AuthContext} from '../Auth'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
+    const forumRef = firebase.database().ref('taskfloat/forumData')
     const [forumState, setForumState] = useState([{
         "class" : "",
         "comments" : [],
@@ -49,6 +50,7 @@ function ForumDetail({match}) {
                 setClassState(value)
             }
             if (counter == 1) {
+                let ids = []
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
                         value[i]["comments"] = []
@@ -58,9 +60,14 @@ function ForumDetail({match}) {
                         value[i]["likes"] = []
                     }
                     // initialize "likes" if undefined
+                    ids.push(value[i].id)
                 }
-                setForumState(value)
-                setId(match.params.id)
+                if (ids.includes(parseInt(match.params.id))) {
+                    setForumState(value)
+                    setId(match.params.id)
+                } else {
+                    alert("Please refresh, this post has been deleted")
+                }
             }
             counter ++
         }
@@ -146,7 +153,8 @@ function ForumDetail({match}) {
         // fetch forum data when component mounts
         setInterval(() => {rootRef.on("value", snap => {
             fetchData(snap.val())
-        })}, 5000) 
+        })}, 5000)
+        // fetch data when database updates
     }, [])
 
     const commentSection = comments.map(comment => {

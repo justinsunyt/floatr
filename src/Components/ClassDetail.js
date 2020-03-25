@@ -37,9 +37,6 @@ function ClassDetail({match}) {
             fetchData(snap.val())
         })
         // fetch forum data when component mounts
-        setInterval(() => {rootRef.on("value", snap => {
-            fetchData(snap.val())
-        })}, 5000) 
     }, [])
 
     return (

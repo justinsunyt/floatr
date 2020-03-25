@@ -83,6 +83,7 @@ function AddPost() {
         setInterval(() => {rootRef.on("value", snap => {
             fetchData(snap.val())
         })}, 5000)
+        // fetch data when database updates
     }, [])
 
         

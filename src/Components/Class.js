@@ -32,9 +32,6 @@ function Class() {
             console.log(snap.val())
             fetchData(snap.val())
         })
-        setInterval(() => {rootRef.on("value", snap => {
-            fetchData(snap.val())
-        })}, 5000)
     }, [])
 
     const linkStyle = {
