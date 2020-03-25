@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
+import {Link} from 'react-router-dom'
 
 function Forum(props) {
     const filter = props.filter
@@ -118,8 +119,15 @@ function Forum(props) {
     const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
   
     return(
-        <div className='forum'>
-            {forum}
+        <div>
+            <div className='forum-header'>
+                <Link to={'/post'} className="post-link">
+                    <button className="post-button">Add new post</button>
+                </Link>
+            </div>
+            <div className='forum'>
+                {forum}
+            </div>
         </div>
     )
 }

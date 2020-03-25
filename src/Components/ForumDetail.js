@@ -2,10 +2,10 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
-import { createPortal } from 'react-dom'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
+    const forumRef = firebase.database().ref('taskfloat/forumData')
     const [forumState, setForumState] = useState([{
         "class" : "",
         "comments" : [],
@@ -50,6 +50,7 @@ function ForumDetail({match}) {
                 setClassState(value)
             }
             if (counter == 1) {
+                let ids = []
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
                         value[i]["comments"] = []
@@ -59,9 +60,14 @@ function ForumDetail({match}) {
                         value[i]["likes"] = []
                     }
                     // initialize "likes" if undefined
+                    ids.push(value[i].id)
                 }
-                setForumState(value)
-                setId(match.params.id)
+                if (ids.includes(parseInt(match.params.id))) {
+                    setForumState(value)
+                    setId(match.params.id)
+                } else {
+                    alert("Please refresh, this post has been deleted")
+                }
             }
             counter ++
         }
@@ -144,7 +150,11 @@ function ForumDetail({match}) {
             console.log(snap.val())
             fetchData(snap.val())
         })
-        // fetch forum data when component mounts 
+        // fetch forum data when component mounts
+        setInterval(() => {rootRef.on("value", snap => {
+            fetchData(snap.val())
+        })}, 5000)
+        // fetch data when database updates
     }, [])
 
     const commentSection = comments.map(comment => {
@@ -167,12 +177,12 @@ function ForumDetail({match}) {
         <div>
             <div className="forum">
                 <div className="forum-post">
-                    <div className="forum-header">
+                    <div className="post-header">
                         <Link to={'/class/' + classId} style={linkStyle}>
                             <p align="left">from <u>{className}</u></p>
                         </Link>
                     </div>
-                    <div className="forum-like"> 
+                    <div className="post-like"> 
                         <label align="right">
                             <input 
                                 type="checkbox" 
@@ -182,14 +192,14 @@ function ForumDetail({match}) {
                             />
                         <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
                     </div> 
-                    <div className="forum-title">
-                        <h2 className="forum-title">{title}</h2>
+                    <div className="post-title">
+                        <h2 className="post-title">{title}</h2>
                     </div>
                     
-                    <div className="forum-text">
+                    <div className="post-text">
                         <p>{text}</p>
                     </div> 
-                    <div className="forum-footer">
+                    <div className="post-footer">
                         <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
                         <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
                     </div>
@@ -197,9 +207,9 @@ function ForumDetail({match}) {
             </div>
             <div className="comment-input">
                 <form>
-                    <textarea name="comment" id="comment" onChange={handleChange}>Comment here</textarea>    
+                    <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here"></textarea>    
                 </form>
-                <button onClick={handleSubmit}>Comment</button>
+                <button onClick={handleSubmit} className="comment-button"><span>Comment </span></button>
             </div>    
             <div className="comment-section">
                 {commentSection}

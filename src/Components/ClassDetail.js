@@ -3,7 +3,7 @@ import Forum from './Forum'
 import * as firebase from 'firebase'
 
 function ClassDetail({match}) {
-    const forumRef = firebase.database().ref()
+    const rootRef = firebase.database().ref()
     const [forumState, setForumState] = useState()
     const [classState, setClassState] = useState([{
         "id" : 0,
@@ -30,13 +30,13 @@ function ClassDetail({match}) {
     }
 
     useEffect(() => {
-        forumRef.once("value")
+        rootRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())
             fetchData(snap.val())
         })
-        // fetch forum data when component mounts 
+        // fetch forum data when component mounts
     }, [])
 
     return (

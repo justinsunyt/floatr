@@ -18,6 +18,9 @@ function Nav() {
                 <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
+                <Link to={'/post'} style={linkStyle}>
+                    <li>Post</li>
+                </Link>
                 <Link to={'/class'} style={linkStyle}>
                     <li>Classes</li>
                 </Link>
