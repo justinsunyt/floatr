@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 
 function ForumDetail({match}) {
@@ -143,7 +143,10 @@ function ForumDetail({match}) {
             console.log(snap.val())
             fetchData(snap.val())
         })
-        // fetch forum data when component mounts 
+        // fetch forum data when component mounts
+        setInterval(() => {rootRef.on("value", snap => {
+            fetchData(snap.val())
+        })}, 5000) 
     }, [])
 
     const commentSection = comments.map(comment => {

@@ -114,6 +114,9 @@ function Forum(props) {
             fetchData(snap.val())
         })
         // fetch forum data when component mounts
+        setInterval(() => {rootRef.on("value", snap => {
+            fetchData(snap.val())
+        })}, 5000)
     }, [])
 
     const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
