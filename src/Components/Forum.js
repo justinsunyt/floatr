@@ -65,6 +65,11 @@ function Forum(props) {
                         }
                     })
                 }
+                filteredForum.sort((a, b) => {
+                    const d1 = new Date(a.date)
+                    const d2 = new Date(b.date)
+                    return (d2 - d1)
+                })
                 setFilteredState(filteredForum)
             }
             counter ++
