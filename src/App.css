@@ -52,6 +52,10 @@
   text-align: right;
 }
 
+.content {
+  padding-top: 75px;
+}
+
 .forum {
   background-color: #f7feff;
   margin: auto;
@@ -309,6 +313,12 @@ nav {
   max-height: 5vh;
   background-color: white;
   border-bottom: 2px solid #efefef;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin-bottom: 50px;
 }
 
 textarea {
