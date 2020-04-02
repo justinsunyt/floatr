@@ -72,7 +72,7 @@
         "likes" : [],
         "text" : "Check this out: https://amazon.com",
         "title" : "Cool stuff"
-    } ],
+    }],
     "classData" : [{
         "name" : "Precalculus Honors",
         "id" : 0,
@@ -93,6 +93,10 @@
         "name" : "AP Computer Science A",
         "id" : 4,
         "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
+    }],
+    "userData" : [{
+        "id" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
+        "mod" : true
     }]
 }
   

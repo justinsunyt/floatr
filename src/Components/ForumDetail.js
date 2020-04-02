@@ -6,41 +6,48 @@ import {AuthContext} from '../Auth'
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
     const forumRef = firebase.database().ref('taskfloat/forumData')
-    const [forumState, setForumState] = useState([{
+    const [forumState, setForumState] = useState([])
+    const [classState, setClassState] = useState([])
+    const [userState, setUserState] = useState([])
+    const [id, setId] = useState(0)
+    const [postState, setPostState] = useState({
         "class" : "",
+        "classId" : "",
         "comments" : [],
-        "creator" : "",
+        "creatorId" : "",
+        "creatorDisplayName" : "",
         "date" : "",
         "id" : 0,
         "likes" : [],
         "text" : "",
         "title" : ""
-    }])
-    const [classState, setClassState] = useState([])
-    const [id, setId] = useState(0)
+    })
     const [commentState, setCommentState] = useState("")
+    const [mod, setMod] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
 
     let liked = forumState.map(post => (post.likes.includes(userId)) ? true : false)
 
-    let title = forumState[id].title
-    let text = forumState[id].text
-    let date = new Date (forumState[id].date)
+    let title = postState.title
+    let text = postState.text
+    let date = new Date (postState.date)
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()
-    let creatorDisplayName = forumState[id].creatorDisplayName
-    let numLikes = forumState[id].likes.length
-    let comments = forumState[id].comments
-    let numComments = forumState[id].comments.length
-    let className = forumState[id].class
-    let classId = forumState[id].classId
+    let creatorId = postState.creatorId
+    let creatorDisplayName = postState.creatorDisplayName
+    let numLikes = postState.likes.length
+    let comments = postState.comments
+    let numComments = postState.comments.length
+    let className = postState.class
+    let classId = postState.classId
 
     const linkStyle = {
         color: "black",
-        textDecoration: "none"
+        textDecoration: "none",
+        cursor: "pointer"
     }
 
     function fetchData(data) {
@@ -65,8 +72,22 @@ function ForumDetail({match}) {
                 if (ids.includes(parseInt(match.params.id))) {
                     setForumState(value)
                     setId(match.params.id)
+                    for (let i = 0; i < value.length; i++) {
+                        if (value[i].id == match.params.id) {
+                            setPostState(value[i])
+                        }
+                    }
                 } else {
-                    alert("Please refresh, this post has been deleted")
+                    alert("This post has been deleted")
+                    window.location.reload()
+                }
+            }
+            if (counter == 2)  {
+                setUserState(value)
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i].id == userId) {
+                        setMod(value[i].mod)
+                    }
                 }
             }
             counter ++
@@ -103,7 +124,7 @@ function ForumDetail({match}) {
                     return newPost
                 })
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum})
+                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
                 console.log("Succesfully wrote data")
                 return updatedForum
             })
@@ -133,13 +154,30 @@ function ForumDetail({match}) {
                     return newPost
                 })
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum})
+                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
                 console.log("Succesfully wrote data")
                 return updatedForum
             })
             console.log("New state:")
             console.log(forumState)
-            document.getElementById("comment").value = "Comment here"
+            document.getElementById("comment").value = ""
+        }
+    }
+
+    function handleDelete() {
+        if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
+            const change = "Deleted post"
+            let updatedForum = forumState
+            for (let i = 0; i < updatedForum.length; i++) { 
+                if (updatedForum[i].id == id) { 
+                    updatedForum.splice(i, 1)
+                }
+            }
+            console.log(updatedForum)
+            console.log("Writing data to Firebase, change: " + change)
+            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+            console.log("Succesfully wrote data")
+            window.location.reload()
         }
     }
 
@@ -202,6 +240,7 @@ function ForumDetail({match}) {
                     <div className="post-footer">
                         <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
                         <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
+                            {(mod || (creatorId == userId)) && <p onClick = {handleDelete} style={linkStyle}><u>Delete</u></p>}
                     </div>
                 </div>
             </div>

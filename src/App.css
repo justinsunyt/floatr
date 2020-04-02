@@ -309,8 +309,7 @@ nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  min-height: 3vh;
-  max-height: 5vh;
+  height: 60px;
   background-color: white;
   border-bottom: 2px solid #efefef;
   position: fixed;
@@ -351,4 +350,8 @@ select {
   padding: 5px;
   margin-bottom: 15px;
   min-width: 200px;
+}
+
+li {
+  padding-left: 20px;
 }
