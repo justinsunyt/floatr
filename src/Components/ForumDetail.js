@@ -24,11 +24,10 @@ function ForumDetail({match}) {
     })
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
+    const [liked, setLiked] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
-
-    let liked = forumState.map(post => (post.likes.includes(userId)) ? true : false)
 
     let title = postState.title
     let text = postState.text
@@ -75,6 +74,9 @@ function ForumDetail({match}) {
                     for (let i = 0; i < value.length; i++) {
                         if (value[i].id == match.params.id) {
                             setPostState(value[i])
+                            if (value[i].likes.includes(userId)) {
+                                setLiked(true)
+                            }
                         }
                     }
                 } else {
@@ -109,6 +111,7 @@ function ForumDetail({match}) {
                                 }
                             })
                             newPost.likes = filteredLikes
+                            setLiked(false)
                             change = "unliked post"
                             // if post is liked, unlike post
                         } else {
@@ -116,6 +119,7 @@ function ForumDetail({match}) {
                                 newPost.likes = []
                             }
                             newPost.likes.push(userId)
+                            setLiked(true)
                             change = "liked post"
                             // if post is unliked, like post
                         }
@@ -224,7 +228,7 @@ function ForumDetail({match}) {
                         <label align="right">
                             <input 
                                 type="checkbox" 
-                                checked={liked[id]} 
+                                checked={liked} 
                                 onChange={handleChange}
                                 align="right"
                             />
