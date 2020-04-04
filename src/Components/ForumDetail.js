@@ -221,10 +221,8 @@ function ForumDetail({match}) {
                 <div className="forum-post">
                     <div className="post-header">
                         <Link to={'/class/' + classId} style={linkStyle}>
-                            <p align="left">from <u>{className}</u></p>
+                            from <u>{className}</u>
                         </Link>
-                    </div>
-                    <div className="post-like"> 
                         <label align="right">
                             <input 
                                 type="checkbox" 
@@ -233,18 +231,19 @@ function ForumDetail({match}) {
                                 align="right"
                             />
                         <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
-                    </div> 
+                    </div>
                     <div className="post-title">
                         <h2 className="post-title">{title}</h2>
-                    </div>
-                    
-                    <div className="post-text">
-                        <p>{text}</p>
+                    </div>   
+                    <div className="post-text-long">
+                        {text}
                     </div> 
                     <div className="post-footer">
-                        <p>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></p>
-                        <p>{numComments} {(numComments == 1) ? "comment" : "comments"}</p>
-                            {(mod || (creatorId == userId)) && <p onClick = {handleDelete} style={linkStyle}><u>Delete</u></p>}
+                        <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
+                        <div>{numComments} {(numComments == 1) ? "comment" : "comments"}</div>  
+                    </div>
+                    <div className="post-delete" onClick = {handleDelete} style={linkStyle}>
+                        {(mod || (creatorId == userId)) && <u>Delete</u>}
                     </div>
                 </div>
             </div>
