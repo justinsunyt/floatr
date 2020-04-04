@@ -87,28 +87,67 @@
   width: 50%;
 }
 
-.post-header {
-  display: block;
+.forum-post {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
 }
 
-.post-like {
-  display: block;
-  text-align: right;
+.post-header {
+  margin-top: 10px;
+  margin-bottom: 25px;
+  display: flex;
+  align-self: flex-start;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .post-title {
-  display: block;
-  align-items: center;
-}
-
-.post-text {
-  display: block;
+  display: flex;
+  align-self: flex-start;
   text-align: left;
 }
 
+.post-text-short {
+  display: flex;
+  align-self: flex-start;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  height: 50px;
+}
+
+.post-text-long {
+  display: flex;
+  align-self: flex-start;
+  text-align: left;
+  min-height: 50px;
+  margin-bottom: 20px;
+}
+
 .post-footer {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-end;
   text-align: right;
+  height: 80px;
+  justify-content: space-evenly;
+  margin-bottom: 10px;
+}
+
+.post-delete {
+  display: flex;
+  align-self: flex-end;
+  text-align: right;
+  margin-top: 10px;
+}
+
+.post-hr {
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  align-self: stretch;
 }
 
 .comment-input {
@@ -296,6 +335,7 @@ input[type=checkbox] {
   vertical-align: bottom;
   margin-right: 10px;
   font-size: 10px;
+  cursor: pointer;
 }
 
 hr {
@@ -303,14 +343,14 @@ hr {
   background-color: #5a67d8;
   color: #5a67d8;
   height: 1px;
+  width: 100%;
 }
 
 nav {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  min-height: 3vh;
-  max-height: 5vh;
+  height: 60px;
   background-color: white;
   border-bottom: 2px solid #efefef;
   position: fixed;
@@ -351,4 +391,8 @@ select {
   padding: 5px;
   margin-bottom: 15px;
   min-width: 200px;
+}
+
+li {
+  padding-left: 20px;
 }

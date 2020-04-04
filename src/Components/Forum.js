@@ -10,6 +10,7 @@ function Forum(props) {
     const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([])
     const [filteredState, setFilteredState] = useState([])
+    const [userState, setUserState] = useState([])
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
 
@@ -72,8 +73,24 @@ function Forum(props) {
                 })
                 setFilteredState(filteredForum)
             }
+            if (counter == 2) {
+                let includesUser = false
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i].id == userId) {
+                        includesUser = true
+                    }
+                }
+                if (!includesUser) {
+                    value.push({
+                        "id": userId,
+                        "mod": false
+                    })
+                }
+                // initialize userData for user if undefined
+                setUserState(value)
+            }
             counter ++
-        }  
+        }
     }
 
     function handleChange(id) {
@@ -103,7 +120,7 @@ function Forum(props) {
                 return newPost
             })
             console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum})
+            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
             console.log("Succesfully wrote data")
             return updatedForum
         })

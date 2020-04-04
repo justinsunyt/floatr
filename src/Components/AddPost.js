@@ -10,6 +10,7 @@ function AddPost() {
         "name" : "",
         "students" : []
     }])
+    const [userState, setUserState] = useState([])
     const [postState, setPostState] = useState([])
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
@@ -25,6 +26,9 @@ function AddPost() {
             }
             if (counter == 1) {
                 setForumState(value)
+            }
+            if (counter == 2) {
+                setUserState(value)
             }
             counter ++
         }
@@ -66,7 +70,7 @@ function AddPost() {
                 "title": postState[1]
             })
             console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum})
+            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
             console.log("Succesfully wrote data")
             setForumState(updatedForum)
         }
