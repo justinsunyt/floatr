@@ -3,12 +3,12 @@ import {Link} from 'react-router-dom'
 
 function Nav() {
     const logoStyle = {
-        color: "black",
+        color: "white",
         textDecoration: "none"
     }
 
     const linkStyle = {
-        color: "#2d3758",
+        color: "white",
         textDecoration: "none"
     }
 

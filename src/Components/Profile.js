@@ -17,7 +17,7 @@ function Profile() {
                 <button className="login-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button>
             </div>
             <div className="profile-details">
-                <img src={profilePic} className={"profile-pic"}/>
+                <img src={profilePic} alt="Profile Picture" className={"profile-pic"}/>
                 <h3>{displayName}</h3>
             </div>
             <div>

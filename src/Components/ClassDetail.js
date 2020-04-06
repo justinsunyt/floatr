@@ -19,7 +19,7 @@ function ClassDetail({match}) {
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
                 const idNum = Number(match.params.id)
                 setClassState(value)
                 setForumState(<Forum filter={idNum} />)
@@ -46,7 +46,7 @@ function ClassDetail({match}) {
                     {className}
                 </h1>
                 <h5>
-                    <i>{(numStudents > 0 && numStudents + ((numStudents == 1) ? " student" : " students") + " joined")}</i>
+                    <i>{(numStudents > 0 && numStudents + ((numStudents === 1) ? " student" : " students") + " joined")}</i>
                 </h5>
             </div>
             {forum}

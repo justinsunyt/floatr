@@ -23,7 +23,7 @@ function Forum(props) {
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
                 setClassState(value)
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["students"].includes(userId)) {
@@ -31,7 +31,7 @@ function Forum(props) {
                     }
                 }
             }
-            if (counter == 1) {
+            if (counter === 1) {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
                         value[i]["comments"] = []
@@ -44,16 +44,16 @@ function Forum(props) {
                 }
                 setForumState(value)
                 let filteredForum = value
-                if (typeof filter == "number") {
+                if (typeof filter === "number") {
                    filteredForum = value.filter(val => {
-                       if (val["classId"] == filter) {
+                       if (val["classId"] === filter) {
                            return val
                        }
                    })     
                 }
-                else if (filter == userId){
+                else if (filter === userId){
                     filteredForum = value.filter(val => {
-                        if (val["creatorId"] == userId) {
+                        if (val["creatorId"] === userId) {
                             return val
                         }
                     })
@@ -67,16 +67,16 @@ function Forum(props) {
                     })
                 }
                 filteredForum.sort((a, b) => {
-                    const d1 = new Date(a.date)
-                    const d2 = new Date(b.date)
+                    const d1 = new Date(JSON.parse(a.date))
+                    const d2 = new Date(JSON.parse(b.date))
                     return (d2 - d1)
                 })
                 setFilteredState(filteredForum)
             }
-            if (counter == 2) {
+            if (counter === 2) {
                 let includesUser = false
                 for (let i = 0; i < value.length; i++) {
-                    if (value[i].id == userId) {
+                    if (value[i].id === userId) {
                         includesUser = true
                     }
                 }
@@ -98,10 +98,10 @@ function Forum(props) {
         setForumState(prevForum => {
             const updatedForum = prevForum.map(post => {
                 let newPost = post
-                if (post.id == id) {
+                if (post.id === id) {
                     if (post.likes.includes(userId)) {
                         const filteredLikes = post.likes.filter(value => {
-                            if (value != userId) {
+                            if (value !== userId) {
                                 return value
                             }
                         })

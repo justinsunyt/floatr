@@ -57,7 +57,7 @@
 }
 
 .forum {
-  background-color: #f7feff;
+  background-color: #f9fbff;
   margin: auto;
   width: 50%;
   display: flex;
@@ -168,7 +168,7 @@
 .comment-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #5a67d8;
+  background-color: #2e64fe;
   border: none;
   color: white;
   text-align: center;
@@ -251,7 +251,7 @@
 .login-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #5a67d8;
+  background-color: #2e64fe;
   border: none;
   color: white;
   text-align: center;
@@ -293,8 +293,8 @@
 .post-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #5a67d8;
-  border: 1px solid #5a67d8;
+  background-color: #2e64fe;
+  border: 1px solid #2e64fe;
   color: white;
   text-align: center;
   font-size: 16px;
@@ -307,7 +307,7 @@
 
 .post-button:hover {
   background-color: white;
-  color: #5a67d8;
+  color: #2e64fe;
   text-align: center;
 }
 
@@ -340,8 +340,8 @@ input[type=checkbox] {
 
 hr {
   border: none;
-  background-color: #5a67d8;
-  color: #5a67d8;
+  background-color: #2e64fe;
+  color: #2e64fe;
   height: 1px;
   width: 100%;
 }
@@ -351,14 +351,15 @@ nav {
   justify-content: space-around;
   align-items: center;
   height: 60px;
-  background-color: white;
-  border-bottom: 2px solid #efefef;
+  background-color: #2e64fe;
   position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
   left: 0;
   margin-bottom: 50px;
+  box-shadow: 0 3px 2px -1px rgba(0,0,0,.2);
+  z-index: 69;
 }
 
 textarea {
