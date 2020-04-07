@@ -1,14 +1,40 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import Forum from './Forum'
 
 function Profile() {
+    const rootRef = firebase.database().ref()
+    const [mod, setMod] = useState(false)
     const {currentUser} = useContext(AuthContext)
     console.log(currentUser)
     const userId = currentUser.uid
     const displayName = currentUser.displayName
     const profilePic = currentUser.photoURL
+
+    function fetchData(data) {
+        let counter = 0
+        for (let value of Object.values(data)) {
+            if (counter === 2) {
+                for (let i = 0; i < value.length; i++) {
+                    if (value[i].id === userId) {
+                        setMod(value[i].mod)
+                    }
+                }
+            }
+            counter++
+        }
+    }
+
+    useEffect(() => {
+        rootRef.once("value")
+        .then(snap => {
+            console.log("Fetched data:")
+            console.log(snap.val())
+            fetchData(snap.val())
+        })
+        // fetch data when component mounts
+    }, [])
 
     return(
         <div>
@@ -19,6 +45,7 @@ function Profile() {
             <div className="profile-details">
                 <img src={profilePic} alt="Profile Picture" className={"profile-pic"}/>
                 <h3>{displayName}</h3>
+                {mod && <h5><i>Moderator</i></h5>}
             </div>
             <div>
                 <Forum filter={userId} />

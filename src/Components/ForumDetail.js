@@ -88,7 +88,7 @@ function ForumDetail({match}) {
                     window.location.reload()
                 }
             }
-            if (counter === 2)  {
+            if (counter === 2) {
                 setUserState(value)
                 for (let i = 0; i < value.length; i++) {
                     if (value[i].id === userId) {
