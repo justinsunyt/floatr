@@ -6,11 +6,10 @@ function ForumPost(props) {
     const liked = props.liked
     const title = props.post.title
     const text = props.post.text
-    const date = new Date(props.post.date)
+    const date = new Date(JSON.parse(props.post.date))
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
-    const creatorId = props.post.creatorId
     const creatorDisplayName = props.post.creatorDisplayName
     const numLikes = props.post.likes.length
     const numComments = props.post.comments.length
@@ -35,7 +34,7 @@ function ForumPost(props) {
                         onChange={() => props.handleChange(id)}
                         align="right"
                     />
-                <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
+                <b>{numLikes} {(numLikes === 1) ? "like" : "likes"}</b></label>
             </div>
             <Link to={'/post/' + id} style={linkStyle}>  
                 <div className="post-title">
@@ -46,7 +45,7 @@ function ForumPost(props) {
                 </div> 
                 <div className="post-footer">
                     <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
-                    <div>{numComments} {(numComments == 1) ? "comment" : "comments"}</div>      
+                    <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
                 </div>
             </Link>
             <div className="post-hr">

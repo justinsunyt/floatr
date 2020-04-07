@@ -1,11 +1,10 @@
 import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
-import {Link, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
-    const forumRef = firebase.database().ref('taskfloat/forumData')
     const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([])
     const [userState, setUserState] = useState([])
@@ -16,7 +15,7 @@ function ForumDetail({match}) {
         "comments" : [],
         "creatorId" : "",
         "creatorDisplayName" : "",
-        "date" : "",
+        "date" : "\"\"",
         "id" : 0,
         "likes" : [],
         "text" : "",
@@ -28,17 +27,22 @@ function ForumDetail({match}) {
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
+    const today = new Date()
 
     let title = postState.title
     let text = postState.text
-    let date = new Date (postState.date)
+    let date = new Date(JSON.parse(postState.date))
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()
     let creatorId = postState.creatorId
     let creatorDisplayName = postState.creatorDisplayName
     let numLikes = postState.likes.length
-    let comments = postState.comments
+    let sortedComments = postState.comments.sort((a, b) => {
+        const d1 = new Date(JSON.parse(a.date))
+        const d2 = new Date(JSON.parse(b.date))
+        return (d2 - d1)
+    })
     let numComments = postState.comments.length
     let className = postState.class
     let classId = postState.classId
@@ -52,10 +56,10 @@ function ForumDetail({match}) {
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
                 setClassState(value)
             }
-            if (counter == 1) {
+            if (counter === 1) {
                 let ids = []
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
@@ -70,9 +74,9 @@ function ForumDetail({match}) {
                 }
                 if (ids.includes(parseInt(match.params.id))) {
                     setForumState(value)
-                    setId(match.params.id)
+                    setId(parseInt(match.params.id))
                     for (let i = 0; i < value.length; i++) {
-                        if (value[i].id == match.params.id) {
+                        if (value[i].id === parseInt(match.params.id)) {
                             setPostState(value[i])
                             if (value[i].likes.includes(userId)) {
                                 setLiked(true)
@@ -84,10 +88,10 @@ function ForumDetail({match}) {
                     window.location.reload()
                 }
             }
-            if (counter == 2)  {
+            if (counter === 2)  {
                 setUserState(value)
                 for (let i = 0; i < value.length; i++) {
-                    if (value[i].id == userId) {
+                    if (value[i].id === userId) {
                         setMod(value[i].mod)
                     }
                 }
@@ -103,10 +107,10 @@ function ForumDetail({match}) {
             setForumState(prevForum => {
                 const updatedForum = prevForum.map(post => {
                     let newPost = post
-                    if (post.id == id) {
+                    if (post.id === id) {
                         if (post.likes.includes(userId)) {
                             const filteredLikes = post.likes.filter(value => {
-                                if (value != userId) {
+                                if (value !== userId) {
                                     return value
                                 }
                             })
@@ -141,16 +145,20 @@ function ForumDetail({match}) {
     }
 
     function handleSubmit() {
-        if (commentState == "") {
+        if (commentState === "") {
             alert("You cannot comment nothing")
         } else {
             let change = ""
             setForumState(prevForum => {
                 const updatedForum = prevForum.map(post => {
                     let newPost = post
-                    if (post.id == id) {
+                    if (post.id === id) {
                         let newComment = {}
-                        newComment[userDisplayName] = commentState
+                        newComment.id = post.comments.length
+                        newComment.creatorId = userId
+                        newComment.creatorDisplayName = userDisplayName
+                        newComment.date = JSON.stringify(today)
+                        newComment.text = commentState
                         newPost.comments.push(newComment)
                     }
                     change = "new comment"
@@ -168,12 +176,12 @@ function ForumDetail({match}) {
         }
     }
 
-    function handleDelete() {
+    function handleDeletePost() {
         if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
-            const change = "Deleted post"
+            const change = "deleted post"
             let updatedForum = forumState
-            for (let i = 0; i < updatedForum.length; i++) { 
-                if (updatedForum[i].id == id) { 
+            for (const [i, post] of updatedForum.entries()) { 
+                if (post.id === id) { 
                     updatedForum.splice(i, 1)
                 }
             }
@@ -182,6 +190,26 @@ function ForumDetail({match}) {
             rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
             console.log("Succesfully wrote data")
             window.location.reload()
+        }
+    }
+
+    function handleDeleteComment(commentId) {
+        if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
+            const change = "deleted comment"
+            let updatedForum = forumState
+            for (const post of updatedForum) { 
+                if (post.id === id) { 
+                    for (const [i, comment] of post.comments.entries()) {
+                        if (comment.id === commentId) {
+                            post.comments.splice(i, 1)
+                        }
+                    }
+                }
+            }
+            console.log(updatedForum)
+            console.log("Writing data to Firebase, change: " + change)
+            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+            console.log("Succesfully wrote data")
         }
     }
 
@@ -199,17 +227,19 @@ function ForumDetail({match}) {
         // fetch data when database updates
     }, [])
 
-    const commentSection = comments.map(comment => {
-        let user = ""
-        let commentContent = ""
-        for (const [u, c] of Object.entries(comment)) {
-            user = u
-            commentContent = c
-        }
+    const commentSection = sortedComments.map(comment => {
+        const commentId = comment.id
+        const creatorId = comment.creatorId
+        const creatorDisplayName = comment.creatorDisplayName
+        const text = comment.text
+
         return(
             <div>
-                <p><b>{user}</b></p>
-                <p>{commentContent}</p>
+                <p><b>{creatorDisplayName}</b></p>
+                <p>{text}</p>
+                <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
+                    {(mod || (userId === creatorId)) && <u><i>Delete</i></u>}
+                </div>
                 <br/>
             </div>
         )
@@ -230,7 +260,7 @@ function ForumDetail({match}) {
                                 onChange={handleChange}
                                 align="right"
                             />
-                        <b>{numLikes} {(numLikes == 1) ? "like" : "likes"}</b></label>
+                        <b>{numLikes} {(numLikes === 1) ? "like" : "likes"}</b></label>
                     </div>
                     <div className="post-title">
                         <h2 className="post-title">{title}</h2>
@@ -240,10 +270,10 @@ function ForumDetail({match}) {
                     </div> 
                     <div className="post-footer">
                         <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
-                        <div>{numComments} {(numComments == 1) ? "comment" : "comments"}</div>  
+                        <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>  
                     </div>
-                    <div className="post-delete" onClick = {handleDelete} style={linkStyle}>
-                        {(mod || (creatorId == userId)) && <u>Delete</u>}
+                    <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
+                        {(mod || (creatorId === userId)) && <u><i>Delete</i></u>}
                     </div>
                 </div>
             </div>

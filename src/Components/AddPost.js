@@ -15,19 +15,18 @@ function AddPost() {
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
-    const today = new Date();
-    const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    const today = new Date()
 
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
                 setClassState(value)
             }
-            if (counter == 1) {
+            if (counter === 1) {
                 setForumState(value)
             }
-            if (counter == 2) {
+            if (counter === 2) {
                 setUserState(value)
             }
             counter ++
@@ -37,9 +36,9 @@ function AddPost() {
     function handleChange(event) {
         const {name, value} = event.target
         let newPostState = postState
-        if (name == "class") {
+        if (name === "class") {
             newPostState[0] = value
-        } else if (name == "title") {
+        } else if (name === "title") {
             newPostState[1] = value
         } else {
             newPostState[2] = value
@@ -50,9 +49,9 @@ function AddPost() {
     function handleSubmit() {
         if (postState[0] == null) {
             alert("Please select a class")
-        } else if (postState[1] == null) {
+        } else if (postState[1] === null) {
             alert("Please enter a title")
-        } else if (postState[2] == null) {
+        } else if (postState[2] === null) {
             alert("Please enter some text")
         } else {
             let updatedForum = forumState
@@ -63,7 +62,7 @@ function AddPost() {
                 "comments": [],
                 "creatorId": userId,
                 "creatorDisplayName": userDisplayName,
-                "date": date,
+                "date": JSON.stringify(today),
                 "id": forumState.length,
                 "likes": [],
                 "text": postState[2],

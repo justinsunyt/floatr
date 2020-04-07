@@ -13,7 +13,7 @@ function Class() {
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["students"].includes(userId)) {
                         classes.push(value[i])
