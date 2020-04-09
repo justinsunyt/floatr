@@ -429,13 +429,13 @@ body::-webkit-scrollbar-thumb {
   .nav-text {
     display: none;
   }
-  .forum, .forum-header {
+  .forum, .forum-header, .comment-input, .comment-section {
     width: 65%;
   }
 }
 
 @media screen and (max-width: 600px) {
-  .forum, .forum-header {
+  .forum, .forum-header, .comment-input, .comment-section {
     width: 80%;
   }
 }
