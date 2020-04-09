@@ -1,5 +1,8 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as solidIcons from '@fortawesome/free-solid-svg-icons'
+import * as regularIcons from '@fortawesome/free-regular-svg-icons'
 
 function ForumPost(props) {
     const id = props.post.id
@@ -34,7 +37,7 @@ function ForumPost(props) {
                         onChange={() => props.handleChange(id)}
                         align="right"
                     />
-                <b>{numLikes} {(numLikes === 1) ? "like" : "likes"}</b></label>
+                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
             </div>
             <Link to={'/post/' + id} style={linkStyle}>  
                 <div className="post-title">

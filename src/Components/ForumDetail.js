@@ -2,6 +2,9 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {Link} from 'react-router-dom'
 import {AuthContext} from '../Auth'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as solidIcons from '@fortawesome/free-solid-svg-icons'
+import * as regularIcons from '@fortawesome/free-regular-svg-icons'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
@@ -238,7 +241,7 @@ function ForumDetail({match}) {
                 <p><b>{creatorDisplayName}</b></p>
                 <p>{text}</p>
                 <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
-                    {(mod || (userId === creatorId)) && <u><i>Delete</i></u>}
+                    {(mod || (userId === creatorId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
                 </div>
                 <br/>
             </div>
@@ -253,14 +256,15 @@ function ForumDetail({match}) {
                         <Link to={'/class/' + classId} style={linkStyle}>
                             from <u>{className}</u>
                         </Link>
-                        <label align="right">
+                        <label align="right" className="like-btn">
                             <input 
                                 type="checkbox" 
                                 checked={liked} 
                                 onChange={handleChange}
                                 align="right"
+                                id="like"
                             />
-                        <b>{numLikes} {(numLikes === 1) ? "like" : "likes"}</b></label>
+                        <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
                     </div>
                     <div className="post-title">
                         <h2 className="post-title">{title}</h2>
@@ -273,7 +277,7 @@ function ForumDetail({match}) {
                         <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>  
                     </div>
                     <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
-                        {(mod || (creatorId === userId)) && <u><i>Delete</i></u>}
+                        {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
                     </div>
                 </div>
             </div>

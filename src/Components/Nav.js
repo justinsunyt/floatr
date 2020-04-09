@@ -1,13 +1,10 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 
 function Nav() {
     const logoStyle = {
-        color: "white",
-        textDecoration: "none"
-    }
-
-    const linkStyle = {
         color: "white",
         textDecoration: "none"
     }
@@ -18,14 +15,14 @@ function Nav() {
                 <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
-                <Link to={'/post'} style={linkStyle}>
-                    <li>Post</li>
+                <Link to={'/post'} className="nav-link">
+                    <li><FontAwesomeIcon icon={solidIcons.faPlus}/> <span className="nav-text">Post</span></li>
                 </Link>
-                <Link to={'/class'} style={linkStyle}>
-                    <li>Classes</li>
+                <Link to={'/class'} className="nav-link">
+                    <li><FontAwesomeIcon icon={solidIcons.faUsers}/> <span className="nav-text">Classes</span></li>
                 </Link>
-                <Link to={'/profile'} style={linkStyle}>
-                    <li>Profile</li>
+                <Link to={'/profile'} className="nav-link">
+                    <li><FontAwesomeIcon icon={solidIcons.faUser}/> <span className="nav-text">Profile</span></li>
                 </Link>
             </ul>
         </nav>
