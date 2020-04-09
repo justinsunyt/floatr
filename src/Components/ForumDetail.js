@@ -22,7 +22,8 @@ function ForumDetail({match}) {
         "id" : 0,
         "likes" : [],
         "text" : "",
-        "title" : ""
+        "title" : "",
+        "reports" : []
     })
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
@@ -49,6 +50,8 @@ function ForumDetail({match}) {
     let numComments = postState.comments.length
     let className = postState.class
     let classId = postState.classId
+    let reports = postState.reports
+    let numReports = postState.reports.length
 
     const linkStyle = {
         color: "black",
@@ -71,6 +74,10 @@ function ForumDetail({match}) {
                     // initialize "comments" if undefined
                     if (value[i]["likes"] === undefined){
                         value[i]["likes"] = []
+                    }
+                    // initialize "likes" if undefined
+                    if (value[i]["reports"] === undefined){
+                        value[i]["reports"] = []
                     }
                     // initialize "likes" if undefined
                     ids.push(value[i].id)
@@ -162,6 +169,7 @@ function ForumDetail({match}) {
                         newComment.creatorDisplayName = userDisplayName
                         newComment.date = JSON.stringify(today)
                         newComment.text = commentState
+                        newComment.reports = []
                         newPost.comments.push(newComment)
                     }
                     change = "new comment"
@@ -213,6 +221,57 @@ function ForumDetail({match}) {
             console.log("Writing data to Firebase, change: " + change)
             rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
             console.log("Succesfully wrote data")
+            setForumState(updatedForum)
+        }
+    }
+
+    function handleReportPost() {
+        if (reports.includes(userId)) {
+            alert("You have already reported this post")
+        } else {
+            if (window.confirm("Are you sure you want to report this post?\nThis action is irreversible")) {
+                const change = "reported post"
+                let updatedForum = forumState
+                for (const [i, post] of updatedForum.entries()) { 
+                    if (post.id === id) { 
+                        post.reports.push(userId)
+                    }
+                }
+                console.log(updatedForum)
+                console.log("Writing data to Firebase, change: " + change)
+                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                console.log("Succesfully wrote data")
+                setForumState(updatedForum)
+            }
+        }
+        
+    }
+
+    function handleReportComment(commentId) {
+        const change = "deleted post"
+        let updatedForum = forumState
+        for (const post of updatedForum) { 
+            if (post.id === id) { 
+                for (const [i, comment] of post.comments.entries()) {
+                    if (comment.id === commentId) {
+                        if (comment.reports === undefined) {
+                            comment.reports = []
+                        }
+                        if (comment.reports.includes(userId)) {
+                            alert("You have already reported this comment")
+                        } else {
+                            if (window.confirm("Are you sure you want to report this comment?\nThis action is irreversible")) {
+                                comment.reports.push(userId)
+                                console.log(updatedForum)
+                                console.log("Writing data to Firebase, change: " + change)
+                                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                                console.log("Succesfully wrote data")
+                                setForumState(updatedForum)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -235,14 +294,26 @@ function ForumDetail({match}) {
         const creatorId = comment.creatorId
         const creatorDisplayName = comment.creatorDisplayName
         const text = comment.text
+        if (comment.reports === undefined) {
+            comment.reports = []
+        }
+        const commentReports = comment.reports.length
 
         return(
             <div>
                 <p><b>{creatorDisplayName}</b></p>
                 <p>{text}</p>
-                <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
-                    {(mod || (userId === creatorId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                <div className="post-footer-btns">
+                    <div className="post-report" onClick = {() => handleReportComment(commentId)} style={linkStyle}>
+                        <FontAwesomeIcon icon={regularIcons.faFlag}/>
+                    </div>
+                    <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
+                        {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                    </div>        
                 </div>
+                <div style={{marginTop: "10px", color: "#888888"}}>
+                    {(mod || (creatorId === userId)) && (commentReports + ((commentReports === 1) ? " report" : " reports"))}
+                </div> 
                 <br/>
             </div>
         )
@@ -274,10 +345,16 @@ function ForumDetail({match}) {
                     </div> 
                     <div className="post-footer">
                         <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
-                        <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>  
+                        <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
+                        <div style={{color: "#888888"}}>{(mod || (creatorId === userId)) && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
                     </div>
-                    <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
-                        {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                    <div className="post-footer-btns">
+                        <div className="post-report" onClick = {handleReportPost} style={linkStyle}>
+                            <FontAwesomeIcon icon={regularIcons.faFlag}/>
+                        </div>
+                        <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
+                            {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                        </div>
                     </div>
                 </div>
             </div>

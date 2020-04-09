@@ -8,7 +8,8 @@
                 "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
                 "creatorDisplayName" : "Justin Sun",
                 "date" : "\"2020-04-06T21:46:24.452Z\"",
-                "text" : "Please check this out! I spent a lot of time on this"
+                "text" : "Please check this out! I spent a lot of time on this",
+                "reports" : []
             }
         ],
         "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
@@ -18,7 +19,7 @@
         "likes" : [ "69uP7MEccCMAbcKRD11zwa5cVvD2" ],
         "text" : "https://google.com",
         "title" : "Unit 10 Study Guide",
-        "reports" : 0
+        "reports" : []
     }, {
         "class" : "English II",
         "classId" : 2,
@@ -30,7 +31,7 @@
         "likes" : [],
         "text" : "Don't buy the book from the bookstore! It's here for free...",
         "title" : "Book PDF",
-        "reports" : 0
+        "reports" : []
     }, {
         "class" : "Chemistry Honors",
         "classId" : 1,
@@ -42,7 +43,7 @@
         "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
         "text" : "I don't get this Thermodynamics thing at all. Can someone help?",
         "title" : "Confusing Chem Lab",
-        "reports" : 0
+        "reports" : []
     }, {
         "class" : "Precalculus Honors",
         "classId" : 0,
@@ -54,7 +55,7 @@
         "likes" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"],
         "text" : "Please comment some class name suggestions for class next week!",
         "title" : "Class Name Suggestion",
-        "reports" : 0
+        "reports" : []
     }, {
         "class" : "World and Europe II",
         "classId" : 3,
@@ -66,7 +67,7 @@
         "likes" : [],
         "text" : "https://youtube.com",
         "title" : "Video on What We Learned in Class",
-        "reports" : 0
+        "reports" : []
     }, {
         "class" : "AP Computer Science A",
         "classId" : 4,
@@ -78,7 +79,7 @@
         "likes" : [],
         "text" : "Check this out: https://amazon.com",
         "title" : "Cool stuff",
-        "reports" : 0
+        "reports" : []
     }],
     "classData" : [{
         "name" : "Precalculus Honors",

@@ -137,11 +137,26 @@
   margin-bottom: 10px;
 }
 
-.post-delete {
+.post-footer-btns {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  align-items: center;
+}
+
+.post-report {
   display: flex;
   align-self: flex-end;
   text-align: right;
   margin-top: 10px;
+}
+
+.post-delete {
+  display: flex;
+  align-self: flex-end;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .post-hr {
