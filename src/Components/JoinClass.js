@@ -1,37 +1,92 @@
 import React, {useEffect, useState, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
-import {Link} from 'react-router-dom'
-let checks = []
-let classtudents=[]
+
+
 function JoinClass() {
     const rootRef = firebase.database().ref()
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
+    const [forumState, setForumState] = useState([])
+    const [userState, setUserState] = useState([])
+    const [filteredState, setFilteredState] = useState([])
     const userId = currentUser.uid
-    let classes = []
-    
-    let count = 0
+
+    let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
 	
     function fetchData(data) {
         let counter = 0
         for (let value of Object.values(data)) {
-            if (counter == 0) {
+            if (counter === 0) {
+                let filtered = []
                 for (let i = 0; i < value.length; i++) {
-                        
-                        if (!value[i]["students"].includes(userId)) {
-                        classes.push(value[i])
-                    	}
-                        checks.push(0)
-                        classtudents.push(value[i]["students"])
-                        console.log(classtudents[i])
+                    if (!value[i]["students"].includes(userId)) {
+                        filtered.push(value[i])
+                    }
                 }
-                setClassState(classes)
+                setClassState(value)
+                setFilteredState(filtered)
+            }
+            if (counter === 1) {
+                setForumState(value)
+            }
+            if (counter === 2) {
+                setUserState(value)
             }
             counter ++
         }
     }
     
+    function handleChange(id) {
+        let change = ""
+        setClassState(prevState => {
+            const updatedClasses = prevState.map(cl => {
+                let newClass = cl
+                if (cl.id === id) {
+                    if (cl.students.includes(userId)) {
+                        const filteredStudents = cl.students.filter(value => {
+                            if (value !== userId) {
+                                return value
+                            }
+                        })
+                        newClass.students = filteredStudents
+                        change = "unchecked class"
+                        // if class is checked, uncheck class
+                    } else {
+                        if (!newClass.students) {
+                            newClass.students = []
+                        }
+                        newClass.students.push(userId)
+                        change = "checked class"
+                        // if class is unchecked, check class
+                    }
+                }
+                return newClass
+            })
+            console.log(change)
+            return updatedClasses
+        })
+        console.log("New state:")
+        console.log(classState)
+    }
+
+    function handleSubmit() {
+        let checkedAnything = false
+        checked.forEach(cl => {
+            if (cl === true) {
+                checkedAnything = true
+            }
+        })
+        if (checkedAnything === false) {
+            alert("You haven't selected any classes!")
+        } else {
+            console.log("Writing data to Firebase, change: joined classes")
+            rootRef.set({"classData": classState, "forumData": forumState, "userData": userState})
+            console.log("Succesfully wrote data")
+            window.location.reload()
+        }
+    }
+
     useEffect(() => {
         rootRef.once("value")
         .then(snap => {
@@ -40,85 +95,32 @@ function JoinClass() {
             fetchData(snap.val())
         })
     }, [])
-	function massJoin()
-	{
 
-		for(let a=0;a<checks.length;a++)
-		{
-			console.log("loopin "+a+" so thats class ")
-			if(checks[a]===1)
-			{
-				console.log("imagine this working")
-				join(a,userId)
-			}
-		}
-		console.log("finished joining classes, reloading")
-		window.location.reload(false)
-	}
-	function clicked(e,ids)
-	{
-		
-		if(e)
-		{
-			checks[ids]=1
-			console.log("yes")
-			
-		}
-		else
-		{
-			checks[ids]=0
-			console.log("no")
-		}
-		console.log(checks)
-	}
-	function join(classid,uid)
-	{	
-	console.log("im running")
-		var woah = classtudents[classid].length
-		console.log(woah)	
-		
-		var updates={}
-		updates['/classData/'+classid+'/students/'+woah] = uid
-		
- 		return firebase.database().ref().update(updates)
-	}
-	function countStudents(classid)
-	{
-		
-	}
-    const linkStyle = {
-        color: "black",
-        textDecoration: "none"
-    }
-
-    var classList = classState.map(cl => {
+    const classList = filteredState.map((cl, index) => {
         return (
-        	<div className="joinclasstest" key={cl.id}>
-        		<div className="joinclass-list">
-        			<input type="checkbox" name={cl.id} onChange={e=>clicked(e.target.checked,cl.id)}></input>
-        		</div>
-        		<div>
-            		
-                		<p>{cl.name}</p>
-            
-            	</div>
+            <div className="joinclass-item">
+                <p>{cl.name}</p>
+                <input 
+                    type="checkbox" 
+                    checked={checked[index]} 
+                    onChange={() => handleChange(cl.id)}
+                    align="right"
+                    id="like"
+                />
             </div>
-            
         )
     })
 
     return (
         <div>
-            <div className="joinclass-submit">
-                <h1>Classes</h1>
+            <div className="class-header">
+                <h1>Join Class</h1>
             </div>
             <div className="class-list">
-        		<button className="classjoinbutton" onClick ={massJoin}>Submit</button>
-        	</div>
-            <div className="class-list">
-                {classList}
-            </div>    
-        </div>
+                {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
+                {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
+            </div>     
+        </div>   
     )
 }
 

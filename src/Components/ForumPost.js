@@ -36,6 +36,7 @@ function ForumPost(props) {
                         checked={liked} 
                         onChange={() => props.handleChange(id)}
                         align="right"
+                        className="like-checkbox"
                     />
                 <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
             </div>

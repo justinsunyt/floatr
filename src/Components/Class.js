@@ -51,6 +51,9 @@ function Class() {
         <div>
             <div className="class-header">
                 <h1>Classes</h1>
+                <Link to="/joinclass">
+                    <button className="joinclass-button"><span>Join classes </span></button>
+                </Link>
             </div>
             <div className="class-list">
                 {classList}

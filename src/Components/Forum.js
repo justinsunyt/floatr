@@ -13,6 +13,7 @@ function Forum(props) {
     const [userState, setUserState] = useState([])
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const [classIds, setClassIds] = useState([])
 
     let liked = filteredState.map(post => (post.likes.includes(userId)) ? true : false)
     let classes = []
@@ -30,6 +31,7 @@ function Forum(props) {
                         classes.push(value[i]["id"])
                     }
                 }
+                setClassIds(classes)
             }
             if (counter === 1) {
                 for (let i = 0; i < value.length; i++) {
@@ -139,17 +141,26 @@ function Forum(props) {
     }, [])
 
     const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
-  
+    
     return(
         <div>
-            <div className='forum-header'>
-                <Link to={'/post'} className="post-link">
-                    <button className="post-button">Add new post</button>
-                </Link>
-            </div>
-            <div className='forum'>
-                {forum}
-            </div>
+            {(!Array.isArray(classIds) || !classIds.length) ? 
+                <div className="class-list">
+                    <p>You haven't joined any classes yet!</p>
+                    <Link to="/joinclass"><button className="joinclass-button"><span>Join classes </span></button></Link>
+                </div>
+            :
+                <div>
+                    <div className='forum-header'>
+                        <Link to={'/post'} className="post-link">
+                            <button className="post-button">Add new post</button>
+                        </Link>
+                    </div>
+                    <div className='forum'>
+                        {forum}
+                    </div>
+                </div>
+            }
         </div>
     )
 }
