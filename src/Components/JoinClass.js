@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
+import ReactLoading from 'react-loading'
 
 
 function JoinClass() {
@@ -10,6 +11,7 @@ function JoinClass() {
     const [forumState, setForumState] = useState([])
     const [userState, setUserState] = useState([])
     const [filteredState, setFilteredState] = useState([])
+    const [loading, setLoading] = useState(true)
     const userId = currentUser.uid
 
     let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
@@ -35,6 +37,7 @@ function JoinClass() {
             }
             counter ++
         }
+        setLoading(false)
     }
     
     function handleChange(id) {
@@ -111,17 +114,25 @@ function JoinClass() {
         )
     })
 
-    return (
-        <div>
-            <div className="class-header">
-                <h1>Join Class</h1>
-            </div>
-            <div className="class-list">
-                {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
-                {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
-            </div>     
-        </div>   
-    )
+    if (loading) {
+        return (
+            <div className="forum-header">
+                <ReactLoading type="bars" color="black" width="10%"/>
+            </div>   
+        )
+    } else {
+        return (
+            <div>
+                <div className="class-header">
+                    <h1>Join Class</h1>
+                </div>
+                <div className="class-list">
+                    {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
+                    {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
+                </div>     
+            </div>   
+        )
+    }
 }
 
 export default JoinClass

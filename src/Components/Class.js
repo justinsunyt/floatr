@@ -2,11 +2,13 @@ import React, {useEffect, useState, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import {Link} from 'react-router-dom'
+import ReactLoading from 'react-loading'
 
 function Class() {
     const rootRef = firebase.database().ref()
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
+    const [loading, setLoading] = useState(true)
     const userId = currentUser.uid
     let classes = []
 
@@ -23,6 +25,7 @@ function Class() {
             }
             counter ++
         }
+        setLoading(false)
     }
     
     useEffect(() => {
@@ -47,19 +50,27 @@ function Class() {
         )
     })
 
-    return (
-        <div>
-            <div className="class-header">
-                <h1>Classes</h1>
-                <Link to="/joinclass">
-                    <button className="joinclass-button"><span>Join classes </span></button>
-                </Link>
+    if (loading) {
+        return (
+            <div className="forum-header">
+                <ReactLoading type="bars" color="black" width="10%"/>
+            </div>   
+        )
+    } else {
+        return (
+            <div>
+                <div className="class-header">
+                    <h1>Classes</h1>
+                    <Link to="/joinclass">
+                        <button className="joinclass-button"><span>Join classes </span></button>
+                    </Link>
+                </div>
+                <div className="class-list">
+                    {classList}
+                </div>
             </div>
-            <div className="class-list">
-                {classList}
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 export default Class
