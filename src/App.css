@@ -76,6 +76,7 @@
           /* The third layer shadow */
       0 20px 1px -9px rgba(0,0,0,0.15);
   padding: 30px;
+  transition: all 0.5s ease;
 }
 
 .forum-header {
@@ -85,6 +86,7 @@
   display: flex;
   text-align: center;
   width: 50%;
+  transition: all 0.5s ease;
 }
 
 .forum-post {
@@ -135,11 +137,26 @@
   margin-bottom: 10px;
 }
 
-.post-delete {
+.post-footer-btns {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  align-items: center;
+}
+
+.post-report {
   display: flex;
   align-self: flex-end;
   text-align: right;
   margin-top: 10px;
+}
+
+.post-delete {
+  display: flex;
+  align-self: flex-end;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 .post-hr {
@@ -331,11 +348,24 @@
   min-height: 120px;
 }
 
-input[type=checkbox] {
-  vertical-align: bottom;
-  margin-right: 10px;
-  font-size: 10px;
+.like-btn {
   cursor: pointer;
+}
+
+.nav-link {
+  float: left;
+  text-align: center;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-text {
+  display: inline;
+}
+
+input[type=checkbox] {
+  display: none;
 }
 
 hr {
@@ -395,5 +425,32 @@ select {
 }
 
 li {
-  padding-left: 20px;
+  float: left;
+}
+
+body::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+body::-webkit-scrollbar-track {
+  background: white;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #2e64fe;
+}
+
+@media screen and (max-width: 1300px) {
+  .nav-text {
+    display: none;
+  }
+  .forum, .forum-header, .comment-input, .comment-section, .addpost-input {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .forum, .forum-header, .comment-input, .comment-section, .addpost-input {
+    width: 80%;
+  }
 }

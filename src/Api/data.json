@@ -8,7 +8,8 @@
                 "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
                 "creatorDisplayName" : "Justin Sun",
                 "date" : "\"2020-04-06T21:46:24.452Z\"",
-                "text" : "Please check this out! I spent a lot of time on this"
+                "text" : "Please check this out! I spent a lot of time on this",
+                "reports" : []
             }
         ],
         "creatorId" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
@@ -17,7 +18,8 @@
         "id" : 0,
         "likes" : [ "69uP7MEccCMAbcKRD11zwa5cVvD2" ],
         "text" : "https://google.com",
-        "title" : "Unit 10 Study Guide"
+        "title" : "Unit 10 Study Guide",
+        "reports" : []
     }, {
         "class" : "English II",
         "classId" : 2,
@@ -28,7 +30,8 @@
         "id" : 1,
         "likes" : [],
         "text" : "Don't buy the book from the bookstore! It's here for free...",
-        "title" : "Book PDF"
+        "title" : "Book PDF",
+        "reports" : []
     }, {
         "class" : "Chemistry Honors",
         "classId" : 1,
@@ -39,7 +42,8 @@
         "id" : 2,
         "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
         "text" : "I don't get this Thermodynamics thing at all. Can someone help?",
-        "title" : "Confusing Chem Lab"
+        "title" : "Confusing Chem Lab",
+        "reports" : []
     }, {
         "class" : "Precalculus Honors",
         "classId" : 0,
@@ -50,7 +54,8 @@
         "id" : 3,
         "likes" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"],
         "text" : "Please comment some class name suggestions for class next week!",
-        "title" : "Class Name Suggestion"
+        "title" : "Class Name Suggestion",
+        "reports" : []
     }, {
         "class" : "World and Europe II",
         "classId" : 3,
@@ -61,7 +66,8 @@
         "id" : 4,
         "likes" : [],
         "text" : "https://youtube.com",
-        "title" : "Video on What We Learned in Class"
+        "title" : "Video on What We Learned in Class",
+        "reports" : []
     }, {
         "class" : "AP Computer Science A",
         "classId" : 4,
@@ -72,7 +78,8 @@
         "id" : 5,
         "likes" : [],
         "text" : "Check this out: https://amazon.com",
-        "title" : "Cool stuff"
+        "title" : "Cool stuff",
+        "reports" : []
     }],
     "classData" : [{
         "name" : "Precalculus Honors",
@@ -97,6 +104,12 @@
     }],
     "userData" : [{
         "id" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
+        "mod" : true
+    }, {
+        "id" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
+        "mod" : true
+    }, {
+        "id" : "pnNqFUGeCCWBQATsCe7yzE2XlUB2",
         "mod" : true
     }]
 }
