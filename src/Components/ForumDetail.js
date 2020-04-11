@@ -348,7 +348,7 @@ function ForumDetail({match}) {
                                         align="right"
                                         className="like-checkbox"
                                     />
-                                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
+                                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
                             </div>
                             <div className="post-title">
                                 <h2 className="post-title">{title}</h2>
