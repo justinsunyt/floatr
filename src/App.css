@@ -1,3 +1,10 @@
+:root {
+  --primary-color: #0055ff;
+  --secondary-color: #ff502f;
+  --background-color: #f9fbff;
+  --shadow-color: #efefef;
+}
+
 .App {
   text-align: center;
 }
@@ -21,7 +28,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #efefef;
+  border: 1px solid var(--shadow-color);
   box-shadow:
   /* The top layer shadow */
       0 1px 1px rgba(0,0,0,0.15),
@@ -57,7 +64,7 @@
 }
 
 .forum {
-  background-color: #f9fbff;
+  background-color: var(--background-color);
   margin: auto;
   width: 50%;
   display: flex;
@@ -188,7 +195,7 @@
 .comment-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #2e64fe;
+  background-color: var(--primary-color);
   border: none;
   color: white;
   text-align: center;
@@ -273,7 +280,7 @@
 .login-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #2e64fe;
+  background-color: var(--primary-color);
   border: none;
   color: white;
   text-align: center;
@@ -315,8 +322,8 @@
 .post-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #2e64fe;
-  border: 1px solid #2e64fe;
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
   color: white;
   text-align: center;
   font-size: 16px;
@@ -329,7 +336,7 @@
 
 .post-button:hover {
   background-color: white;
-  color: #2e64fe;
+  color: var(--primary-color);
   text-align: center;
 }
 
@@ -371,7 +378,7 @@
 .joinclass-button {
   display: inline-block;
   border-radius: 6px;
-  background-color: #2e64fe;
+  background-color: var(--primary-color);
   border: none;
   color: white;
   text-align: center;
@@ -414,7 +421,7 @@
 .joinclass-submit {
   display: inline-block;
   border-radius: 6px;
-  background-color: #2e64fe;
+  background-color: var(--primary-color);
   border: none;
   color: white;
   text-align: center;
@@ -490,8 +497,8 @@ input[type=checkbox] {
 
 hr {
   border: none;
-  background-color: #2e64fe;
-  color: #2e64fe;
+  background-color: var(--secondary-color);
+  color: var(--secondary-color);
   height: 1px;
   width: 100%;
 }
@@ -501,7 +508,7 @@ nav {
   justify-content: space-around;
   align-items: center;
   height: 60px;
-  background-color: #2e64fe;
+  background-color: var(--primary-color);
   position: fixed;
   top: 0;
   bottom: 0;
@@ -515,30 +522,22 @@ nav {
 textarea {
   width: 100%;
   padding: 10px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Lato', sans-serif;
   resize: vertical;
 }
 
 input {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 button {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Lato', sans-serif;
   transition-duration: 0.3s;
   border: none;
 }
 
 select {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Lato', sans-serif;
   padding: 5px;
   margin-bottom: 15px;
   min-width: 200px;
@@ -557,7 +556,7 @@ body::-webkit-scrollbar-track {
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #2e64fe;
+  background: var(--primary-color);
 }
 
 @media screen and (max-width: 1300px) {
