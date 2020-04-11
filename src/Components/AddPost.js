@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
+import ReactLoading from 'react-loading'
+import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
     const rootRef = firebase.database().ref()
@@ -12,6 +14,8 @@ function AddPost() {
     }])
     const [userState, setUserState] = useState([])
     const [postState, setPostState] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
@@ -31,6 +35,8 @@ function AddPost() {
             }
             counter ++
         }
+        setLoading(false)
+        setLoaded(true)
     }
     
     function handleChange(event) {
@@ -98,20 +104,30 @@ function AddPost() {
         }
     })
 
-    return (
-        <div className="addpost-input">
-            <h2>Create a post</h2>
-            <form onSubmit={handleSubmit}>
-                <select name="class" onChange={handleChange}>
-                    <option value="" disabled selected hidden>Choose class</option>
-                    {classOptions}
-                </select>
-                <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange}></textarea>
-                <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
-                <button className="comment-button"><span>Add post </span></button>    
-            </form>
-        </div>
-    )
+    if (loading) {
+        return (
+            <div className="forum-header">
+                <ReactLoading type="bars" color="black" width="10%"/>
+            </div>   
+        )
+    } else {
+        return (
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
+                <div className="addpost-input">
+                    <h2>Create a post</h2>
+                    <form onSubmit={handleSubmit}>
+                        <select name="class" onChange={handleChange}>
+                            <option value="" disabled selected hidden>Choose class</option>
+                            {classOptions}
+                        </select>
+                        <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange}></textarea>
+                        <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
+                        <button className="comment-button"><span>Add post </span></button>    
+                    </form>
+                </div>
+            </CSSTransition>
+        )
+    }
 }
 
 export default AddPost
