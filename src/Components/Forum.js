@@ -4,6 +4,7 @@ import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
 import {Link} from 'react-router-dom'
 import ReactLoading from 'react-loading'
+import {CSSTransition} from 'react-transition-group'
 
 function Forum(props) {
     const filter = props.filter
@@ -16,6 +17,7 @@ function Forum(props) {
     const userId = currentUser.uid
     const [classIds, setClassIds] = useState([])
     const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
 
     let liked = filteredState.map(post => (post.likes.includes(userId)) ? true : false)
     let classes = []
@@ -96,6 +98,7 @@ function Forum(props) {
             counter ++
         }
         setLoading(false)
+        setLoaded(true)
     }
 
     function handleChange(id) {
@@ -149,29 +152,31 @@ function Forum(props) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            </div>
         )
     } else {
         return(
-            <div>
-                {(!Array.isArray(classIds) || !classIds.length) ? 
-                    <div className="class-list">
-                        <p>You haven't joined any classes yet!</p>
-                        <Link to="/joinclass"><button className="joinclass-button"><span>Join classes </span></button></Link>
-                    </div>
-                :
-                    <div>
-                        <div className='forum-header'>
-                            <Link to={'/post'} className="post-link">
-                                <button className="post-button">Add new post</button>
-                            </Link>
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
+                <div>
+                    {(!Array.isArray(classIds) || !classIds.length) ? 
+                        <div className="class-list">
+                            <p>You haven't joined any classes yet!</p>
+                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
                         </div>
-                        <div className='forum'>
-                            {forum}
+                    :
+                        <div>
+                            <div className='forum-header'>
+                                <Link to={'/post'} className="post-link">
+                                    <button className="post-button">Add new post</button>
+                                </Link>
+                            </div>
+                            <div className='forum'>
+                                {forum}
+                            </div>
                         </div>
-                    </div>
-                }
-            </div>
+                    }
+                </div>
+            </CSSTransition>
         )
     }
 }

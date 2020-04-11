@@ -3,11 +3,13 @@ import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import Forum from './Forum'
 import ReactLoading from 'react-loading'
+import {CSSTransition} from 'react-transition-group'
 
 function Profile() {
     const rootRef = firebase.database().ref()
     const [mod, setMod] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     console.log(currentUser)
     const userId = currentUser.uid
@@ -27,6 +29,7 @@ function Profile() {
             counter++
         }
         setLoading(false)
+        setLoaded(true)
     }
 
     useEffect(() => {
@@ -47,20 +50,22 @@ function Profile() {
         )
     } else {
         return(
-            <div>
-                <div className="profile-header">
-                    <h1>Profile</h1>
-                    <button className="login-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button>
-                </div>
-                <div className="profile-details">
-                    <img src={profilePic} alt="Profile Picture" className={"profile-pic"}/>
-                    <h3>{displayName}</h3>
-                    {mod && <h5><i>Moderator</i></h5>}
-                </div>
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
-                    <Forum filter={userId} />
+                    <div className="profile-header">
+                        <h1>Profile</h1>
+                        <button className="login-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button>
+                    </div>
+                    <div className="profile-details">
+                        <img src={profilePic} alt="Profile Picture" className={"profile-pic"}/>
+                        <h3>{displayName}</h3>
+                        {mod && <h5><i>Moderator</i></h5>}
+                    </div>
+                    <div>
+                        <Forum filter={userId} />
+                    </div>
                 </div>
-            </div>
+            </CSSTransition>
         )
     }
 }

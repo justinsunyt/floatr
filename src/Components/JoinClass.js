@@ -2,7 +2,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import ReactLoading from 'react-loading'
-
+import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
     const rootRef = firebase.database().ref()
@@ -12,6 +12,7 @@ function JoinClass() {
     const [userState, setUserState] = useState([])
     const [filteredState, setFilteredState] = useState([])
     const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
     const userId = currentUser.uid
 
     let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
@@ -38,6 +39,7 @@ function JoinClass() {
             counter ++
         }
         setLoading(false)
+        setLoaded(true)
     }
     
     function handleChange(id) {
@@ -122,15 +124,17 @@ function JoinClass() {
         )
     } else {
         return (
-            <div>
-                <div className="class-header">
-                    <h1>Join Class</h1>
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
+                <div>
+                    <div className="class-header">
+                        <h1>Join Class</h1>
+                    </div>
+                    <div className="class-list">
+                        {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
+                        {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
+                    </div>     
                 </div>
-                <div className="class-list">
-                    {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
-                    {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
-                </div>     
-            </div>   
+            </CSSTransition>
         )
     }
 }

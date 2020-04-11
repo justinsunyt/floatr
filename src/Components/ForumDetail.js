@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
 import ReactLoading from 'react-loading'
+import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
@@ -30,6 +31,7 @@ function ForumDetail({match}) {
     const [mod, setMod] = useState(false)
     const [liked, setLiked] = useState(false)
     const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
@@ -111,6 +113,7 @@ function ForumDetail({match}) {
             counter ++
         }
         setLoading(false)
+        setLoaded(true)
     }
 
     function handleChange(event) {
@@ -329,54 +332,56 @@ function ForumDetail({match}) {
         )
     } else {
         return (
-            <div>
-                <div className="forum">
-                    <div className="forum-post">
-                        <div className="post-header">
-                            <Link to={'/class/' + classId} style={linkStyle}>
-                                from <u>{className}</u>
-                            </Link>
-                            <label align="right" className="like-button">
-                                <input 
-                                    type="checkbox" 
-                                    checked={liked} 
-                                    onChange={handleChange}
-                                    align="right"
-                                    className="like-checkbox"
-                                />
-                            <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
-                        </div>
-                        <div className="post-title">
-                            <h2 className="post-title">{title}</h2>
-                        </div>   
-                        <div className="post-text-long">
-                            {text}
-                        </div> 
-                        <div className="post-footer">
-                            <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
-                            <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
-                            <div style={{color: "#888888"}}>{(mod || (creatorId === userId)) && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
-                        </div>
-                        <div className="post-footer-btns">
-                            <div className="post-report" onClick = {handleReportPost} style={linkStyle}>
-                                <FontAwesomeIcon icon={regularIcons.faFlag}/>
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
+                <div>
+                    <div className="forum">
+                        <div className="forum-post">
+                            <div className="post-header">
+                                <Link to={'/class/' + classId} style={linkStyle}>
+                                    from <u>{className}</u>
+                                </Link>
+                                <label align="right" className="like-button">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={liked} 
+                                        onChange={handleChange}
+                                        align="right"
+                                        className="like-checkbox"
+                                    />
+                                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart}/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
                             </div>
-                            <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
-                                {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                            <div className="post-title">
+                                <h2 className="post-title">{title}</h2>
+                            </div>   
+                            <div className="post-text-long">
+                                {text}
+                            </div> 
+                            <div className="post-footer">
+                                <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
+                                <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
+                                <div style={{color: "#888888"}}>{(mod || (creatorId === userId)) && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
+                            </div>
+                            <div className="post-footer-btns">
+                                <div className="post-report" onClick = {handleReportPost} style={linkStyle}>
+                                    <FontAwesomeIcon icon={regularIcons.faFlag}/>
+                                </div>
+                                <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
+                                    {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div className="comment-input">
+                        <form>
+                            <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here"></textarea>    
+                        </form>
+                        <button onClick={handleSubmit} className="comment-button"><span>Comment </span></button>
+                    </div>    
+                    <div className="comment-section">
+                        {commentSection}
+                    </div>
                 </div>
-                <div className="comment-input">
-                    <form>
-                        <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here"></textarea>    
-                    </form>
-                    <button onClick={handleSubmit} className="comment-button"><span>Comment </span></button>
-                </div>    
-                <div className="comment-section">
-                    {commentSection}
-                </div>
-            </div>
+            </CSSTransition>
         )
     }
 }
