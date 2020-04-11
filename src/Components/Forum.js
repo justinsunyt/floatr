@@ -3,6 +3,8 @@ import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
 import {Link} from 'react-router-dom'
+import ReactLoading from 'react-loading'
+import {CSSTransition} from 'react-transition-group'
 
 function Forum(props) {
     const filter = props.filter
@@ -13,6 +15,9 @@ function Forum(props) {
     const [userState, setUserState] = useState([])
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const [classIds, setClassIds] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [loaded, setLoaded] = useState(false)
 
     let liked = filteredState.map(post => (post.likes.includes(userId)) ? true : false)
     let classes = []
@@ -30,6 +35,7 @@ function Forum(props) {
                         classes.push(value[i]["id"])
                     }
                 }
+                setClassIds(classes)
             }
             if (counter === 1) {
                 for (let i = 0; i < value.length; i++) {
@@ -91,6 +97,8 @@ function Forum(props) {
             }
             counter ++
         }
+        setLoading(false)
+        setLoaded(true)
     }
 
     function handleChange(id) {
@@ -139,19 +147,38 @@ function Forum(props) {
     }, [])
 
     const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
-  
-    return(
-        <div>
-            <div className='forum-header'>
-                <Link to={'/post'} className="post-link">
-                    <button className="post-button">Add new post</button>
-                </Link>
+
+    if (loading) {
+        return (
+            <div className="forum-header">
+                <ReactLoading type="bars" color="black" width="10%"/>
             </div>
-            <div className='forum'>
-                {forum}
-            </div>
-        </div>
-    )
+        )
+    } else {
+        return(
+            <CSSTransition in={loaded} timeout={300} classNames="fade">
+                <div>
+                    {(!Array.isArray(classIds) || !classIds.length) ? 
+                        <div className="class-list">
+                            <p>You haven't joined any classes yet!</p>
+                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                        </div>
+                    :
+                        <div>
+                            <div className='forum-header'>
+                                <Link to={'/post'} className="post-link">
+                                    <button className="post-button">Add new post</button>
+                                </Link>
+                            </div>
+                            <div className='forum'>
+                                {forum}
+                            </div>
+                        </div>
+                    }
+                </div>
+            </CSSTransition>
+        )
+    }
 }
 
 export default Forum

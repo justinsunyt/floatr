@@ -92,15 +92,15 @@
     }, {
         "name" : "English II",
         "id" : 2,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
+        "students" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "World and Europe II",
         "id" : 3,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
+        "students" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }, {
         "name" : "AP Computer Science A",
         "id" : 4,
-        "students" : ["69uP7MEccCMAbcKRD11zwa5cVvD2", "lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
+        "students" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3", "pnNqFUGeCCWBQATsCe7yzE2XlUB2"]
     }],
     "userData" : [{
         "id" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
