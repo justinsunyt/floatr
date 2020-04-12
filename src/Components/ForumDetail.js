@@ -10,6 +10,7 @@ import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
+    const storageRef = firebase.storage().ref()
     const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([])
     const [userState, setUserState] = useState([])
@@ -25,7 +26,8 @@ function ForumDetail({match}) {
         "likes" : [],
         "text" : "",
         "title" : "",
-        "reports" : []
+        "reports" : [],
+        "img": false
     })
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
@@ -56,11 +58,19 @@ function ForumDetail({match}) {
     let classId = postState.classId
     let reports = postState.reports
     let numReports = postState.reports.length
+    let img = postState.img
 
     const linkStyle = {
         color: "black",
         textDecoration: "none",
         cursor: "pointer"
+    }
+
+    if (img) {
+        storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
+            const image = document.getElementById("img" + id)
+            image.src = url
+        })
     }
 
     function fetchData(data) {
@@ -207,6 +217,9 @@ function ForumDetail({match}) {
             rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
             console.log("Succesfully wrote data")
             window.location.reload()
+            if (img) {
+                storageRef.child(`forumData/images/${id}`).delete().then(() => {}).catch(error => alert(error))
+            }
         }
     }
 
@@ -355,7 +368,12 @@ function ForumDetail({match}) {
                             </div>   
                             <div className="post-text-long">
                                 {text}
-                            </div> 
+                            </div>
+                            {img && 
+                                <div>
+                                    <img id={"img" + id} className="post-image"/> 
+                                </div>
+                            } 
                             <div className="post-footer">
                                 <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
                                 <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
