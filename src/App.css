@@ -135,6 +135,11 @@
   margin-bottom: 20px;
 }
 
+.post-image {
+  max-width: 100%;
+  margin-bottom: 15px;
+}
+
 .post-footer {
   display: flex;
   flex-direction: column;
@@ -360,6 +365,104 @@
   min-height: 120px;
 }
 
+.addpost-file {
+  width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.addpost-file + label {
+  color: white;
+  background-color: var(--secondary-color);
+  display: inline-block;
+  padding: 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.addpost-file + label span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.3s;
+}
+
+.addpost-file + label span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.3s;
+}
+
+.addpost-file + label:hover span {
+  padding-right: 25px;
+}
+
+.addpost-file + label:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.addpost-image {
+  width: 100%;
+  display: none;
+  align-self: center;
+}
+
+.addpost-image-active {
+  margin-top: 15px;
+  display: block;
+}
+
+.addpost-button {
+  display: inline-block;
+  border-radius: 6px;
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  padding: 8px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  width: 150px;
+  transition: all 0.3s;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.addpost-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.3s;
+}
+
+.addpost-button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.3s;
+}
+
+.addpost-button:hover span {
+  padding-right: 25px;
+}
+
+.addpost-button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
 .like-button {
   cursor: pointer;
 }
@@ -486,6 +589,10 @@
 .fade-exit-active {
   opacity: 0;
   transition: 0.3s all;
+}
+
+input[type=file] {
+  font-family: 'Lato', sans-serif;
 }
 
 input[type=checkbox] {

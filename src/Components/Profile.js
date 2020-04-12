@@ -61,6 +61,7 @@ function Profile() {
                         <h3>{displayName}</h3>
                         {mod && <h5><i>Moderator</i></h5>}
                     </div>
+                    <div className="profile-details"><a href="https://forms.gle/MZRy6D3pqP4K95gZ8" style={{color: "black"}}>Submit feedback / report bugs</a></div>
                     <div>
                         <Forum filter={userId} />
                     </div>

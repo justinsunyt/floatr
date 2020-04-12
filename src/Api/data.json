@@ -19,7 +19,8 @@
         "likes" : [ "69uP7MEccCMAbcKRD11zwa5cVvD2" ],
         "text" : "https://google.com",
         "title" : "Unit 10 Study Guide",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }, {
         "class" : "English II",
         "classId" : 2,
@@ -31,7 +32,8 @@
         "likes" : [],
         "text" : "Don't buy the book from the bookstore! It's here for free...",
         "title" : "Book PDF",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }, {
         "class" : "Chemistry Honors",
         "classId" : 1,
@@ -43,7 +45,8 @@
         "likes" : ["69uP7MEccCMAbcKRD11zwa5cVvD2"],
         "text" : "I don't get this Thermodynamics thing at all. Can someone help?",
         "title" : "Confusing Chem Lab",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }, {
         "class" : "Precalculus Honors",
         "classId" : 0,
@@ -55,7 +58,8 @@
         "likes" : ["lNwcnAbWzbS0LAmOyCzslLw1WrJ3"],
         "text" : "Please comment some class name suggestions for class next week!",
         "title" : "Class Name Suggestion",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }, {
         "class" : "World and Europe II",
         "classId" : 3,
@@ -67,7 +71,8 @@
         "likes" : [],
         "text" : "https://youtube.com",
         "title" : "Video on What We Learned in Class",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }, {
         "class" : "AP Computer Science A",
         "classId" : 4,
@@ -79,7 +84,8 @@
         "likes" : [],
         "text" : "Check this out: https://amazon.com",
         "title" : "Cool stuff",
-        "reports" : []
+        "reports" : [],
+        "img" : false
     }],
     "classData" : [{
         "name" : "Precalculus Honors",

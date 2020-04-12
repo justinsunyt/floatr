@@ -3,8 +3,10 @@ import {Link} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
+import * as firebase from 'firebase'
 
 function ForumPost(props) {
+    const storageRef = firebase.storage().ref()
     const id = props.post.id
     const liked = props.liked
     const title = props.post.title
@@ -18,10 +20,18 @@ function ForumPost(props) {
     const numComments = props.post.comments.length
     const className = props.post.class
     const classId = props.post.classId
+    const img = props.post.img
 
     const linkStyle = {
         color: "black",
         textDecoration: "none"
+    }
+
+    if (img) {
+        storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
+            const image = document.getElementById("img" + id)
+            image.src = url
+        })
     }
 
     return (
@@ -46,7 +56,12 @@ function ForumPost(props) {
                 </div>
                 <div className="post-text-short">
                     {text}
-                </div> 
+                </div>
+                {img && 
+                    <div>
+                        <img id={"img" + id} className="post-image"/> 
+                    </div>
+                }
                 <div className="post-footer">
                     <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
                     <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
