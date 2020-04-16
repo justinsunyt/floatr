@@ -31,6 +31,8 @@ function ForumPost(props) {
         storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
             const image = document.getElementById("img" + id)
             image.src = url
+        }).catch(error => {
+            alert(error)
         })
     }
 

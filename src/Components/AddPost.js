@@ -232,7 +232,7 @@ function AddPost() {
                         <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
                         <div>
                             <input type="file" accept="image/*" id="file" name="file" onChange={handleChange} className="addpost-file"></input>
-                            <label for="file"><span>Choose an image </span></label>
+                            <label for="file"><span>Upload an image </span></label>
                         </div>
                         <img id="image" className="addpost-image"/>
                         <div>
