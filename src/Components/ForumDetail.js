@@ -70,6 +70,8 @@ function ForumDetail({match}) {
         storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
             const image = document.getElementById("img" + id)
             image.src = url
+        }).catch(() => {
+            alert("Something went wrong...")
         })
     }
 

@@ -1,14 +1,15 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as regularIcons from '@fortawesome/free-regular-svg-icons'
 
 function TodoTask(props) {
     const id = props.task.id
     const completed = props.task.completed
-
     const title = props.task.title
-    const description = props.task.description
-    const dueYear = props.task.dueDate.getFullYear()
-    const dueMonth = props.task.dueDate.getMonth()
-    const dueDay = props.task.dueDate.getDate()
+    const dueDate = new Date(JSON.parse(props.task.dueDate))
+    const dueYear = dueDate.getFullYear()
+    const dueMonth = dueDate.getMonth() + 1
+    const dueDay = dueDate.getDate()
 
     const completedStyle = {
         fontStyle: "italic",
@@ -26,12 +27,11 @@ function TodoTask(props) {
                 />
                 <h3 className="todo-title" style={completed ? completedStyle: null}>{title}</h3>
             </div>
-            <div className="todo-description">
-                <p style={completed ? completedStyle: null}>{description}</p>
-            </div> 
-            <div className="todo-date">
-                <p style={completed ? completedStyle: null}><i>{dueMonth} / {dueDay} / {dueYear}</i></p>
-            </div>  
+            <div className="todo-footer">
+                <div style={completed ? completedStyle: null}><i>{dueMonth} / {dueDay} / {dueYear}</i></div>
+                <FontAwesomeIcon className="todo-delete"onClick = {() => props.handleDelete(id)} icon={regularIcons.faTrashAlt}/>
+            </div>
+            <hr/>
         </div>
     )
 }

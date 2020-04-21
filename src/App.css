@@ -9,31 +9,32 @@
   text-align: center;
 }
 
+.content {
+  padding-top: 75px;
+  padding-bottom: 75px;
+}
+
 .dashboard {
   display: grid;
-  grid-template-columns: 1.8fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-column-gap: 0;
   align-content: start;
   transition: all 0.5s ease;
 }
 
 .todo-task {
-  display: block;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 30px 20px 0;
-  width: 70%;
-  border-bottom: 1px solid #cecece;
-  font-family: Roboto, sans-serif;
-  font-weight: 100;
-  font-size: 15px;
-  color: #333333;
+  width: 75%;
 }
 
 .todo-list {
   margin-bottom: auto;
   margin-left: auto;
   margin-right: auto;
-  background-color: white;
+  background-color: var(--background-color);
   width: 50%;
   display: flex;
   flex-direction: column;
@@ -51,10 +52,19 @@
           /* The third layer shadow */
       0 20px 1px -9px rgba(0,0,0,0.15);
   padding: 30px;
+  transition: all 0.5s ease;
 }
 
-.dashboard .todo-list {
+.dashboard .todo-list{
   width: 80%;
+}
+
+.dashboard .todo-form{
+  width: 80%;
+}
+
+.dashboard .todo-list .todo-task {
+  width: 100%;
 }
 
 .todo-title {
@@ -68,13 +78,78 @@
   text-align: left;
 }
 
-.todo-date {
-  display: block;
-  text-align: right;
+.todo-footer {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.content {
-  padding-top: 75px;
+.todo-delete {
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+.todo-form {
+  width: 37.5%;
+  position: relative;
+  height: 51px;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.todo-form input {
+  width: 100%;
+  height: 100%;
+  color: #595f6e;
+  padding-top: 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.todo-form label {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-bottom: 1px solid black;
+}
+
+.todo-form label::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--secondary-color);
+  transform: translateX(-100%);
+  transition: all 0.3s ease;
+}
+
+.task-content {
+  position: absolute;
+  bottom: 5px;
+  left: 0px;
+  transition: all 0.3s ease;
+}
+
+.todo-form input:focus + .task-label .task-content,
+.todo-form input:valid + .task-label .task-content {
+  transform: translateY(-150%);
+  font-size: 14px;
+}
+
+.todo-form input:focus + .task-label::after,
+.todo-form input:valid + .task-label::after {
+  transform: translateX(0%);
 }
 
 .forum {
@@ -711,10 +786,17 @@ body::-webkit-scrollbar-thumb {
   .forum, .forum-header, .todo-list, .comment-input, .comment-section, .addpost-input {
     width: 65%;
   }
+  .todo-form {
+    width: 48.75%;
+  }
 }
 
 @media screen and (max-width: 1000px) {
-  .todo-list {
+  .dashboard .todo-form {
+    display: none;
+  }
+
+  .dashboard .todo-list {
     display: none;
   }
   .dashboard {
@@ -725,5 +807,8 @@ body::-webkit-scrollbar-thumb {
 @media screen and (max-width: 600px) { 
   .forum, .forum-header, .todo-list, .comment-input, .comment-section, .addpost-input {
     width: 80%;
+  }
+  .todo-form {
+    width: 60%;
   }
 }

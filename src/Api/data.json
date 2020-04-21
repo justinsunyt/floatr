@@ -110,13 +110,21 @@
     }],
     "userData" : [{
         "id" : "lNwcnAbWzbS0LAmOyCzslLw1WrJ3",
-        "mod" : true
+        "mod" : true,
+        "todos" : []
     }, {
         "id" : "69uP7MEccCMAbcKRD11zwa5cVvD2",
-        "mod" : true
+        "mod" : true,
+        "todos" : [{
+            "id" : 1,
+            "title" : "Section 12.2",
+            "dueDate" : "\"2020-03-05T21:45:24.452Z\"",
+            "completed" : false
+        }]
     }, {
         "id" : "pnNqFUGeCCWBQATsCe7yzE2XlUB2",
-        "mod" : true
+        "mod" : true,
+        "todos" : []
     }]
 }
   
