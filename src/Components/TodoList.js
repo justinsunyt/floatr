@@ -4,6 +4,7 @@ import * as firebase from 'firebase'
 import TodoTask from './TodoTask'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
+import moment from 'moment'
 
 function TodoList() {
     const rootRef = firebase.database().ref()
@@ -83,30 +84,89 @@ function TodoList() {
         setLoaded(true)
     }
 
-    function handleChange(id) {
-        let change = "(un)checked todo"
-        setCurrentUserState(prevUser => {
-            const updatedUser = prevUser
-            const updatedTodos = prevUser.todos.map(todo => {
-                if (todo.id === id) {
-                    todo.completed = !todo.completed
-                }
-                return todo
-            })
-            updatedUser.todos = updatedTodos
-            setUserState(prevUserState => {
-                const updatedUserState = prevUserState
-                for (let i = 0; i < updatedUserState.length; i++) {
-                    if (updatedUserState[i].id === userId) {
-                        updatedUserState[i] = updatedUser
+    function handleChange(id, type) {
+        if (type === "task") {
+            let change = "(un)checked todo"
+            setCurrentUserState(prevUser => {
+                const updatedUser = prevUser
+                const updatedTodos = prevUser.todos.map(todo => {
+                    if (todo.id === id) {
+                        todo.completed = !todo.completed
                     }
-                }
-                console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
-                return updatedUserState
+                    return todo
+                })
+                updatedUser.todos = updatedTodos
+                setUserState(prevUserState => {
+                    const updatedUserState = prevUserState
+                    for (let i = 0; i < updatedUserState.length; i++) {
+                        if (updatedUserState[i].id === userId) {
+                            updatedUserState[i] = updatedUser
+                        }
+                    }
+                    console.log("Writing data to Firebase, change: " + change)
+                    rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                    return updatedUserState
+                })
+                return updatedUser
             })
-            return updatedUser
-        })
+        } else if (type === "date") {
+            if (moment(document.getElementById("date").value, "M/D/Y", true).isValid()) {
+                const date = new Date(document.getElementById("date").value)
+                let change = "changed date"
+                setCurrentUserState(prevUser => {
+                    const updatedUser = prevUser
+                    const updatedTodos = prevUser.todos.map(todo => {
+                        if (todo.id === id) {
+                            todo.dueDate = JSON.stringify(date)
+                        }
+                        return todo
+                    })
+                    updatedUser.todos = updatedTodos
+                    setUserState(prevUserState => {
+                        const updatedUserState = prevUserState
+                        for (let i = 0; i < updatedUserState.length; i++) {
+                            if (updatedUserState[i].id === userId) {
+                                updatedUserState[i] = updatedUser
+                            }
+                        }
+                        console.log("Writing data to Firebase, change: " + change)
+                        rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                        return updatedUserState
+                    })
+                    return updatedUser
+                })
+                document.getElementById("date").value = ""
+            } else if (moment(document.getElementById("date").value, "M/D", true).isValid()) {
+                const date = new Date(document.getElementById("date").value)
+                date.setFullYear(today.getFullYear())
+                let change = "changed date"
+                setCurrentUserState(prevUser => {
+                    const updatedUser = prevUser
+                    const updatedTodos = prevUser.todos.map(todo => {
+                        if (todo.id === id) {
+                            todo.dueDate = JSON.stringify(date)
+                        }
+                        return todo
+                    })
+                    updatedUser.todos = updatedTodos
+                    setUserState(prevUserState => {
+                        const updatedUserState = prevUserState
+                        for (let i = 0; i < updatedUserState.length; i++) {
+                            if (updatedUserState[i].id === userId) {
+                                updatedUserState[i] = updatedUser
+                            }
+                        }
+                        console.log("Writing data to Firebase, change: " + change)
+                        rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                        return updatedUserState
+                    })
+                    return updatedUser
+                })
+                document.getElementById("date").value = ""
+            } else {
+                alert("Invalid date! Please use the format M/D or M/D/Y")
+            } 
+        }
         console.log("Succesfully wrote data")
         console.log("New state:")
         console.log(currentUserState)

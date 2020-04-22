@@ -26,8 +26,9 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 30px 20px 0;
+  padding: 10px 20px 0;
   width: 75%;
+  cursor: pointer;
 }
 
 .todo-list {
@@ -55,16 +56,29 @@
   transition: all 0.5s ease;
 }
 
-.dashboard .todo-list{
+.dashboard .todo-list {
   width: 80%;
 }
 
-.dashboard .todo-form{
+.dashboard .todo-form {
   width: 80%;
+}
+
+.todo-menu .todo-form {
+  width: 90%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .dashboard .todo-list .todo-task {
   width: 100%;
+}
+
+.todo-menu {
+  width: 100%;
+  background-color: white;
+  border: 1px solid var(--secondary-color);
+  border-radius: 6px;
 }
 
 .todo-title {
@@ -107,6 +121,7 @@
   width: 100%;
   height: 100%;
   color: #595f6e;
+  background-color: inherit;
   padding-top: 20px;
   border: none;
   outline: none;
@@ -704,6 +719,24 @@
   transition: 0.3s all;
 }
 
+.menu-enter {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+.menu-enter-active {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: 0.3s ease all;
+}
+.menu-exit {
+  opacity: 1;
+}
+.menu-exit-active {
+  opacity: 0;
+  transform: translateY(-50px);
+  transition: 0.3s ease all;
+}
+
 input[type=file] {
   font-family: 'Lato', sans-serif;
 }
@@ -805,10 +838,7 @@ body::-webkit-scrollbar-thumb {
 }
 
 @media screen and (max-width: 600px) { 
-  .forum, .forum-header, .todo-list, .comment-input, .comment-section, .addpost-input {
+  .forum, .forum-header, .comment-input, .comment-section, .addpost-input {
     width: 80%;
-  }
-  .todo-form {
-    width: 60%;
   }
 }

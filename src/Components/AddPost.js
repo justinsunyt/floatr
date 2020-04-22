@@ -228,7 +228,7 @@ function AddPost() {
                             <option value="" disabled selected hidden>Choose class</option>
                             {classOptions}
                         </select>
-                        <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange}></textarea>
+                        <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange} required></textarea>
                         <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
                         <div>
                             <input type="file" accept="image/*" id="file" name="file" onChange={handleChange} className="addpost-file"></input>
