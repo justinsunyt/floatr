@@ -70,6 +70,8 @@ function ForumDetail({match}) {
         storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
             const image = document.getElementById("img" + id)
             image.src = url
+        }).catch(() => {
+            alert("Something went wrong...")
         })
     }
 
@@ -170,7 +172,8 @@ function ForumDetail({match}) {
         console.log(forumState)
     }
 
-    function handleSubmit() {
+    function handleSubmit(event) {
+        event.preventDefault()
         if (commentState === "") {
             alert("You cannot comment nothing")
         } else {
@@ -200,6 +203,7 @@ function ForumDetail({match}) {
             console.log("New state:")
             console.log(forumState)
             document.getElementById("comment").value = ""
+            setCommentState("")
         }
     }
 
@@ -390,10 +394,10 @@ function ForumDetail({match}) {
                         </div>
                     </div>
                     <div className="comment-input">
-                        <form>
-                            <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here"></textarea>    
+                        <form onSubmit={handleSubmit}>
+                            <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here" required></textarea>  
+                            <button className="comment-button"><span>Comment </span></button>
                         </form>
-                        <button onClick={handleSubmit} className="comment-button"><span>Comment </span></button>
                     </div>    
                     <div className="comment-section">
                         {commentSection}

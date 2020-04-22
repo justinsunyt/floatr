@@ -158,22 +158,31 @@ function Forum(props) {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
-                    {(!Array.isArray(classIds) || !classIds.length) ? 
-                        <div className="class-list">
-                            <p>You haven't joined any classes yet!</p>
-                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
-                        </div>
-                    :
+                    {(filter === userId && filteredState.length === 0) ? 
                         <div>
                             <div className='forum-header'>
-                                <Link to={'/post'} className="post-link">
-                                    <button className="post-button">Add new post</button>
-                                </Link>
-                            </div>
-                            <div className='forum'>
-                                {forum}
-                            </div>
+                                    <Link to={'/post'} className="post-link">
+                                        <button className="post-button">Add new post</button>
+                                    </Link>
+                                </div>
                         </div>
+                    :
+                        (!Array.isArray(classIds) || !classIds.length) ? 
+                            <div className="class-list">
+                                <p>You haven't joined any classes yet!</p>
+                                <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                            </div>
+                        :
+                            <div>
+                                <div className='forum-header'>
+                                    <Link to={'/post'} className="post-link">
+                                        <button className="post-button">Add new post</button>
+                                    </Link>
+                                </div>
+                                <div className='forum'>
+                                    {forum}
+                                </div>
+                            </div>
                     }
                 </div>
             </CSSTransition>
