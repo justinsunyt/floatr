@@ -79,6 +79,7 @@
   background-color: white;
   border: 1px solid var(--secondary-color);
   border-radius: 6px;
+  cursor: default;
 }
 
 .todo-title {

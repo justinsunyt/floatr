@@ -26,10 +26,17 @@ function TodoTask(props) {
         color: "red"
     }
 
+    function toggleMenu(event) {
+        if (event.target.id !== "date" && event.target.id !== "form" && event.target.id !== "menu") {
+            setShowMenu(!showMenu)
+        }
+    }
+
     return (
-        <div className="todo-task" onClick={() => setShowMenu(!showMenu)}>
+        <div className="todo-task" onClick={toggleMenu}>
             <div className="todo-title">
                 <input 
+                    id="form"
                     type="checkbox" 
                     checked={completed} 
                     onChange={() => props.handleChange(id, "task")}
@@ -42,8 +49,8 @@ function TodoTask(props) {
             </div>
             <hr/>
             <CSSTransition in={showMenu} timeout={300} classNames="menu" unmountOnExit>
-                <div className="todo-menu" id={"menu" + id}>
-                    <div className='todo-form'>
+                <div className="todo-menu" id="menu">
+                    <div className='todo-form' id="form">
                         <form onSubmit={event => {
                             event.preventDefault()
                             props.handleChange(id, "date")
@@ -51,7 +58,7 @@ function TodoTask(props) {
                         }}>
                             <input type="text" name="date" id="date" autocomplete="off" required/>
                             <label for="date" class="task-label">
-                                <span class="task-content">Set new date: M/D(/Y)</span>
+                                <span class="task-content">Set new date: Month/Day</span>
                             </label>
                         </form>
                     </div>
