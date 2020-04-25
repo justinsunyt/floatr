@@ -10,6 +10,7 @@ import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
     const rootRef = firebase.database().ref()
+    const forumRef = firebase.database().ref("forumData")
     const storageRef = firebase.storage().ref()
     const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([])
@@ -76,12 +77,8 @@ function ForumDetail({match}) {
     }
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                setClassState(value)
-            }
-            if (counter === 1) {
+        for (let [key, value] of Object.entries(data)) {
+            if (key === "forumData") {
                 let ids = []
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
@@ -114,7 +111,7 @@ function ForumDetail({match}) {
                     window.location.reload()
                 }
             }
-            if (counter === 2) {
+            if (key === "userData") {
                 setUserState(value)
                 for (let i = 0; i < value.length; i++) {
                     if (value[i].id === userId) {
@@ -122,7 +119,6 @@ function ForumDetail({match}) {
                     }
                 }
             }
-            counter ++
         }
         setLoading(false)
         setLoaded(true)
@@ -160,7 +156,7 @@ function ForumDetail({match}) {
                     return newPost
                 })
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                forumRef.set(updatedForum)
                 console.log("Succesfully wrote data")
                 return updatedForum
             })
@@ -196,7 +192,7 @@ function ForumDetail({match}) {
                     return newPost
                 })
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                forumRef.set(updatedForum)
                 console.log("Succesfully wrote data")
                 return updatedForum
             })
@@ -218,12 +214,12 @@ function ForumDetail({match}) {
             }
             console.log(updatedForum)
             console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+            forumRef.set(updatedForum)
             console.log("Succesfully wrote data")
-            window.location.reload()
             if (img) {
                 storageRef.child(`forumData/images/${id}`).delete().then(() => {}).catch(error => alert(error))
             }
+            window.location.reload()
         }
     }
 
@@ -242,7 +238,7 @@ function ForumDetail({match}) {
             }
             console.log(updatedForum)
             console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+            forumRef.set(updatedForum)
             console.log("Succesfully wrote data")
             setForumState(updatedForum)
         }
@@ -262,12 +258,11 @@ function ForumDetail({match}) {
                 }
                 console.log(updatedForum)
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                forumRef.set(updatedForum)
                 console.log("Succesfully wrote data")
                 setForumState(updatedForum)
             }
         }
-        
     }
 
     function handleReportComment(commentId) {
@@ -287,7 +282,7 @@ function ForumDetail({match}) {
                                 comment.reports.push(userId)
                                 console.log(updatedForum)
                                 console.log("Writing data to Firebase, change: " + change)
-                                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                                forumRef.set(updatedForum)
                                 console.log("Succesfully wrote data")
                                 setForumState(updatedForum)
                             }

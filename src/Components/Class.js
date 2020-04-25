@@ -6,7 +6,7 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function Class() {
-    const rootRef = firebase.database().ref()
+    const classRef = firebase.database().ref("classData")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)
@@ -15,24 +15,18 @@ function Class() {
     let classes = []
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i]["students"].includes(userId)) {
-                        classes.push(value[i])
-                    }
-                }
-                setClassState(classes)
+        for (let i = 0; i < data.length; i++) {
+            if (data[i]["students"].includes(userId)) {
+                classes.push(data[i])
             }
-            counter ++
         }
+        setClassState(classes)
         setLoading(false)
         setLoaded(true)
     }
     
     useEffect(() => {
-        rootRef.once("value")
+        classRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())

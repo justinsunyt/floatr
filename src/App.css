@@ -250,7 +250,7 @@
 }
 
 .post-image {
-  max-width: 100%;
+  width: 100%;
   margin-bottom: 15px;
 }
 
@@ -607,7 +607,6 @@
   transition: all 0.3s;
   cursor: pointer;
   margin: 5px;
-  margin-top: 20px;
 }
 
 .joinclass-button span {
@@ -676,6 +675,17 @@
 .joinclass-submit:hover span:after {
   opacity: 1;
   right: 0;
+}
+
+.chat-rules {
+  margin: auto;
+  text-align: center;
+}
+
+.chat-queue {
+  margin: auto;
+  margin-top: 50px;
+  text-align: center;
 }
 
 .nav-logo {
@@ -839,7 +849,13 @@ body::-webkit-scrollbar-thumb {
 }
 
 @media screen and (max-width: 600px) { 
-  .forum, .forum-header, .comment-input, .comment-section, .addpost-input {
+  .forum, .forum-header, .comment-input, .comment-section, .addpost-input, .todo-list {
     width: 80%;
+  }
+  .todo-task {
+    width: 90%;
+  }
+  .todo-form {
+    width: 72%;
   }
 }

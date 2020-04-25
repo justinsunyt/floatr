@@ -7,9 +7,7 @@ import {CSSTransition} from 'react-transition-group'
 import moment from 'moment'
 
 function TodoList() {
-    const rootRef = firebase.database().ref()
-    const [forumState, setForumState] = useState([])
-    const [classState, setClassState] = useState([])
+    const userRef = firebase.database().ref("userData")
     const [userState, setUserState] = useState([])
     const [currentUserState, setCurrentUserState] = useState({
         "id": 0,
@@ -31,54 +29,42 @@ function TodoList() {
     })
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                setClassState(value)
+        let includesUser = false
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id === userId) {
+                includesUser = true
             }
-            if (counter === 1) {
-                setForumState(value)
+            if (!data[i].todos) {
+                data[i].todos = []
             }
-            if (counter === 2) {
-                let includesUser = false
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].id === userId) {
-                        includesUser = true
+        }
+        if (!includesUser) {
+            data.push({
+                "id": userId,
+                "mod": false,
+                "todos" : []
+            })
+        }
+        // initialize userData for user if undefined
+        setUserState(data)
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id === userId) {
+                setCurrentUserState(data[i])
+                let filteredTodos = data[i].todos
+                filteredTodos.sort((a, b) => {
+                    const d1 = new Date(JSON.parse(a.dueDate))
+                    const d2 = new Date(JSON.parse(b.dueDate))
+                    return (d1 - d2)
+                })
+                let completed = []
+                filteredTodos = filteredTodos.filter(todo => {
+                    if (todo.completed) {
+                        completed.push(todo)
                     }
-                    if (!value[i].todos) {
-                        value[i].todos = []
-                    }
-                }
-                if (!includesUser) {
-                    value.push({
-                        "id": userId,
-                        "mod": false,
-                        "todos" : []
-                    })
-                }
-                // initialize userData for user if undefined
-                setUserState(value)
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].id === userId) {
-                        setCurrentUserState(value[i])
-                        let filteredTodos = value[i].todos
-                        filteredTodos.sort((a, b) => {
-                            const d1 = new Date(JSON.parse(a.dueDate))
-                            const d2 = new Date(JSON.parse(b.dueDate))
-                            return (d1 - d2)
-                        })
-                        let completed = []
-                        filteredTodos = filteredTodos.filter(todo => {
-                            if (todo.completed) {
-                                completed.push(todo)
-                            }
-                            return !todo.completed
-                        })
-                        setFilteredState(filteredTodos.concat(completed))
-                    }
-                }
+                    return !todo.completed
+                })
+                setFilteredState(filteredTodos.concat(completed))
             }
-            counter ++
         }
         setLoading(false)
         setLoaded(true)
@@ -104,7 +90,7 @@ function TodoList() {
                         }
                     }
                     console.log("Writing data to Firebase, change: " + change)
-                    rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                    userRef.set(updatedUserState)
                     return updatedUserState
                 })
                 return updatedUser
@@ -130,7 +116,7 @@ function TodoList() {
                             }
                         }
                         console.log("Writing data to Firebase, change: " + change)
-                        rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                        userRef.set(updatedUserState)
                         return updatedUserState
                     })
                     return updatedUser
@@ -157,7 +143,7 @@ function TodoList() {
                             }
                         }
                         console.log("Writing data to Firebase, change: " + change)
-                        rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                        userRef.set(updatedUserState)
                         return updatedUserState
                     })
                     return updatedUser
@@ -195,7 +181,7 @@ function TodoList() {
                         }
                     }
                     console.log("Writing data to Firebase, change: " + change)
-                    rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                    userRef.set(updatedUserState)
                     return updatedUserState
                 })
                 return updatedUser
@@ -224,7 +210,7 @@ function TodoList() {
                     }
                 }
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": forumState, "userData": updatedUserState})
+                userRef.set(updatedUserState)
                 return updatedUserState
             })
             return updatedUser
@@ -235,16 +221,16 @@ function TodoList() {
     }
 
     useEffect(() => {
-        rootRef.once("value")
+        userRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())
             fetchData(snap.val())
         })
         // fetch forum data when component mounts
-        setInterval(() => {rootRef.on("value", snap => {
+        setInterval(() => {userRef.on("value", snap => {
             fetchData(snap.val())
-        })}, 500)
+        })}, 1000)
     }, [])
 
     const todoList = filteredState.map(task => <TodoTask key={task.id} task={task} handleChange={handleChange} handleDelete={handleDelete}/>)

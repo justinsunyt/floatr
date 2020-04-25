@@ -3,7 +3,7 @@ import Forum from './Forum'
 import * as firebase from 'firebase'
 
 function ClassDetail({match}) {
-    const rootRef = firebase.database().ref()
+    const classRef = firebase.database().ref("classData")
     const [forumState, setForumState] = useState()
     const [classState, setClassState] = useState([{
         "id" : 0,
@@ -17,20 +17,14 @@ function ClassDetail({match}) {
     let forum = forumState
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                const idNum = Number(match.params.id)
-                setClassState(value)
-                setForumState(<Forum filter={idNum} />)
-                setId(match.params.id)
-            }
-            counter ++
-        }
+        const idNum = Number(match.params.id)
+        setClassState(data)
+        setForumState(<Forum filter={idNum} />)
+        setId(match.params.id)
     }
 
     useEffect(() => {
-        rootRef.once("value")
+        classRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())

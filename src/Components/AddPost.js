@@ -6,14 +6,15 @@ import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
     const rootRef = firebase.database().ref()
+    const classRef = firebase.database().ref("classData")
+    const forumRef = firebase.database().ref("forumData")
     const storageRef = firebase.storage().ref()
-    const [forumState, setForumState] = useState([])
     const [classState, setClassState] = useState([{
         "id" : 0,
         "name" : "",
         "students" : []
     }])
-    const [userState, setUserState] = useState([])
+    const [forumState, setForumState] = useState([])
     const [postState, setPostState] = useState(["", "", "", false])
     const [file, setFile] = useState()
     const [loading, setLoading] = useState(true)
@@ -31,23 +32,18 @@ function AddPost() {
     })
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
+        for (let [key, value] of Object.entries(data)) {
+            if (key === "classData") {
                 setClassState(value)
             }
-            if (counter === 1) {
+            if (key === "forumData") {
                 setForumState(value)
+                setLoading(false)
+                setLoaded(true)
             }
-            if (counter === 2) {
-                setUserState(value)
-            }
-            counter ++
         }
-        setLoading(false)
-        setLoaded(true)
     }
-    
+
     function handleChange(event) {
         const {name, value, type, files} = event.target
         let newPostState = postState
@@ -122,7 +118,7 @@ function AddPost() {
                     console.log('File available at', downloadURL);
                     })
                     console.log("Writing data to Firebase, change: " + change)
-                    rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                    forumRef.set(updatedForum)
                     console.log("Succesfully wrote data")
                     setForumState(updatedForum)
                     window.location.reload()
@@ -161,7 +157,7 @@ function AddPost() {
                     console.log('File available at', downloadURL);
                     })
                     console.log("Writing data to Firebase, change: " + change)
-                    rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                    forumRef.set(updatedForum)
                     console.log("Succesfully wrote data")
                     setForumState(updatedForum)
                     window.location.reload()
@@ -181,7 +177,7 @@ function AddPost() {
                     "img": false
                 })
                 console.log("Writing data to Firebase, change: " + change)
-                rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+                forumRef.set(updatedForum)
                 console.log("Succesfully wrote data")
                 setForumState(updatedForum)
                 window.location.reload()
@@ -202,9 +198,6 @@ function AddPost() {
         })}, 5000)
         // fetch data when database updates
     }, [])
-
-        
-    
 
     const classOptions = classState.map(cl => {
         if (cl.students.includes(userId)) {

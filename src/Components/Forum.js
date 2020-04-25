@@ -9,10 +9,10 @@ import {CSSTransition} from 'react-transition-group'
 function Forum(props) {
     const filter = props.filter
     const rootRef = firebase.database().ref()
+    const forumRef = firebase.database().ref("forumData")
+    const userRef = firebase.database().ref("userData")
     const [forumState, setForumState] = useState([])
-    const [classState, setClassState] = useState([])
     const [filteredState, setFilteredState] = useState([])
-    const [userState, setUserState] = useState([])
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const [classIds, setClassIds] = useState([])
@@ -26,10 +26,8 @@ function Forum(props) {
     console.log(liked)
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                setClassState(value)
+        for (let [key, value] of Object.entries(data)) {
+            if (key === "classData") {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["students"].includes(userId)) {
                         classes.push(value[i]["id"])
@@ -37,7 +35,7 @@ function Forum(props) {
                 }
                 setClassIds(classes)
             }
-            if (counter === 1) {
+            if (key === "forumData") {
                 for (let i = 0; i < value.length; i++) {
                     if (value[i]["comments"] === undefined){
                         value[i]["comments"] = []
@@ -79,23 +77,23 @@ function Forum(props) {
                 })
                 setFilteredState(filteredForum)
             }
-            if (counter === 2) {
+            if (key === "userData") {
                 let includesUser = false
                 for (let i = 0; i < value.length; i++) {
                     if (value[i].id === userId) {
                         includesUser = true
                     }
                 }
+                let newUserData = value
                 if (!includesUser) {
-                    value.push({
+                    newUserData.push({
                         "id": userId,
                         "mod": false
                     })
                 }
                 // initialize userData for user if undefined
-                setUserState(value)
+                userRef.set(newUserData)
             }
-            counter ++
         }
         setLoading(false)
         setLoaded(true)
@@ -128,7 +126,7 @@ function Forum(props) {
                 return newPost
             })
             console.log("Writing data to Firebase, change: " + change)
-            rootRef.set({"classData": classState, "forumData": updatedForum, "userData": userState})
+            forumRef.set(updatedForum)
             console.log("Succesfully wrote data")
             return updatedForum
         })
