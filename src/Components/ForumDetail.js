@@ -107,7 +107,6 @@ function ForumDetail({match}) {
                         }
                     }
                 } else {
-                    alert("This post has been deleted")
                     window.location.reload()
                 }
             }

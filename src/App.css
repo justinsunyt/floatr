@@ -688,6 +688,106 @@
   text-align: center;
 }
 
+.chatroom {
+  box-sizing: border-box;
+  padding: 50px 200px;
+  height: 510px;
+  overflow-y: scroll;
+}
+
+.chatroom .msg {
+  background: var(--shadow-color);
+  position: relative;
+  padding: 8px 15px;
+  font-size: 16px;
+  border-radius: 10px;
+  list-style: none;
+  float: left;
+  clear: both;
+  margin: 10px 0;
+  max-width: 200px;
+}
+
+.chatroom .msg img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  position: absolute;
+  top: -10px;
+  left: 0px;
+}
+
+.chatroom .msg.right {
+  float: right;
+  clear: both;
+}
+
+.chat-form {
+  width: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  height: 51px;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 150px;
+  margin-left: -25%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.chat-form input {
+  width: 100%;
+  height: 100%;
+  color: #595f6e;
+  background-color: inherit;
+  padding-top: 20px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.chat-form label {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  border-bottom: 1px solid black;
+}
+
+.chat-form label::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid var(--secondary-color);
+  transform: translateX(-100%);
+  transition: all 0.3s ease;
+}
+
+.chat-content {
+  position: absolute;
+  bottom: 5px;
+  left: 0px;
+  transition: all 0.3s ease;
+}
+
+.chat-form input:focus + .chat-label .chat-content,
+.chat-form input:valid + .chat-label .chat-content {
+  transform: translateY(-150%);
+  font-size: 14px;
+}
+
+.chat-form input:focus + .chat-label::after,
+.chat-form input:valid + .chat-label::after {
+  transform: translateX(0%);
+}
+
 .nav-logo {
   display: flex;
   flex-direction: row;
@@ -823,12 +923,27 @@ body::-webkit-scrollbar-thumb {
   background: var(--primary-color);
 }
 
+.chatroom::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+.chatroom::-webkit-scrollbar-track {
+  background: white;
+}
+
+.chatroom::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+}
+
 @media screen and (max-width: 1800px) {
   .nav-text {
     display: none;
   }
-  .forum, .forum-header, .todo-list, .comment-input, .comment-section, .addpost-input {
+  .forum, .forum-header, .todo-list, .comment-input, .comment-section, .addpost-input, .chat-form {
     width: 65%;
+  }
+  .chat-form {
+    margin-left: -32.5%;
   }
   .todo-form {
     width: 48.75%;
@@ -849,8 +964,11 @@ body::-webkit-scrollbar-thumb {
 }
 
 @media screen and (max-width: 600px) { 
-  .forum, .forum-header, .comment-input, .comment-section, .addpost-input, .todo-list {
+  .forum, .forum-header, .comment-input, .comment-section, .addpost-input, .todo-list, .chat-form {
     width: 80%;
+  }
+  .chat-form {
+    margin-left: -40%;
   }
   .todo-task {
     width: 90%;
