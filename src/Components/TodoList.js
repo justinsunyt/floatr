@@ -190,6 +190,7 @@ function TodoList() {
             console.log("New state:")
             console.log(userState)
             document.getElementById("task").value = ""
+            this.scrollToBottom()
         }
     }
 

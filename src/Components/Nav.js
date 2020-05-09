@@ -9,7 +9,7 @@ function Nav() {
         <nav>
             <Link to={'/'} className="nav-logo">
                 <img src={logo} className="logo"/>
-                <h1>HelpBoat</h1>
+                <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
                 <Link to={'/post'} className="nav-link">

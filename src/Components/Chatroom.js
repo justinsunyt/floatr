@@ -9,9 +9,11 @@ function Chatroom() {
     const chatRef = firebase.database().ref("chatData")
     const [loaded, setLoaded] = useState(false)
     const [chatState, setChatState] = useState({})
+    const [messageState, setMessageState] = useState("")
     const [roomState, setRoomState] = useState({id: 0, users: [[]], messages: []})
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const profilePic = currentUser.photoURL
     let otherUserId = ""
     if (roomState.users) {
         otherUserId = roomState.users.length !== 1 ? roomState.users.map(user => (user[0] !== userId) && user[1]) : "The Other User has Left"
@@ -35,9 +37,14 @@ function Chatroom() {
         if (!selectedRoom.users) {
             window.removeEventListener("beforeunload", handleBeforeUnload)
             window.location.reload()
-        }
+        } 
         setRoomState(selectedRoom)
         setLoaded(true)
+    }
+
+    function scrollToBottom() {
+        const chatroom = document.getElementById("chatroom")
+        chatroom.scrollTop = chatroom.scrollHeight
     }
 
     function handleBeforeUnload(event) {
@@ -68,6 +75,46 @@ function Chatroom() {
         })
     }
 
+    function handleChange() {
+        const input = document.getElementById("msg")
+        setMessageState(input.value)
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+        if (messageState !== "") {
+            let change = "added msg"
+            setRoomState(prevRoomState => {
+                const updatedRoom = prevRoomState
+                updatedRoom.messages.push({
+                    "creator": userId,
+                    "creatorProfilePic": profilePic,
+                    "text": messageState
+                })
+                setChatState(prevChatState => {
+                    const updatedChat = prevChatState
+                    for (let i = 0; i < updatedChat.rooms.length; i++) {
+                        if (updatedChat.rooms[i].users) {
+                            updatedChat.rooms[i].users.forEach(user => {
+                                if (user[0] === userId) {
+                                    updatedChat.rooms[i] = updatedRoom
+                                }
+                            })
+                        }
+                    }
+                    console.log("Writing data to Firebase, change: " + change)
+                    chatRef.set(updatedChat)
+                    return updatedChat
+                })
+                return updatedRoom
+            })
+            console.log("Succesfully wrote data")
+            console.log("New state:")
+            console.log(chatState)
+            setMessageState("")
+        }
+    }
+
     useEffect(() => {
         window.addEventListener("beforeunload", handleBeforeUnload)
         const listener = chatRef.on("value", snap => {
@@ -81,6 +128,10 @@ function Chatroom() {
             handleUnload()
         }
     }, [])
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [roomState])
     
     const messages = roomState.messages.map(msg => <Message msg={msg}/>)
 
@@ -90,12 +141,12 @@ function Chatroom() {
                     <div className="profile-header">
                         <h1>{otherUserId}</h1>
                     </div>
-                    <div className="chatroom">
+                    <div className="chatroom" id="chatroom">
                         {messages}
                     </div>
                     <div className='chat-form'>
-                        <form>
-                            <input type="text" name="msg" id="msg" autocomplete="off" required/>
+                        <form onSubmit={handleSubmit}>
+                            <input type="text" name="msg" id="msg" autocomplete="off" onChange={handleChange} value={messageState} required/>
                             <label for="msg" class="chat-label">
                                 <span class="chat-content">Send a message</span>
                             </label>
