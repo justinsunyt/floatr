@@ -5,11 +5,9 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
-    const rootRef = firebase.database().ref()
+    const classRef = firebase.database().ref("classData")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
-    const [forumState, setForumState] = useState([])
-    const [userState, setUserState] = useState([])
     const [filteredState, setFilteredState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
@@ -18,26 +16,14 @@ function JoinClass() {
     let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
 	
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 0) {
-                let filtered = []
-                for (let i = 0; i < value.length; i++) {
-                    if (!value[i]["students"].includes(userId)) {
-                        filtered.push(value[i])
-                    }
-                }
-                setClassState(value)
-                setFilteredState(filtered)
+        let filtered = []
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i]["students"].includes(userId)) {
+                filtered.push(data[i])
             }
-            if (counter === 1) {
-                setForumState(value)
-            }
-            if (counter === 2) {
-                setUserState(value)
-            }
-            counter ++
         }
+        setClassState(data)
+        setFilteredState(filtered)
         setLoading(false)
         setLoaded(true)
     }
@@ -86,14 +72,14 @@ function JoinClass() {
             alert("You haven't selected any classes!")
         } else {
             console.log("Writing data to Firebase, change: joined classes")
-            rootRef.set({"classData": classState, "forumData": forumState, "userData": userState})
+            classRef.set(classState)
             console.log("Succesfully wrote data")
             window.location.reload()
         }
     }
 
     useEffect(() => {
-        rootRef.once("value")
+        classRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())

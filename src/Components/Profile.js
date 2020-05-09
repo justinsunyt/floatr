@@ -6,7 +6,7 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function Profile() {
-    const rootRef = firebase.database().ref()
+    const userRef = firebase.database().ref("userData")
     const [mod, setMod] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
@@ -17,23 +17,17 @@ function Profile() {
     const profilePic = currentUser.photoURL
 
     function fetchData(data) {
-        let counter = 0
-        for (let value of Object.values(data)) {
-            if (counter === 2) {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].id === userId) {
-                        setMod(value[i].mod)
-                    }
-                }
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].id === userId) {
+                setMod(data[i].mod)
             }
-            counter++
         }
         setLoading(false)
         setLoaded(true)
     }
 
     useEffect(() => {
-        rootRef.once("value")
+        userRef.once("value")
         .then(snap => {
             console.log("Fetched data:")
             console.log(snap.val())

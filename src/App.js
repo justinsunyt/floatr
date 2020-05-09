@@ -11,6 +11,8 @@ import AddPost from './Components/AddPost'
 import Class from './Components/Class'
 import Profile from './Components/Profile'
 import JoinClass from './Components/JoinClass'
+import Chat from './Components/Chat'
+import Chatroom from './Components/Chatroom'
 import {AuthProvider} from './Auth'
 import PrivateRoute from './PrivateRoute'
 
@@ -32,6 +34,8 @@ function App() {
               <PrivateRoute path="/class" exact component={Class}/>
               <PrivateRoute path="/profile" component={Profile}/> 
               <PrivateRoute path="/joinclass" component={JoinClass}/>
+              <PrivateRoute path="/chat" exact component={Chat}/>
+              <PrivateRoute path="/chatroom" exact component={Chatroom}/>
             </Switch>
           </div>
         </div>

@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
 import {CSSTransition} from 'react-transition-group'
-import { Redirect } from 'react-router-dom'
 import moment from 'moment'
 
 function TodoTask(props) {

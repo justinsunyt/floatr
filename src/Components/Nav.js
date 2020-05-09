@@ -9,7 +9,7 @@ function Nav() {
         <nav>
             <Link to={'/'} className="nav-logo">
                 <img src={logo} className="logo"/>
-                <h1>HelpBoat</h1>
+                <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
                 <Link to={'/post'} className="nav-link">
@@ -17,6 +17,9 @@ function Nav() {
                 </Link>
                 <Link to={'/todo'} className="nav-link">
                     <li><FontAwesomeIcon icon={solidIcons.faList}/> <span className="nav-text">Todo</span></li>
+                </Link>
+                <Link to={'/chat'} className="nav-link">
+                    <li><FontAwesomeIcon icon={solidIcons.faComment}/> <span className="nav-text">Chat</span></li>
                 </Link>
                 <Link to={'/class'} className="nav-link">
                     <li><FontAwesomeIcon icon={solidIcons.faUsers}/> <span className="nav-text">Classes</span></li>
