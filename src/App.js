@@ -2,7 +2,6 @@ import React from 'react'
 import { BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 import './App.css'
 import Dashboard from './Components/Dashboard'
-import TodoList from './Components/TodoList'
 import ForumDetail from './Components/ForumDetail'
 import ClassDetail from './Components/ClassDetail'
 import Nav from './Components/Nav'
@@ -27,7 +26,6 @@ function App() {
             <Switch>
               <PrivateRoute path="/" exact component={Dashboard}/>
               <Route path="/login" component={Login}/>
-              <PrivateRoute path="/todo" component={TodoList}/>
               <PrivateRoute path="/post/:id" exact component={ForumDetail}/>
               <PrivateRoute path="/class/:id" exact component={ClassDetail}/>
               <PrivateRoute path="/post" exact component={AddPost}/>
