@@ -15,9 +15,6 @@ function Nav() {
                 <Link to={'/post'} className="nav-link">
                     <li><FontAwesomeIcon icon={solidIcons.faPlus}/> <span className="nav-text">Post</span></li>
                 </Link>
-                <Link to={'/todo'} className="nav-link">
-                    <li><FontAwesomeIcon icon={solidIcons.faList}/> <span className="nav-text">Todo</span></li>
-                </Link>
                 <Link to={'/chat'} className="nav-link">
                     <li><FontAwesomeIcon icon={solidIcons.faComment}/> <span className="nav-text">Chat</span></li>
                 </Link>
