@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import {CSSTransition} from 'react-transition-group'
-import ReactLoading from 'react-loading'
 import Message from './Message'
 
 function Chatroom() {
@@ -136,25 +135,25 @@ function Chatroom() {
     const messages = roomState.messages.map(msg => <Message msg={msg}/>)
 
     return(
-            <CSSTransition in={loaded} timeout={300} classNames="fade">
-                <div>
-                    <div className="profile-header">
-                        <h1>{otherUserId}</h1>
-                    </div>
-                    <div className="chatroom" id="chatroom">
-                        {messages}
-                    </div>
-                    <div className='chat-form'>
-                        <form onSubmit={handleSubmit}>
-                            <input type="text" name="msg" id="msg" autocomplete="off" onChange={handleChange} value={messageState} required/>
-                            <label for="msg" class="chat-label">
-                                <span class="chat-content">Send a message</span>
-                            </label>
-                        </form>
-                    </div>
+        <CSSTransition in={loaded} timeout={300} classNames="fade">
+            <div>
+                <div className="profile-header">
+                    <h1>{otherUserId}</h1>
                 </div>
-            </CSSTransition>
-        )
+                <div className="chatroom" id="chatroom">
+                    {messages}
+                </div>
+                <div className='chat-form'>
+                    <form onSubmit={handleSubmit}>
+                        <input type="text" name="msg" id="msg" autocomplete="off" onChange={handleChange} value={messageState} required/>
+                        <label for="msg" class="chat-label">
+                            <span class="chat-content">Send a message</span>
+                        </label>
+                    </form>
+                </div>
+            </div>
+        </CSSTransition>
+    )
 }
 
 export default Chatroom

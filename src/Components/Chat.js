@@ -16,7 +16,7 @@ function Chat() {
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
 
-    function fetchData(data) {
+    function fetchData(data, rec) {
         let newChatData = data
         let joined = false
         if (!newChatData.queue) {
@@ -64,13 +64,13 @@ function Chat() {
                         }
                     })
                 } else {
-                    setTimeout(() => {
-                        chatRef.once("value").then(snap => {
-                            fetchData(snap.val())
-                            console.log("Fetched data: ")
-                            console.log(snap.val())
-                        })
-                    }, 500)
+                    if (!rec) {
+                        setTimeout(() => {
+                            chatRef.once("value").then(snap => {
+                                fetchData(snap.val(), true)
+                            })
+                        }, 500)
+                    }
                 }
                 if (joined && qPos % 2 === 0) {
                     newChatData.queue.splice(0, 2)
@@ -110,13 +110,31 @@ function Chat() {
         chatRef.set(newChatState)
     }
 
+    function handleUnload() {
+        chatRef.once("value").then(snap => {
+            let newChatState = snap.val()
+            if (newChatState.queue) {
+                newChatState.queue.forEach((user, index) => {
+                    console.log(user)
+                    if (user[0] === userId) {
+                        newChatState.queue.splice(index, 1)
+                    }
+                })
+                chatRef.set(newChatState)
+            }
+        })
+    }
+
     useEffect(() => {
         const listener = chatRef.on("value", snap => {
-            fetchData(snap.val())
+            fetchData(snap.val(), false)
             console.log("Fetched data: ")
             console.log(snap.val())
         }) 
-        return () => chatRef.off("value", listener)
+        return () => {
+            chatRef.off("value", listener)
+            handleUnload()
+        }
     }, [])
  
     if (isQueue) {

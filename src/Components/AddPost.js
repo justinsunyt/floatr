@@ -6,7 +6,6 @@ import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
     const rootRef = firebase.database().ref()
-    const classRef = firebase.database().ref("classData")
     const forumRef = firebase.database().ref("forumData")
     const storageRef = firebase.storage().ref()
     const [classState, setClassState] = useState([{
@@ -186,16 +185,14 @@ function AddPost() {
     }
 
     useEffect(() => {
-        rootRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
+        const listener = rootRef.on("value", snap => {
+            fetchData(snap.val())
+            console.log("Fetched data: ")
             console.log(snap.val())
-            fetchData(snap.val())
-        })
-        // fetch forum data when component mounts
-        setInterval(() => {rootRef.on("value", snap => {
-            fetchData(snap.val())
-        })}, 5000)
+        }) 
+        return () => {
+            rootRef.off("value", listener)
+        }
         // fetch data when database updates
     }, [])
 

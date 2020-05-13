@@ -13,8 +13,6 @@ function ForumDetail({match}) {
     const forumRef = firebase.database().ref("forumData")
     const storageRef = firebase.storage().ref()
     const [forumState, setForumState] = useState([])
-    const [classState, setClassState] = useState([])
-    const [userState, setUserState] = useState([])
     const [id, setId] = useState(0)
     const [postState, setPostState] = useState({
         "class" : "",
@@ -111,7 +109,6 @@ function ForumDetail({match}) {
                 }
             }
             if (key === "userData") {
-                setUserState(value)
                 for (let i = 0; i < value.length; i++) {
                     if (value[i].id === userId) {
                         setMod(value[i].mod)
@@ -250,7 +247,7 @@ function ForumDetail({match}) {
             if (window.confirm("Are you sure you want to report this post?\nThis action is irreversible")) {
                 const change = "reported post"
                 let updatedForum = forumState
-                for (const [i, post] of updatedForum.entries()) { 
+                for (const post of updatedForum.values()) { 
                     if (post.id === id) { 
                         post.reports.push(userId)
                     }
@@ -269,7 +266,7 @@ function ForumDetail({match}) {
         let updatedForum = forumState
         for (const post of updatedForum) { 
             if (post.id === id) { 
-                for (const [i, comment] of post.comments.entries()) {
+                for (const comment of post.comments.values()) {
                     if (comment.id === commentId) {
                         if (comment.reports === undefined) {
                             comment.reports = []
@@ -293,16 +290,14 @@ function ForumDetail({match}) {
     }
 
     useEffect(() => {
-        rootRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
+        const listener = rootRef.on("value", snap => {
+            fetchData(snap.val())
+            console.log("Fetched data: ")
             console.log(snap.val())
-            fetchData(snap.val())
-        })
-        // fetch forum data when component mounts
-        setInterval(() => {rootRef.on("value", snap => {
-            fetchData(snap.val())
-        })}, 5000)
+        }) 
+        return () => {
+            rootRef.off("value", listener)
+        }
         // fetch data when database updates
     }, [])
 
