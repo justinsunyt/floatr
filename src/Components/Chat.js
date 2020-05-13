@@ -69,7 +69,7 @@ function Chat() {
                             chatRef.once("value").then(snap => {
                                 fetchData(snap.val(), true)
                             })
-                         }, 500)
+                        }, 500)
                     }
                 }
                 if (joined && qPos % 2 === 0) {
@@ -114,7 +114,6 @@ function Chat() {
         chatRef.once("value").then(snap => {
             let newChatState = snap.val()
             if (newChatState.queue) {
-                console.log("no")
                 newChatState.queue.forEach((user, index) => {
                     console.log(user)
                     if (user[0] === userId) {

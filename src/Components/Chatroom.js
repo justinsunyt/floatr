@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
 import {CSSTransition} from 'react-transition-group'
-import ReactLoading from 'react-loading'
 import Message from './Message'
 
 function Chatroom() {
