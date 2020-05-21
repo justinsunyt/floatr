@@ -3,34 +3,22 @@ import Forum from './Forum'
 import * as firebase from 'firebase'
 
 function ClassDetail({match}) {
-    const classRef = firebase.database().ref("classData")
-    const [forumState, setForumState] = useState()
-    const [classState, setClassState] = useState([{
+    const classRef = firebase.firestore().collection("classes").doc(match.params.id)
+    const [classState, setClassState] = useState({
         "id" : 0,
         "name" : "",
         "students" : []
-    }])
-    const [id, setId] = useState(0)
+    })
 
-    let className = classState[id].name
-    let numStudents = classState[id].students.length
-    let forum = forumState
-
-    function fetchData(data) {
-        const idNum = Number(match.params.id)
-        setClassState(data)
-        setForumState(<Forum filter={idNum} />)
-        setId(match.params.id)
-    }
+    let className = classState.name
+    let numStudents = classState.students.length
 
     useEffect(() => {
-        classRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
-            console.log(snap.val())
-            fetchData(snap.val())
+        classRef.get().then(doc => {
+            setClassState(doc.data())
+        }).catch(err => {
+            console.log("Error: ", err)
         })
-        // fetch forum data when component mounts
     }, [])
 
     return (
@@ -43,7 +31,7 @@ function ClassDetail({match}) {
                     <i>{(numStudents > 0 && numStudents + ((numStudents === 1) ? " student" : " students") + " joined")}</i>
                 </h5>
             </div>
-            {forum}
+            <Forum filter={`class/${match.params.id}`} />
         </div>
     )
 }

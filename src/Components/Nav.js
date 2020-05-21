@@ -1,8 +1,9 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
+import ReactTooltip from 'react-tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
-import logo from '../Images/TaskFloat_Logo_Transparent.png'
+import logo from '../Images/TaskFloat_Logo_White.png'
 
 function Nav() {
     return (
@@ -12,18 +13,25 @@ function Nav() {
                 <h1>TaskFloat</h1>
             </Link>
             <ul className="nav-links">
-                <Link to={'/post'} className="nav-link">
-                    <li><FontAwesomeIcon icon={solidIcons.faPlus}/> <span className="nav-text">Post</span></li>
+                <Link to={'/post'} className="nav-link" data-tip="Add new post" data-offset="{'bottom': -6}">
+                    <li><FontAwesomeIcon icon={solidIcons.faPlus}/></li>
                 </Link>
-                <Link to={'/chat'} className="nav-link">
-                    <li><FontAwesomeIcon icon={solidIcons.faComment}/> <span className="nav-text">Chat</span></li>
+                <ReactTooltip effect="solid" delayShow="500" scrollHide={false}/>
+
+                <Link to={'/chat'} className="nav-link" data-tip="Chat" data-offset="{'bottom': -6}">
+                    <li><FontAwesomeIcon icon={solidIcons.faComment}/></li>
                 </Link>
-                <Link to={'/class'} className="nav-link">
-                    <li><FontAwesomeIcon icon={solidIcons.faUsers}/> <span className="nav-text">Classes</span></li>
+                <ReactTooltip effect="solid" delayShow="500"/>
+
+                <Link to={'/class'} className="nav-link" data-tip="Classes" data-offset="{'bottom': -6}">
+                    <li><FontAwesomeIcon icon={solidIcons.faUsers}/></li>
                 </Link>
-                <Link to={'/profile'} className="nav-link">
-                    <li><FontAwesomeIcon icon={solidIcons.faUser}/> <span className="nav-text">Profile</span></li>
+                <ReactTooltip effect="solid" delayShow="500"/>
+
+                <Link to={'/profile'} className="nav-link" data-tip="Profile" data-offset="{'bottom': -6}">
+                    <li><FontAwesomeIcon icon={solidIcons.faUser}/></li>
                 </Link>
+                <ReactTooltip effect="solid" delayShow="500"/>
             </ul>
         </nav>
     )

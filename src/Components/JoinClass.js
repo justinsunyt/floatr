@@ -5,60 +5,49 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
-    const classRef = firebase.database().ref("classData")
+    const classesRef = firebase.firestore().collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
-    const [filteredState, setFilteredState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const userId = currentUser.uid
 
-    let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
-	
-    function fetchData(data) {
-        let filtered = []
-        for (let i = 0; i < data.length; i++) {
-            if (!data[i]["students"].includes(userId)) {
-                filtered.push(data[i])
+    let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
+    
+    function handleClassesSnap(snap) {
+        let classes = []
+        snap.forEach(doc => {
+            let cl = {}
+            cl = doc.data()
+            cl.id = doc.id
+            if (!cl.students.includes(userId)) {
+                classes.push(cl)
             }
-        }
-        setClassState(data)
-        setFilteredState(filtered)
+        })
+        setClassState(classes)
         setLoading(false)
         setLoaded(true)
     }
-    
+
     function handleChange(id) {
-        let change = ""
-        setClassState(prevState => {
-            const updatedClasses = prevState.map(cl => {
-                let newClass = cl
-                if (cl.id === id) {
-                    if (cl.students.includes(userId)) {
-                        const filteredStudents = cl.students.filter(value => {
-                            if (value !== userId) {
-                                return value
-                            }
-                        })
-                        newClass.students = filteredStudents
-                        change = "unchecked class"
-                        // if class is checked, uncheck class
-                    } else {
-                        if (!newClass.students) {
-                            newClass.students = []
+        let newClasses = classState
+        newClasses = newClasses.map(cl => {
+            let newClass = cl
+            if (cl.id === id) {
+                if (cl.students.includes(userId)) {
+                    const filteredStudents = cl.students.filter(value => {
+                        if (value !== userId) {
+                            return value
                         }
-                        newClass.students.push(userId)
-                        change = "checked class"
-                        // if class is unchecked, check class
-                    }
+                    })
+                    newClass.students = filteredStudents
+                } else {
+                    newClass.students.push(userId)
                 }
-                return newClass
-            })
-            console.log(change)
-            return updatedClasses
+            }
+            return newClass
         })
-        console.log("New state:")
-        console.log(classState)
+        setClassState(newClasses)
     }
 
     function handleSubmit() {
@@ -71,23 +60,27 @@ function JoinClass() {
         if (checkedAnything === false) {
             alert("You haven't selected any classes!")
         } else {
-            console.log("Writing data to Firebase, change: joined classes")
-            classRef.set(classState)
-            console.log("Succesfully wrote data")
-            window.location.reload()
+            classState.forEach(cl => {
+                classesRef.doc(cl.id).set(cl).then(() => {
+                    console.log("Wrote to classes")
+                    window.location.reload()
+                }).catch(err => {
+                    console.log("Error: ", err)
+                })
+            })
         }
     }
 
     useEffect(() => {
-        classRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
-            console.log(snap.val())
-            fetchData(snap.val())
+        classesRef.get().then(snap => {
+            console.log("Fetched from classes")
+            handleClassesSnap(snap)
+        }).catch(err => {
+            console.log("Error: ", err)
         })
     }, [])
 
-    const classList = filteredState.map((cl, index) => {
+    const classList = classState.map((cl, index) => {
         return (
             <div className="joinclass-item">
                 <p>{cl.name}</p>

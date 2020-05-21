@@ -8,143 +8,154 @@ import {CSSTransition} from 'react-transition-group'
 
 function Forum(props) {
     const filter = props.filter
-    const rootRef = firebase.database().ref()
-    const forumRef = firebase.database().ref("forumData")
-    const userRef = firebase.database().ref("userData")
+    const classesRef = firebase.firestore().collection("classes")
+    const forumRef = firebase.firestore().collection("forum")
     const [forumState, setForumState] = useState([])
-    const [filteredState, setFilteredState] = useState([])
-    const {currentUser} = useContext(AuthContext)
-    const userId = currentUser.uid
+    const [querySize, setQuerySize] = useState(10)
+    const [queryLimit, setQueryLimit] = useState(false)
     const [classIds, setClassIds] = useState([])
+    const [atBottom, setAtBottom] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [liked, setLiked] = useState([])
+    const {currentUser} = useContext(AuthContext)
+    const userId = currentUser.uid
 
-    let liked = filteredState.map(post => (post.likes.includes(userId)) ? true : false)
     let classes = []
-    // initialize liked array for checkbox prop
-    console.log("Liked:")
-    console.log(liked)
 
-    function fetchData(data) {
-        for (let [key, value] of Object.entries(data)) {
-            if (key === "classData") {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i]["students"].includes(userId)) {
-                        classes.push(value[i]["id"])
-                    }
-                }
-                setClassIds(classes)
+    function handleForumSnap(snap) {
+        let filteredForum = []
+        snap.forEach(post => {
+            const postData = post.data()
+            postData.id = post.id
+            filteredForum.push(postData)
+        })
+        filteredForum = filteredForum.filter(post => { 
+            if (classIds.includes(post.classId) || classes.includes(post.classId)) {
+                return post
             }
-            if (key === "forumData") {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i]["comments"] === undefined){
-                        value[i]["comments"] = []
-                    }
-                    // initialize "comments" if undefined
-                    if (value[i]["likes"] === undefined){
-                        value[i]["likes"] = []
-                    }
-                    // initialize "likes" if undefined
-                }
-                setForumState(value)
-                let filteredForum = value
-                if (typeof filter === "number") {
-                   filteredForum = value.filter(val => {
-                       if (val["classId"] === filter) {
-                           return val
-                       }
-                   })     
-                }
-                else if (filter === userId){
-                    filteredForum = value.filter(val => {
-                        if (val["creatorId"] === userId) {
-                            return val
-                        }
-                    })
-                }
-                else
-                {
-                    filteredForum = value.filter(val => {
-                        if (classes.includes(val["classId"])) {
-                            return val
-                        }
-                    })
-                }
-                filteredForum.sort((a, b) => {
-                    const d1 = new Date(JSON.parse(a.date))
-                    const d2 = new Date(JSON.parse(b.date))
-                    return (d2 - d1)
-                })
-                setFilteredState(filteredForum)
-            }
-            if (key === "userData") {
-                let includesUser = false
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].id === userId) {
-                        includesUser = true
-                    }
-                }
-                let newUserData = value
-                if (!includesUser) {
-                    newUserData.push({
-                        "id": userId,
-                        "mod": false
-                    })
-                }
-                // initialize userData for user if undefined
-                userRef.set(newUserData)
-            }
+        })
+        if (forumState.length === filteredForum.length) {
+            setQueryLimit(true)
         }
+        setForumState(filteredForum)
+        setLiked(filteredForum.map(post => (post.likes.includes(userId)) ? true : false))
         setLoading(false)
         setLoaded(true)
     }
 
     function handleChange(id) {
-        let change = ""
-        setForumState(prevForum => {
-            const updatedForum = prevForum.map(post => {
-                let newPost = post
-                if (post.id === id) {
-                    if (post.likes.includes(userId)) {
-                        const filteredLikes = post.likes.filter(value => {
-                            if (value !== userId) {
-                                return value
-                            }
-                        })
-                        newPost.likes = filteredLikes
-                        change = "unliked post"
-                        // if post is liked, unlike post
-                    } else {
-                        if (!newPost.likes) {
-                            newPost.likes = []
+        const postRef = forumRef.doc(id)
+        let newForumState = forumState
+        newForumState.forEach(post => {
+            if (post.id === id) {
+                if (post.likes.includes(userId)) {
+                    post.likes.forEach((like, index) => {
+                        if (like === userId) {
+                            post.likes.splice(index, 1)
                         }
-                        newPost.likes.push(userId)
-                        change = "liked post"
-                        // if post is unliked, like post
-                    }
+                    })
+                } else {
+                    post.likes.push(userId)
                 }
-                return newPost
-            })
-            console.log("Writing data to Firebase, change: " + change)
-            forumRef.set(updatedForum)
-            console.log("Succesfully wrote data")
-            return updatedForum
+                postRef.set(post)
+                console.log("Wrote to post")
+            }
         })
-        console.log("New state:")
-        console.log(forumState)
+        setForumState(newForumState)
+        setLiked(newForumState.map(post => (post.likes.includes(userId)) ? true : false))
+    }
+
+    function handleScroll() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 300) {
+            setAtBottom(true)
+        } else {
+            setAtBottom(false)
+        }
     }
 
     useEffect(() => {
-        rootRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
-            console.log(snap.val())
-            fetchData(snap.val())
+        classesRef.where("students", "array-contains", userId)
+        .get().then(snap => {
+            console.log("Fetched from classes")
+            snap.forEach(doc => {
+                classes.push(doc.id)
+            })
+            setClassIds(classes)
+        }).catch(err => {
+            console.log("Error: ", err)
         })
-        // fetch forum data when component mounts
+
+        if (filter.slice(0, 6) === "class/") {
+            forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
+            .get().then(snap => {
+                console.log("Fetched from forum")
+                handleForumSnap(snap)
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
+        } else if (filter.slice(0, 5) === "user/"){
+            forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
+            .get().then(snap => {
+                console.log("Fetched from forum")
+                handleForumSnap(snap)
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
+        } else {
+            forumRef.orderBy("date", "desc").limit(querySize)
+            .get().then(snap => {
+                console.log("Fetched from forum")
+                handleForumSnap(snap)
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
+        }
+        console.log("Filter: ", filter)
+        console.log("Query size: ", querySize)
+
+        window.addEventListener("scroll", handleScroll)
+        return () => {
+            window.removeEventListener("scroll", handleScroll)
+        }
     }, [])
 
-    const forum = filteredState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
+    useEffect(() => {
+        if (atBottom) {
+            if (!queryLimit) {
+                const newQuery = querySize + 10
+                if (filter.slice(0, 6) === "class/") {
+                    forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(newQuery)
+                    .get().then(snap => {
+                        console.log("Fetched from forum")
+                        handleForumSnap(snap)
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                } else if (filter.slice(0, 5) === "user/"){
+                    forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(newQuery)
+                    .get().then(snap => {
+                        console.log("Fetched from forum")
+                        handleForumSnap(snap)
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                } else {
+                    forumRef.orderBy("date", "desc").limit(newQuery)
+                    .get().then(snap => {
+                        console.log("Fetched from forum")
+                        handleForumSnap(snap)
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                }
+                console.log("Query size: ", newQuery)
+                setQuerySize(newQuery)
+            }
+        }
+    }, [atBottom])
+
+    const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
 
     if (loading) {
         return (
@@ -156,7 +167,7 @@ function Forum(props) {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
-                    {(filter === userId && filteredState.length === 0) ? 
+                    {(filter === userId && forumState.length === 0) ? 
                         <div>
                             <div className='forum-header'>
                                     <Link to={'/post'} className="post-link">

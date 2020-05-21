@@ -5,46 +5,25 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
-    const rootRef = firebase.database().ref()
-    const forumRef = firebase.database().ref("forumData")
+    const forumRef = firebase.firestore().collection("forum")
+    const classesRef = firebase.firestore().collection("classes")
     const storageRef = firebase.storage().ref()
     const [classState, setClassState] = useState([{
-        "id" : 0,
+        "id" : "",
         "name" : "",
         "students" : []
     }])
-    const [forumState, setForumState] = useState([])
-    const [postState, setPostState] = useState(["", "", "", false])
+    const [postState, setPostState] = useState([null, "", "", false])
     const [file, setFile] = useState()
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
-    const today = new Date()
-    let availableId = 0
-    
-    forumState.forEach(post => {
-        if (post.id >= availableId) {
-            availableId = post.id + 1
-        }
-    })
-
-    function fetchData(data) {
-        for (let [key, value] of Object.entries(data)) {
-            if (key === "classData") {
-                setClassState(value)
-            }
-            if (key === "forumData") {
-                setForumState(value)
-                setLoading(false)
-                setLoaded(true)
-            }
-        }
-    }
+    const today = firebase.firestore.Timestamp.now()
 
     function handleChange(event) {
-        const {name, value, type, files} = event.target
+        const {name, value, type, files, selectedIndex} = event.target
         let newPostState = postState
         if (type === "file") {
             if (files[0].type.split('/')[0] === "image") {
@@ -62,7 +41,7 @@ function AddPost() {
             }  
         } else {
             if (name === "class") {
-                newPostState[0] = value
+                newPostState[0] = [value, event.target[selectedIndex].text]
             } else if (name === "title") {
                 newPostState[1] = value
             } else {
@@ -76,129 +55,114 @@ function AddPost() {
         event.preventDefault()
         if (postState[0] == null) {
             alert("Please select a class")
-        } else if (postState[1] === null) {
+        } else if (postState[1] === "") {
             alert("Please enter a title")
-        } else if (postState[2] === null && postState[3] === null) {
+        } else if ((postState[2] === "") && postState[3] === false) {
             alert("Please enter some text")
         } else {
-            let updatedForum = forumState
-            const change = "new post"
+            let newPost = {
+                "class": postState[0][1],
+                "classId": postState[0][0],
+                "creatorId": userId,
+                "creatorDisplayName": userDisplayName,
+                "date": today,
+                "likes": [],
+                "numComments": 0,
+                "text": null,
+                "title": postState[1],
+                "img": false,
+                "reports": []
+            }
             if (postState[2] === "" && postState[3] === true) {
-                updatedForum.push({
-                    "class": postState[0].slice(1),
-                    "classId": parseInt(postState[0].slice(0, 1), 10),
-                    "comments": [],
-                    "creatorId": userId,
-                    "creatorDisplayName": userDisplayName,
-                    "date": JSON.stringify(today),
-                    "id": availableId,
-                    "likes": [],
-                    "text": null,
-                    "title": postState[1],
-                    "img": true
-                })
-                const uploadTask = storageRef.child(`forumData/images/${availableId}`).put(file)
-                uploadTask.on('state_changed', function(snapshot) {
-                    setLoading(true)
-                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                    console.log('Upload is ' + progress + '% done')
-                    switch (snapshot.state) {
-                        case firebase.storage.TaskState.PAUSED: // or 'paused'
-                            console.log('Upload is paused')
-                            break
-                        case firebase.storage.TaskState.RUNNING: // or 'running'
-                            console.log('Upload is running')
-                            break
-                    }
-                }, function(error) {
-                    alert(error)
-                }, function() {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                    console.log('File available at', downloadURL);
+                newPost.img = true
+                forumRef.add(newPost).then(docRef => {
+                    console.log("Wrote to forum")
+                    const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
+                    uploadTask.on('state_changed', function(snapshot) {
+                        setLoading(true)
+                        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                        console.log('Upload is ' + progress + '% done')
+                        switch (snapshot.state) {
+                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                console.log('Upload is paused')
+                                break
+                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                console.log('Upload is running')
+                                break
+                        }
+                    }, function(error) {
+                        alert(error)
+                    }, function() {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        console.log('File available at', downloadURL);
+                        })
+                        window.location.reload()
                     })
-                    console.log("Writing data to Firebase, change: " + change)
-                    forumRef.set(updatedForum)
-                    console.log("Succesfully wrote data")
-                    setForumState(updatedForum)
-                    window.location.reload()
-                })
+                }).catch(err => {
+                    console.log("Error: ", err)
+                })  
             } else if (postState[2] !== "" && postState[3] === true) {
-                updatedForum.push({
-                    "class": postState[0].slice(1),
-                    "classId": parseInt(postState[0].slice(0, 1), 10),
-                    "comments": [],
-                    "creatorId": userId,
-                    "creatorDisplayName": userDisplayName,
-                    "date": JSON.stringify(today),
-                    "id": availableId,
-                    "likes": [],
-                    "text": postState[2],
-                    "title": postState[1],
-                    "img": true
-                })
-                const uploadTask = storageRef.child(`forumData/images/${availableId}`).put(file)
-                uploadTask.on('state_changed', function(snapshot) {
-                    setLoading(true)
-                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                    console.log('Upload is ' + progress + '% done')
-                    switch (snapshot.state) {
-                        case firebase.storage.TaskState.PAUSED: // or 'paused'
-                            console.log('Upload is paused')
-                            break
-                        case firebase.storage.TaskState.RUNNING: // or 'running'
-                            console.log('Upload is running')
-                            break
-                    }
-                }, function(error) {
-                    alert(error)
-                }, function() {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                    console.log('File available at', downloadURL);
+                newPost.text = postState[2]
+                newPost.img = true
+                forumRef.add(newPost).then(docRef => {
+                    console.log("Wrote to forum")
+                    const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
+                    uploadTask.on('state_changed', function(snapshot) {
+                        setLoading(true)
+                        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                        console.log('Upload is ' + progress + '% done')
+                        switch (snapshot.state) {
+                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                console.log('Upload is paused')
+                                break
+                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                console.log('Upload is running')
+                                break
+                        }
+                    }, function(error) {
+                        alert(error)
+                    }, function() {
+                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        console.log('File available at', downloadURL);
+                        })
+                        window.location.reload()
                     })
-                    console.log("Writing data to Firebase, change: " + change)
-                    forumRef.set(updatedForum)
-                    console.log("Succesfully wrote data")
-                    setForumState(updatedForum)
-                    window.location.reload()
+                }).catch(err => {
+                    console.log("Error: ", err)
                 })
             } else {
-                updatedForum.push({
-                    "class": postState[0].slice(1),
-                    "classId": parseInt(postState[0].slice(0, 1), 10),
-                    "comments": [],
-                    "creatorId": userId,
-                    "creatorDisplayName": userDisplayName,
-                    "date": JSON.stringify(today),
-                    "id": availableId,
-                    "likes": [],
-                    "text": postState[2],
-                    "title": postState[1],
-                    "img": false
+                newPost.text = postState[2]
+                forumRef.add(newPost).then(() => {
+                    console.log("Wrote to forum")
+                    window.location.reload()
+                }).catch(err => {
+                    console.log("Error: ", err)
                 })
-                console.log("Writing data to Firebase, change: " + change)
-                forumRef.set(updatedForum)
-                console.log("Succesfully wrote data")
-                setForumState(updatedForum)
-                window.location.reload()
             }
         }
     }
 
     useEffect(() => {
-        const listener = rootRef.on("value", snap => {
-            fetchData(snap.val())
-            console.log("Fetched data: ")
-            console.log(snap.val())
-        }) 
-        return () => {
-            rootRef.off("value", listener)
-        }
-        // fetch data when database updates
+        classesRef.where("students", "array-contains", userId)
+        .get().then(snap => {
+            console.log("Fetched from classes")
+            let newClassState = []
+            snap.forEach(doc => {
+                let cl = doc.data()
+                cl.id = doc.id
+                newClassState.push(cl)
+            })
+            setClassState(newClassState)
+            setLoading(false)
+            setLoaded(true)
+        }).catch(err => {
+            console.log("Error: ", err)
+        })
     }, [])
 
     const classOptions = classState.map(cl => {
         if (cl.students.includes(userId)) {
-            return <option value={cl.id + cl.name}>{cl.name}</option>
+            return <option value={cl.id}>{cl.name}</option>
         }
     })
 
