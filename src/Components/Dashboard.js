@@ -4,7 +4,7 @@ import Forum from './Forum'
 function Dashboard() {
     return(
         <div className="dashboard">
-            <Forum />
+            <Forum filter=""/>
         </div>
     )
 }

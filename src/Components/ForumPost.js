@@ -11,13 +11,13 @@ function ForumPost(props) {
     const liked = props.liked
     const title = props.post.title
     const text = props.post.text
-    const date = new Date(JSON.parse(props.post.date))
+    const date = props.post.date.toDate()
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
     const creatorDisplayName = props.post.creatorDisplayName
     const numLikes = props.post.likes.length
-    const numComments = props.post.comments.length
+    const numComments = props.post.numComments
     const className = props.post.class
     const classId = props.post.classId
     const img = props.post.img
@@ -28,11 +28,13 @@ function ForumPost(props) {
     }
 
     if (img) {
-        storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
+        storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
             const image = document.getElementById("img" + id)
-            image.src = url
-        }).catch(() => {
-            alert("Something went wrong...")
+            if (url) {
+                image.src = url
+            }
+        }).catch(err => {
+            console.log("Error: ", err)
         })
     }
 
@@ -65,7 +67,7 @@ function ForumPost(props) {
                     </div>
                 }
                 <div className="post-footer">
-                    <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
+                    <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>
                     <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
                 </div>
             </Link>

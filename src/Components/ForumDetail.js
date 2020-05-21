@@ -9,25 +9,26 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
-    const rootRef = firebase.database().ref()
-    const forumRef = firebase.database().ref("forumData")
+    const postRef = firebase.firestore().collection("forum").doc(match.params.id)
+    const commentsRef = postRef.collection("comments")
+    const userRef = firebase.firestore().collection("users")
     const storageRef = firebase.storage().ref()
-    const [forumState, setForumState] = useState([])
-    const [id, setId] = useState(0)
+    const [id, setId] = useState(match.params.id)
     const [postState, setPostState] = useState({
         "class" : "",
         "classId" : "",
-        "comments" : [],
         "creatorId" : "",
         "creatorDisplayName" : "",
-        "date" : "\"\"",
-        "id" : 0,
+        "date" : null,
+        "numComments" : 0,
+        "id" : "",
         "likes" : [],
         "text" : "",
         "title" : "",
         "reports" : [],
         "img": false
     })
+    const [commentsState, setCommentsState] = useState([])
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
     const [liked, setLiked] = useState(false)
@@ -36,23 +37,18 @@ function ForumDetail({match}) {
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
-    const today = new Date()
+    const today = firebase.firestore.Timestamp.now()
 
     let title = postState.title
     let text = postState.text
-    let date = new Date(JSON.parse(postState.date))
-    let year = date.getFullYear()
-    let month = date.getMonth() + 1
-    let day = date.getDate()
+    let date = postState.date && postState.date.toDate()
+    let year = date && date.getFullYear()
+    let month = date && date.getMonth() + 1
+    let day = date && date.getDate()
     let creatorId = postState.creatorId
     let creatorDisplayName = postState.creatorDisplayName
     let numLikes = postState.likes.length
-    let sortedComments = postState.comments.sort((a, b) => {
-        const d1 = new Date(JSON.parse(a.date))
-        const d2 = new Date(JSON.parse(b.date))
-        return (d2 - d1)
-    })
-    let numComments = postState.comments.length
+    let numComments = postState.numComments
     let className = postState.class
     let classId = postState.classId
     let reports = postState.reports
@@ -66,102 +62,57 @@ function ForumDetail({match}) {
     }
 
     if (img) {
-        storageRef.child(`forumData/images/${id}`).getDownloadURL().then(url => {
+        storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
             const image = document.getElementById("img" + id)
-            image.src = url
-        }).catch(() => {
-            alert("Something went wrong...")
+            if (url) {
+                image.src = url
+            }
+        }).catch(err => {
+            console.log("Error: ", err)
         })
     }
 
-    function fetchData(data) {
-        for (let [key, value] of Object.entries(data)) {
-            if (key === "forumData") {
-                let ids = []
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i]["comments"] === undefined){
-                        value[i]["comments"] = []
-                    }
-                    // initialize "comments" if undefined
-                    if (value[i]["likes"] === undefined){
-                        value[i]["likes"] = []
-                    }
-                    // initialize "likes" if undefined
-                    if (value[i]["reports"] === undefined){
-                        value[i]["reports"] = []
-                    }
-                    // initialize "likes" if undefined
-                    ids.push(value[i].id)
-                }
-                if (ids.includes(parseInt(match.params.id))) {
-                    setForumState(value)
-                    setId(parseInt(match.params.id))
-                    for (let i = 0; i < value.length; i++) {
-                        if (value[i].id === parseInt(match.params.id)) {
-                            setPostState(value[i])
-                            if (value[i].likes.includes(userId)) {
-                                setLiked(true)
-                            }
-                        }
-                    }
-                } else {
-                    window.location.reload()
-                }
-            }
-            if (key === "userData") {
-                for (let i = 0; i < value.length; i++) {
-                    if (value[i].id === userId) {
-                        setMod(value[i].mod)
-                    }
-                }
-            }
+    function handlePostDoc(doc) {
+        setPostState(doc.data())
+        if (doc.data().likes.includes(userId)) {
+            setLiked(true)
         }
         setLoading(false)
         setLoaded(true)
     }
 
+    function handleCommentsSnap(snap) {
+        let comments = []
+        snap.forEach(comment => {
+            const commentData = comment.data()
+            commentData.id = comment.id
+            comments.push(commentData)
+        })
+        setCommentsState(comments)
+    }
+
     function handleChange(event) {
         const {value, type} = event.target
-        let change = ""
         if (type === "checkbox") {
-            setForumState(prevForum => {
-                const updatedForum = prevForum.map(post => {
-                    let newPost = post
-                    if (post.id === id) {
-                        if (post.likes.includes(userId)) {
-                            const filteredLikes = post.likes.filter(value => {
-                                if (value !== userId) {
-                                    return value
-                                }
-                            })
-                            newPost.likes = filteredLikes
-                            setLiked(false)
-                            change = "unliked post"
-                            // if post is liked, unlike post
-                        } else {
-                            if (!newPost.likes) {
-                                newPost.likes = []
-                            }
-                            newPost.likes.push(userId)
-                            setLiked(true)
-                            change = "liked post"
-                            // if post is unliked, like post
-                        }
+            let newPostState = postState
+            if (newPostState.likes.includes(userId)) {
+                newPostState.likes.forEach((like, index) => {
+                    if (like === userId) {
+                        newPostState.likes.splice(index, 1)
                     }
-                    console.log(newPost)
-                    return newPost
                 })
-                console.log("Writing data to Firebase, change: " + change)
-                forumRef.set(updatedForum)
-                console.log("Succesfully wrote data")
-                return updatedForum
-            })
+                setLiked(false)
+            } else {
+                newPostState.likes.push(userId)
+                setLiked(true)
+            }
+            postRef.set(newPostState)
+            console.log("Wrote to post")
+            setPostState(newPostState)
         }
         else if (type === "textarea") {
             setCommentState(value)
         }
-        console.log("New state:")
-        console.log(forumState)
     }
 
     function handleSubmit(event) {
@@ -169,31 +120,14 @@ function ForumDetail({match}) {
         if (commentState === "") {
             alert("You cannot comment nothing")
         } else {
-            let change = ""
-            setForumState(prevForum => {
-                const updatedForum = prevForum.map(post => {
-                    let newPost = post
-                    if (post.id === id) {
-                        let newComment = {}
-                        newComment.id = post.comments.length
-                        newComment.creatorId = userId
-                        newComment.creatorDisplayName = userDisplayName
-                        newComment.date = JSON.stringify(today)
-                        newComment.text = commentState
-                        newComment.reports = []
-                        newPost.comments.push(newComment)
-                    }
-                    change = "new comment"
-                    console.log(newPost)
-                    return newPost
-                })
-                console.log("Writing data to Firebase, change: " + change)
-                forumRef.set(updatedForum)
-                console.log("Succesfully wrote data")
-                return updatedForum
-            })
-            console.log("New state:")
-            console.log(forumState)
+            let newComment = {}
+            newComment.creatorId = userId
+            newComment.creatorDisplayName = userDisplayName
+            newComment.date = today
+            newComment.text = commentState
+            newComment.reports = []
+            commentsRef.add(newComment)
+            console.log("Wrote to comments")
             document.getElementById("comment").value = ""
             setCommentState("")
         }
@@ -201,42 +135,25 @@ function ForumDetail({match}) {
 
     function handleDeletePost() {
         if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
-            const change = "deleted post"
-            let updatedForum = forumState
-            for (const [i, post] of updatedForum.entries()) { 
-                if (post.id === id) { 
-                    updatedForum.splice(i, 1)
+            postRef.delete().then(() => {
+                console.log("Deleted post")
+                if (img) {
+                    storageRef.child(`forum/images/${id}`).delete().then(() => {}).catch(error => alert(error))
                 }
-            }
-            console.log(updatedForum)
-            console.log("Writing data to Firebase, change: " + change)
-            forumRef.set(updatedForum)
-            console.log("Succesfully wrote data")
-            if (img) {
-                storageRef.child(`forumData/images/${id}`).delete().then(() => {}).catch(error => alert(error))
-            }
-            window.location.reload()
+                window.location.reload()
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
         }
     }
 
     function handleDeleteComment(commentId) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
-            const change = "deleted comment"
-            let updatedForum = forumState
-            for (const post of updatedForum) { 
-                if (post.id === id) { 
-                    for (const [i, comment] of post.comments.entries()) {
-                        if (comment.id === commentId) {
-                            post.comments.splice(i, 1)
-                        }
-                    }
-                }
-            }
-            console.log(updatedForum)
-            console.log("Writing data to Firebase, change: " + change)
-            forumRef.set(updatedForum)
-            console.log("Succesfully wrote data")
-            setForumState(updatedForum)
+            commentsRef.doc(commentId).delete().then(() => {
+                console.log("Deleted comment")
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
         }
     }
 
@@ -245,44 +162,27 @@ function ForumDetail({match}) {
             alert("You have already reported this post")
         } else {
             if (window.confirm("Are you sure you want to report this post?\nThis action is irreversible")) {
-                const change = "reported post"
-                let updatedForum = forumState
-                for (const post of updatedForum.values()) { 
-                    if (post.id === id) { 
-                        post.reports.push(userId)
-                    }
-                }
-                console.log(updatedForum)
-                console.log("Writing data to Firebase, change: " + change)
-                forumRef.set(updatedForum)
-                console.log("Succesfully wrote data")
-                setForumState(updatedForum)
+                let newPostState = postState
+                newPostState.reports.push(userId)
+                postRef.set(newPostState)
+                console.log("Wrote to post")
+                setPostState(newPostState)
             }
         }
     }
 
     function handleReportComment(commentId) {
-        const change = "deleted post"
-        let updatedForum = forumState
-        for (const post of updatedForum) { 
-            if (post.id === id) { 
-                for (const comment of post.comments.values()) {
-                    if (comment.id === commentId) {
-                        if (comment.reports === undefined) {
-                            comment.reports = []
-                        }
-                        if (comment.reports.includes(userId)) {
-                            alert("You have already reported this comment")
-                        } else {
-                            if (window.confirm("Are you sure you want to report this comment?\nThis action is irreversible")) {
-                                comment.reports.push(userId)
-                                console.log(updatedForum)
-                                console.log("Writing data to Firebase, change: " + change)
-                                forumRef.set(updatedForum)
-                                console.log("Succesfully wrote data")
-                                setForumState(updatedForum)
-                            }
-                        }
+        let newCommentsState = commentsState
+        for (const comment of newCommentsState) {
+            if (comment.id === commentId) {
+                if (comment.reports.includes(userId)) {
+                    alert("You have already reported this comment")
+                } else {
+                    if (window.confirm("Are you sure you want to report this comment?\nThis action is irreversible")) {
+                        comment.reports.push(userId)
+                        commentsRef.doc(commentId).set(comment)
+                        console.log("Wrote to comments")
+                        setCommentsState(newCommentsState)
                     }
                 }
             }
@@ -290,46 +190,59 @@ function ForumDetail({match}) {
     }
 
     useEffect(() => {
-        const listener = rootRef.on("value", snap => {
-            fetchData(snap.val())
-            console.log("Fetched data: ")
-            console.log(snap.val())
-        }) 
+        userRef.doc(userId).get().then(doc => {
+            setMod(doc.data().mod)
+        })
+        const unsubscribePost = postRef.onSnapshot(doc => {
+            if (doc.exists) {
+                console.log("Fetched from post")
+                handlePostDoc(doc)
+            } else {
+                alert("This post has been deleted")
+            }
+        })
+        const unsubscribeComments = commentsRef.orderBy("date", "desc").onSnapshot(snap => {
+            console.log("Fetched from comments")
+            handleCommentsSnap(snap)
+        })
         return () => {
-            rootRef.off("value", listener)
+            unsubscribePost()
+            unsubscribeComments()
         }
         // fetch data when database updates
     }, [])
 
-    const commentSection = sortedComments.map(comment => {
+    const commentSection = commentsState.map(comment => {
         const commentId = comment.id
         const creatorId = comment.creatorId
         const creatorDisplayName = comment.creatorDisplayName
         const text = comment.text
-        if (comment.reports === undefined) {
-            comment.reports = []
-        }
+        const date = comment.date.toDate()
+        const year = date.getFullYear()
+        const month = date.getMonth() + 1
+        const day = date.getDate()
         const commentReports = comment.reports.length
 
         return(
             <div>
-                <p><b>{creatorDisplayName}</b></p>
+                <p><b>{creatorDisplayName}</b> - {month} / {day} / {year}</p>
                 <p>{text}</p>
                 <div className="post-footer-btns">
                     <div className="post-report" onClick = {() => handleReportComment(commentId)} style={linkStyle}>
-                        <FontAwesomeIcon icon={regularIcons.faFlag}/>
+                    {comment.reports.includes(userId) ? <FontAwesomeIcon icon={solidIcons.faFlag}/> : <FontAwesomeIcon icon={regularIcons.faFlag}/>}
                     </div>
                     <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
                         {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
                     </div>        
                 </div>
                 <div style={{marginTop: "10px", color: "#888888"}}>
-                    {(mod || (creatorId === userId)) && (commentReports + ((commentReports === 1) ? " report" : " reports"))}
+                    {mod && (commentReports + ((commentReports === 1) ? " report" : " reports"))}
                 </div> 
                 <br/>
             </div>
         )
     })
+
     if (loading) {
         return (
             <div className="forum-header">
@@ -368,13 +281,13 @@ function ForumDetail({match}) {
                                 </div>
                             } 
                             <div className="post-footer">
-                                <div>Posted by <i>{creatorDisplayName} - {month} / {day} / {year}</i></div>
+                                <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>
                                 <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
-                                <div style={{color: "#888888"}}>{(mod || (creatorId === userId)) && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
+                                <div style={{color: "#888888"}}>{mod && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
                             </div>
                             <div className="post-footer-btns">
                                 <div className="post-report" onClick = {handleReportPost} style={linkStyle}>
-                                    <FontAwesomeIcon icon={regularIcons.faFlag}/>
+                                    {reports.includes(userId) ? <FontAwesomeIcon icon={solidIcons.faFlag}/> : <FontAwesomeIcon icon={regularIcons.faFlag}/>}
                                 </div>
                                 <div className="post-delete" onClick = {handleDeletePost} style={linkStyle}>
                                     {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}

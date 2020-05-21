@@ -6,34 +6,28 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function Profile() {
-    const userRef = firebase.database().ref("userData")
     const [mod, setMod] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
-    console.log(currentUser)
     const userId = currentUser.uid
     const displayName = currentUser.displayName
     const profilePic = currentUser.photoURL
+    const usersRef = firebase.firestore().collection("users").doc(userId)
 
-    function fetchData(data) {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].id === userId) {
-                setMod(data[i].mod)
-            }
-        }
+    function handleUserDoc(doc) {
+        setMod(doc.mod)
         setLoading(false)
         setLoaded(true)
     }
 
     useEffect(() => {
-        userRef.once("value")
-        .then(snap => {
-            console.log("Fetched data:")
-            console.log(snap.val())
-            fetchData(snap.val())
+        usersRef.get().then(doc => {
+            console.log("Fetched from users")
+            handleUserDoc(doc.data())
+        }).catch(err => {
+            console.log("Error: ", err)
         })
-        // fetch data when component mounts
     }, [])
 
     if (loading) {
@@ -57,7 +51,7 @@ function Profile() {
                     </div>
                     <div className="profile-details"><a href="https://forms.gle/MZRy6D3pqP4K95gZ8" style={{color: "black"}}>Submit feedback / report bugs</a></div>
                     <div>
-                        <Forum filter={userId} />
+                        <Forum filter={`user/${userId}`} />
                     </div>
                 </div>
             </CSSTransition>
