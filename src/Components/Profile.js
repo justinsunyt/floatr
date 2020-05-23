@@ -7,7 +7,6 @@ import {CSSTransition} from 'react-transition-group'
 
 function Profile() {
     const [mod, setMod] = useState(false)
-    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
@@ -17,7 +16,6 @@ function Profile() {
 
     function handleUserDoc(doc) {
         setMod(doc.mod)
-        setLoading(false)
         setLoaded(true)
     }
 
@@ -30,7 +28,7 @@ function Profile() {
         })
     }, [])
 
-    if (loading) {
+    if (!loaded) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>

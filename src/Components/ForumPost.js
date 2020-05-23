@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {Link} from 'react-router-dom'
+import ReactLoading from 'react-loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
@@ -7,6 +8,8 @@ import * as firebase from 'firebase'
 
 function ForumPost(props) {
     const storageRef = firebase.storage().ref()
+    const [loaded, setLoaded] = useState(false)
+    const [src, setSrc] = useState("")
     const id = props.post.id
     const liked = props.liked
     const title = props.post.title
@@ -27,16 +30,16 @@ function ForumPost(props) {
         textDecoration: "none"
     }
 
-    if (img) {
-        storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
-            const image = document.getElementById("img" + id)
-            if (url) {
-                image.src = url
-            }
-        }).catch(err => {
-            console.log("Error: ", err)
-        })
-    }
+    useEffect(() => {
+        if (img) {
+            storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
+                setSrc(url)
+                setLoaded(true)
+            }).catch(err => {
+                console.log("Error: ", err)
+            })
+        }
+    }, [])
 
     return (
         <div className="forum-post">
@@ -61,10 +64,14 @@ function ForumPost(props) {
                 <div className="post-text-short">
                     {text}
                 </div>
-                {img && 
-                    <div>
-                        <img id={"img" + id} className="post-image"/> 
+                {img && (!loaded ? 
+                    <div className="forum-header">
+                        <ReactLoading type="bars" color="black" width="10%"/>
                     </div>
+                : 
+                    <div>
+                        <img id={"img" + id} src={src} className="post-image"/> 
+                    </div>)
                 }
                 <div className="post-footer">
                     <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>

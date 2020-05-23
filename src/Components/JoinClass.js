@@ -8,7 +8,6 @@ function JoinClass() {
     const classesRef = firebase.firestore().collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
-    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const userId = currentUser.uid
 
@@ -25,7 +24,6 @@ function JoinClass() {
             }
         })
         setClassState(classes)
-        setLoading(false)
         setLoaded(true)
     }
 
@@ -95,7 +93,7 @@ function JoinClass() {
         )
     })
 
-    if (loading) {
+    if (!loaded) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
