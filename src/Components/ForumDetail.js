@@ -32,8 +32,8 @@ function ForumDetail({match}) {
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
     const [liked, setLiked] = useState(false)
-    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [src, setSrc] = useState("")
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
@@ -61,24 +61,11 @@ function ForumDetail({match}) {
         cursor: "pointer"
     }
 
-    if (img) {
-        storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
-            const image = document.getElementById("img" + id)
-            if (url) {
-                image.src = url
-            }
-        }).catch(err => {
-            console.log("Error: ", err)
-        })
-    }
-
     function handlePostDoc(doc) {
         setPostState(doc.data())
         if (doc.data().likes.includes(userId)) {
             setLiked(true)
         }
-        setLoading(false)
-        setLoaded(true)
     }
 
     function handleCommentsSnap(snap) {
@@ -127,6 +114,7 @@ function ForumDetail({match}) {
             newComment.text = commentState
             newComment.reports = []
             commentsRef.add(newComment)
+            postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
             console.log("Wrote to comments")
             document.getElementById("comment").value = ""
             setCommentState("")
@@ -135,6 +123,9 @@ function ForumDetail({match}) {
 
     function handleDeletePost() {
         if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
+            commentsRef.get().then(comments => {
+                comments.forEach(comment => comment.delete())
+            })
             postRef.delete().then(() => {
                 console.log("Deleted post")
                 if (img) {
@@ -143,13 +134,14 @@ function ForumDetail({match}) {
                 window.location.reload()
             }).catch(err => {
                 console.log("Error: ", err)
-            })
+            }) 
         }
     }
 
     function handleDeleteComment(commentId) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
             commentsRef.doc(commentId).delete().then(() => {
+                postRef.update({numComments: firebase.firestore.FieldValue.increment(-1)})
                 console.log("Deleted comment")
             }).catch(err => {
                 console.log("Error: ", err)
@@ -197,6 +189,16 @@ function ForumDetail({match}) {
             if (doc.exists) {
                 console.log("Fetched from post")
                 handlePostDoc(doc)
+                if (doc.data().img) {
+                    storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
+                        setSrc(url)
+                        setLoaded(true)
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                } else {
+                    setLoaded(true)
+                }
             } else {
                 alert("This post has been deleted")
             }
@@ -204,7 +206,7 @@ function ForumDetail({match}) {
         const unsubscribeComments = commentsRef.orderBy("date", "desc").onSnapshot(snap => {
             console.log("Fetched from comments")
             handleCommentsSnap(snap)
-        })
+        })  
         return () => {
             unsubscribePost()
             unsubscribeComments()
@@ -243,7 +245,7 @@ function ForumDetail({match}) {
         )
     })
 
-    if (loading) {
+    if (!loaded) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
@@ -275,10 +277,14 @@ function ForumDetail({match}) {
                             <div className="post-text-long">
                                 {text}
                             </div>
-                            {img && 
-                                <div>
-                                    <img id={"img" + id} className="post-image"/> 
+                            {img && (!loaded ? 
+                                <div className="forum-header">
+                                    <ReactLoading type="bars" color="black" width="10%"/>
                                 </div>
+                            : 
+                                <div>
+                                    <img id={"img" + id} src={src} className="post-image"/> 
+                                </div>)
                             } 
                             <div className="post-footer">
                                 <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>

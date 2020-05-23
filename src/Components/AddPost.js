@@ -15,7 +15,6 @@ function AddPost() {
     }])
     const [postState, setPostState] = useState([null, "", "", false])
     const [file, setFile] = useState()
-    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
@@ -79,7 +78,7 @@ function AddPost() {
                     console.log("Wrote to forum")
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
-                        setLoading(true)
+                        setLoaded(false)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {
@@ -108,7 +107,7 @@ function AddPost() {
                     console.log("Wrote to forum")
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
-                        setLoading(true)
+                        setLoaded(false)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {
@@ -153,7 +152,6 @@ function AddPost() {
                 newClassState.push(cl)
             })
             setClassState(newClassState)
-            setLoading(false)
             setLoaded(true)
         }).catch(err => {
             console.log("Error: ", err)
@@ -166,7 +164,7 @@ function AddPost() {
         }
     })
 
-    if (loading) {
+    if (!loaded) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>

@@ -15,7 +15,6 @@ function Forum(props) {
     const [queryLimit, setQueryLimit] = useState(false)
     const [classIds, setClassIds] = useState([])
     const [atBottom, setAtBottom] = useState(false)
-    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [liked, setLiked] = useState([])
     const {currentUser} = useContext(AuthContext)
@@ -40,7 +39,6 @@ function Forum(props) {
         }
         setForumState(filteredForum)
         setLiked(filteredForum.map(post => (post.likes.includes(userId)) ? true : false))
-        setLoading(false)
         setLoaded(true)
     }
 
@@ -157,7 +155,7 @@ function Forum(props) {
 
     const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
 
-    if (loading) {
+    if (!loaded) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
