@@ -94,8 +94,8 @@ function Settings() {
                             <div>
                                 <h3>Bio (optional)</h3>
                                 <div className="settings-input">
-                                    <textarea className="settings-textarea" onChange={handleChange} placeholder="Bio" maxlength="200" value={bio}></textarea>
-                                    {bio.length} / 200 characters
+                                    <textarea className="settings-textarea" onChange={handleChange} placeholder="Bio" maxLength="200" value={bio}></textarea>
+                                    <div style={{color: "#888888"}}>{bio.length} / 200 characters</div>
                                 </div>
                             </div>
                             <div className="post-hr">

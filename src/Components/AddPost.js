@@ -83,6 +83,7 @@ function AddPost() {
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
                         setLoaded(false)
+                        setLoading(true)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {
@@ -112,6 +113,7 @@ function AddPost() {
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
                         setLoaded(false)
+                        setLoading(true)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {

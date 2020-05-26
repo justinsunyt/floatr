@@ -305,8 +305,8 @@ function ForumDetail({match}) {
                     <div className="comment-section">
                         <div className="comment-input">
                             <form onSubmit={handleSubmit}>
-                                <textarea className="comment-textarea" onChange={handleChange} placeholder="Comment here" value={commentState} maxlength="1000" required></textarea>
-                                <div>{commentState.length} / 1000 characters</div>
+                                <textarea className="comment-textarea" onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></textarea>
+                                <div style={{color: "#888888"}}>{commentState.length} / 1000 characters</div>
                                 <button className="comment-button"><span>Comment </span></button>
                             </form>
                         </div>

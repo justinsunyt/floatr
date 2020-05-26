@@ -184,12 +184,24 @@ function Forum(props) {
                                 </div>
                         </div>
                     :
-                        (!Array.isArray(classIds) || !classIds.length) ? 
-                            <div className="class-list">
-                                <p>You haven't joined any classes yet!</p>
-                                <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                        (classIds.length === 0) ? 
+                            <div>
+                                <div className="forum-header">
+                                    <p>You haven't joined any classes yet!</p> 
+                                </div>
+                                <div className="forum-header">
+                                    <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                                </div>
                             </div>
-                        :
+                        : (forumState.length === 0) ?
+                            <div>
+                                <div className='forum-header'>
+                                    <Link to={'/post'} className="post-link">
+                                        <button className="post-button">Add new post</button>
+                                    </Link>
+                                </div>
+                            </div>
+                            :
                             <div>
                                 <div className='forum-header'>
                                     <Link to={'/post'} className="post-link">

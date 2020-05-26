@@ -1,11 +1,12 @@
 :root {
   --primary-color: #0055ff;
   --secondary-color: #ff502f;
-  --background-color: #f9fbff;
+  --background-color: #f8fafe;
   --primary-shadow-color: rgba(0,0,0,0.2);
-  --secondary-shadow-color: rgba(0,0,0,0.1);
-  --general-width: 700px;
-  --textarea-width: 680px;
+  --secondary-shadow-color: rgba(0,0,0,0.13);
+  --general-width: 640px;
+  --unpadded-width: 700px;
+  --border-radius: 6px;
 }
 
 .App {
@@ -31,18 +32,8 @@
   flex-direction: column;
   align-items: left;
   border: 1px solid #efefef;
-  box-shadow:
-  /* The top layer shadow */
-      0 0 6px var(--secondary-shadow-color),
-          /* The second layer */
-      0 10px 0 -5px #eee,
-          /* The second layer shadow */
-      0 10px 1px -4px var(--secondary-shadow-color),
-          /* The third layer */
-      0 20px 0 -10px #eee,
-          /* The third layer shadow */
-      0 20px 1px -9px var(--secondary-shadow-color);
-      ;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 6px var(--secondary-shadow-color);
   padding: 30px;
   transition: all 0.5s ease;
 }
@@ -53,7 +44,7 @@
   margin-bottom: 25px;
   display: flex;
   text-align: center;
-  max-width: var(--general-width);
+  max-width: var(--unpadded-width);
   transition: all 0.5s ease;
   justify-content: center;
 }
@@ -142,24 +133,24 @@
 }
 
 .comment-input {
-  margin-top: 25px;
   margin-bottom: 25px;
-  max-width: var(--textarea-width);
+  max-width: calc(var(--unpadded-width) - 20px);
+  margin-right: 20px;
   transition: all 0.5s ease;
 }
 
 .comment-section {
   margin: auto;
-  max-width: var(--general-width);
+  margin-top: 25px;
+  max-width: var(--unpadded-width);
   align-items: left;
   display: flex;
   flex-direction: column;
-  padding: 30px;
   transition: all 0.5s ease;
 }
 .comment-button {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: none;
   color: white;
@@ -200,7 +191,7 @@
 }
 
 .comment-textarea {
-  min-height:80px;
+  min-height: 80px;
 }
 
 .class-header {
@@ -253,7 +244,7 @@
 
 .login-button {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: none;
   color: white;
@@ -295,7 +286,7 @@
 
 .post-button {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: 1px solid var(--primary-color);
   color: white;
@@ -321,19 +312,19 @@
 .addpost-input {
   margin: auto;
   margin-top: 50px;
-  max-width: var(--general-width);
+  max-width: var(--unpadded-width);
   display: block;
 }
 
 .addpost-title {
   height: 17px;
-  max-width: var(--textarea-width);
+  max-width: calc(var(--unpadded-width) - 20px);
   resize: none;
 }
 
 .addpost-text {
   min-height: 120px;
-  max-width: var(--textarea-width);
+  max-width: calc(var(--unpadded-width) - 20px);
 }
 
 .addpost-file {
@@ -350,10 +341,11 @@
   background-color: var(--secondary-color);
   display: inline-block;
   padding: 15px;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   margin-top: 15px;
   cursor: pointer;
   min-width: 120px;
+  box-shadow: 0 0 6px var(--primary-shadow-color);
 }
 
 .addpost-file + label span {
@@ -394,7 +386,7 @@
 
 .addpost-button {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: none;
   color: white;
@@ -451,7 +443,7 @@
 
 .joinclass-button {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: none;
   color: white;
@@ -493,7 +485,7 @@
 
 .joinclass-submit {
   display: inline-block;
-  border-radius: 6px;
+  border-radius: var(--border-radius);
   background-color: var(--primary-color);
   border: none;
   color: white;
@@ -654,6 +646,7 @@
   text-decoration: none;
   justify-content: space-evenly;
   align-items: center;
+  transition: all 0.5s;
 }
 
 .logo {
@@ -670,12 +663,14 @@
 }
 
 .settings-input {
-  max-width: var(--textarea-width);
+  max-width: calc(var(--general-width) - 20px);
+  margin-right: 20px;
   transition: all 0.5s ease;
 }
 
 .settings-textarea {
   min-height: 40px;
+  background-color: white;
 }
 
 .nav-links {
@@ -684,6 +679,7 @@
   justify-content: space-around;
   align-items: center;
   list-style: none;
+  transition: all 0.5s;
 }
 
 .nav-link {
@@ -694,12 +690,17 @@
   text-decoration: none;
 }
 
+.nav-icon {
+  transition: all 0.5s;
+}
+
 .nav-img {
   float: left;
   text-align: center;
   height: 28px;
   width: 28px;
   border-radius: 50%;
+  transition: all 0.5s;
 }
 
 .fade-enter {
@@ -775,6 +776,10 @@ textarea {
   padding: 10px;
   font-family: 'Lato', sans-serif;
   resize: vertical;
+  border: 1px solid #efefef;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 6px var(--secondary-shadow-color);
+  background-color: var(--background-color);
 }
 
 input {
@@ -785,6 +790,7 @@ button {
   font-family: 'Lato', sans-serif;
   transition-duration: 0.3s;
   border: none;
+  box-shadow: 0 0 6px var(--primary-shadow-color);
 }
 
 select {
@@ -792,6 +798,10 @@ select {
   padding: 5px;
   margin-bottom: 15px;
   min-width: 200px;
+  border: 1px solid #efefef;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 6px var(--secondary-shadow-color);
+  background-color: var(--background-color);
 }
 
 li {
@@ -827,6 +837,22 @@ body::-webkit-scrollbar-thumb {
   }
   .chat-form {
     margin-left: -40%;
+  }
+  .logo {
+    display: none;
+  }
+  .nav-logo {
+    font-size: 12px;
+  }
+  .nav-links {
+    width: 40%;
+  }
+  .nav-icon {
+    font-size: 12px;
+  }
+  .nav-img {
+    height: 22px;
+    width: 22px;
   }
 }
 
