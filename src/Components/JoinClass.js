@@ -8,6 +8,7 @@ function JoinClass() {
     const classesRef = firebase.firestore().collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
+    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const userId = currentUser.uid
 
@@ -24,6 +25,7 @@ function JoinClass() {
             }
         })
         setClassState(classes)
+        setLoading(false)
         setLoaded(true)
     }
 
@@ -59,18 +61,20 @@ function JoinClass() {
             alert("You haven't selected any classes!")
         } else {
             classState.forEach(cl => {
-                classesRef.doc(cl.id).set(cl).then(() => {
-                    console.log("Wrote to classes")
-                    window.location.reload()
-                }).catch(err => {
-                    console.log("Error: ", err)
-                })
+                if (cl.students.includes(userId)) {
+                    classesRef.doc(cl.id).set(cl).then(() => {
+                        console.log("Wrote to classes")
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                }
             })
+            window.location.reload()
         }
     }
 
     useEffect(() => {
-        classesRef.get().then(snap => {
+        classesRef.orderBy("name").get().then(snap => {
             console.log("Fetched from classes")
             handleClassesSnap(snap)
         }).catch(err => {
@@ -93,7 +97,7 @@ function JoinClass() {
         )
     })
 
-    if (!loaded) {
+    if (loading) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>

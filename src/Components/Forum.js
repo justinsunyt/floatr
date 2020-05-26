@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
@@ -15,12 +15,13 @@ function Forum(props) {
     const [queryLimit, setQueryLimit] = useState(false)
     const [classIds, setClassIds] = useState([])
     const [atBottom, setAtBottom] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [liked, setLiked] = useState([])
+    const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
-
-    let classes = []
+    const userRef = firebase.firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
         let filteredForum = []
@@ -29,16 +30,12 @@ function Forum(props) {
             postData.id = post.id
             filteredForum.push(postData)
         })
-        filteredForum = filteredForum.filter(post => { 
-            if (classIds.includes(post.classId) || classes.includes(post.classId)) {
-                return post
-            }
-        })
         if (forumState.length === filteredForum.length) {
             setQueryLimit(true)
         }
         setForumState(filteredForum)
         setLiked(filteredForum.map(post => (post.likes.includes(userId)) ? true : false))
+        setLoading(false)
         setLoaded(true)
     }
 
@@ -73,44 +70,55 @@ function Forum(props) {
     }
 
     useEffect(() => {
-        classesRef.where("students", "array-contains", userId)
-        .get().then(snap => {
-            console.log("Fetched from classes")
-            snap.forEach(doc => {
-                classes.push(doc.id)
-            })
-            setClassIds(classes)
-        }).catch(err => {
-            console.log("Error: ", err)
+        userRef.get().then(doc => {
+            if (doc.exists) {
+                setUserInitiated(true)
+                classesRef.where("students", "array-contains", userId)
+                .get().then(snap => {
+                    console.log("Fetched from classes")
+                    let classes = []
+                    snap.forEach(doc => {
+                        classes.push(doc.id)
+                    })
+                    setClassIds(classes)
+                    if (filter.slice(0, 6) === "class/") {
+                        forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
+                        .get().then(snap => {
+                            console.log("Fetched from forum")
+                            handleForumSnap(snap)
+                        }).catch(err => {
+                            console.log("Error: ", err)
+                        })
+                    } else if (filter.slice(0, 5) === "user/"){
+                        forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
+                        .get().then(snap => {
+                            console.log("Fetched from forum")
+                            handleForumSnap(snap)
+                        }).catch(err => {
+                            console.log("Error: ", err)
+                        })
+                    } else {
+                        if (classes.length !== 0) {
+                            forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
+                            .get().then(snap => {
+                                console.log("Fetched from forum")
+                                handleForumSnap(snap)
+                            }).catch(err => {
+                                console.log("Error: ", err)
+                            })
+                        } else {
+                            setLoading(false)
+                        }
+                    }
+                    console.log("Filter: ", filter)
+                    console.log("Query size: ", querySize)
+                }).catch(err => {
+                    console.log("Error: ", err)
+                })
+            } else {
+                setLoading(false)
+            }
         })
-
-        if (filter.slice(0, 6) === "class/") {
-            forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
-            .get().then(snap => {
-                console.log("Fetched from forum")
-                handleForumSnap(snap)
-            }).catch(err => {
-                console.log("Error: ", err)
-            })
-        } else if (filter.slice(0, 5) === "user/"){
-            forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
-            .get().then(snap => {
-                console.log("Fetched from forum")
-                handleForumSnap(snap)
-            }).catch(err => {
-                console.log("Error: ", err)
-            })
-        } else {
-            forumRef.orderBy("date", "desc").limit(querySize)
-            .get().then(snap => {
-                console.log("Fetched from forum")
-                handleForumSnap(snap)
-            }).catch(err => {
-                console.log("Error: ", err)
-            })
-        }
-        console.log("Filter: ", filter)
-        console.log("Query size: ", querySize)
 
         window.addEventListener("scroll", handleScroll)
         return () => {
@@ -155,12 +163,14 @@ function Forum(props) {
 
     const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
 
-    if (!loaded) {
+    if (loading) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
             </div>
         )
+    } else if (!userInitiated) {
+        return <Redirect to="/settings"/>
     } else {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">

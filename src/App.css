@@ -2,7 +2,10 @@
   --primary-color: #0055ff;
   --secondary-color: #ff502f;
   --background-color: #f9fbff;
-  --shadow-color: #efefef;
+  --primary-shadow-color: rgba(0,0,0,0.2);
+  --secondary-shadow-color: rgba(0,0,0,0.1);
+  --general-width: 700px;
+  --textarea-width: 680px;
 }
 
 .App {
@@ -23,22 +26,23 @@
   background-color: var(--background-color);
   margin-left: auto;
   margin-right: auto;
-  width: 40%;
+  max-width: var(--general-width);
   display: flex;
   flex-direction: column;
   align-items: left;
   border: 1px solid #efefef;
   box-shadow:
   /* The top layer shadow */
-      0 1px 1px rgba(0,0,0,0.15),
+      0 0 6px var(--secondary-shadow-color),
           /* The second layer */
       0 10px 0 -5px #eee,
           /* The second layer shadow */
-      0 10px 1px -4px rgba(0,0,0,0.15),
+      0 10px 1px -4px var(--secondary-shadow-color),
           /* The third layer */
       0 20px 0 -10px #eee,
           /* The third layer shadow */
-      0 20px 1px -9px rgba(0,0,0,0.15);
+      0 20px 1px -9px var(--secondary-shadow-color);
+      ;
   padding: 30px;
   transition: all 0.5s ease;
 }
@@ -49,7 +53,7 @@
   margin-bottom: 25px;
   display: flex;
   text-align: center;
-  width: 40%;
+  max-width: var(--general-width);
   transition: all 0.5s ease;
   justify-content: center;
 }
@@ -138,16 +142,15 @@
 }
 
 .comment-input {
-  margin: auto;
-  margin-top: 50px;
-  width: 40%;
-  display: block;
+  margin-top: 25px;
+  margin-bottom: 25px;
+  max-width: var(--textarea-width);
   transition: all 0.5s ease;
 }
 
 .comment-section {
   margin: auto;
-  width: 40%;
+  max-width: var(--general-width);
   align-items: left;
   display: flex;
   flex-direction: column;
@@ -210,34 +213,42 @@
 .class-list {
   margin: auto;
   text-align: center;
-  width: 300px;
+  max-width: 500px;
   transition: all 0.5s ease;
 }
 
 .profile-header {
   margin: auto;
-  margin-top: 25px;
-  margin-bottom: 50px;
-  text-align: center;
+  margin-top: 10px;
+  text-align: right;
+  max-width: var(--general-width);
+  transition: all 0.5s;
 }
 
 .profile-details {
-  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: auto;
   margin-bottom: 50px;
+  max-width: var(--general-width);
+  transition: all 0.5s
+}
+
+.profile-settings {
+  color: black;
+  font-size: 20px;
+}
+
+.profile-text {
+  margin-left: 25px;
 }
 
 .profile-pic {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-}
-
-.nav-links {
-  width: 13%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  list-style: none;
+  transition: all 0.5s;
 }
 
 .login-button {
@@ -310,17 +321,19 @@
 .addpost-input {
   margin: auto;
   margin-top: 50px;
-  width: 50%;
+  max-width: var(--general-width);
   display: block;
 }
 
 .addpost-title {
   height: 17px;
+  max-width: var(--textarea-width);
   resize: none;
 }
 
 .addpost-text {
   min-height: 120px;
+  max-width: var(--textarea-width);
 }
 
 .addpost-file {
@@ -542,7 +555,7 @@
 }
 
 .chatroom .msg {
-  background: var(--shadow-color);
+  background: var(--background-color);
   position: relative;
   padding: 8px 15px;
   font-size: 16px;
@@ -649,12 +662,44 @@
   color: white;
 }
 
+.settings-header {
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.settings-input {
+  max-width: var(--textarea-width);
+  transition: all 0.5s ease;
+}
+
+.settings-textarea {
+  min-height: 40px;
+}
+
+.nav-links {
+  width: 13%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+
 .nav-link {
   float: left;
   text-align: center;
   padding: 12px;
   color: white;
   text-decoration: none;
+}
+
+.nav-img {
+  float: left;
+  text-align: center;
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
 }
 
 .fade-enter {
@@ -721,7 +766,7 @@ nav {
   right: 0;
   left: 0;
   margin-bottom: 50px;
-  box-shadow: 0 3px 2px -1px rgba(0,0,0,.2);
+  box-shadow: 0 3px 6px -1px var(--primary-shadow-color);
   z-index: 69;
 }
 
@@ -770,17 +815,15 @@ body::-webkit-scrollbar-thumb {
 }
 
 @media screen and (max-width: 1800px) {
-  .forum, .forum-header, .comment-input, .comment-section, .addpost-input, .chatroom, .chat-form {
-    width: 65%;
-  }
   .chat-form {
     margin-left: -32.5%;
   }
 }
 
-@media screen and (max-width: 600px) { 
-  .forum, .forum-header, .comment-input, .comment-section, .addpost-input, .chatroom, .chat-form {
-    width: 80%;
+@media screen and (max-width: 600px) {
+  .profile-pic {
+    width: 100px;
+    height: 100px;
   }
   .chat-form {
     margin-left: -40%;

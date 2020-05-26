@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {AuthContext} from '../Auth'
+import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
@@ -15,9 +16,12 @@ function AddPost() {
     }])
     const [postState, setPostState] = useState([null, "", "", false])
     const [file, setFile] = useState()
+    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const userRef = firebase.firestore().collection("users").doc(userId)
     const userDisplayName = currentUser.displayName
     const today = firebase.firestore.Timestamp.now()
 
@@ -142,19 +146,27 @@ function AddPost() {
     }
 
     useEffect(() => {
-        classesRef.where("students", "array-contains", userId)
-        .get().then(snap => {
-            console.log("Fetched from classes")
-            let newClassState = []
-            snap.forEach(doc => {
-                let cl = doc.data()
-                cl.id = doc.id
-                newClassState.push(cl)
-            })
-            setClassState(newClassState)
-            setLoaded(true)
-        }).catch(err => {
-            console.log("Error: ", err)
+        userRef.get().then(doc => {
+            if (doc.exists) {
+                setUserInitiated(true)
+                classesRef.where("students", "array-contains", userId)
+                .get().then(snap => {
+                    console.log("Fetched from classes")
+                    let newClassState = []
+                    snap.forEach(doc => {
+                        let cl = doc.data()
+                        cl.id = doc.id
+                        newClassState.push(cl)
+                    })
+                    setClassState(newClassState)
+                    setLoading(false)
+                    setLoaded(true)
+                }).catch(err => {
+                    console.log("Error: ", err)
+                })
+            } else {
+                setLoading(false)
+            }
         })
     }, [])
 
@@ -164,12 +176,14 @@ function AddPost() {
         }
     })
 
-    if (!loaded) {
+    if (loading) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
             </div>   
         )
+    } else if (!userInitiated) {
+        return <Redirect to="settings"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">

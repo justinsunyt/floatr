@@ -13,7 +13,6 @@ function ForumDetail({match}) {
     const commentsRef = postRef.collection("comments")
     const userRef = firebase.firestore().collection("users")
     const storageRef = firebase.storage().ref()
-    const [id, setId] = useState(match.params.id)
     const [postState, setPostState] = useState({
         "class" : "",
         "classId" : "",
@@ -32,6 +31,7 @@ function ForumDetail({match}) {
     const [commentState, setCommentState] = useState("")
     const [mod, setMod] = useState(false)
     const [liked, setLiked] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [src, setSrc] = useState("")
     const {currentUser} = useContext(AuthContext)
@@ -116,7 +116,6 @@ function ForumDetail({match}) {
             commentsRef.add(newComment)
             postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
             console.log("Wrote to comments")
-            document.getElementById("comment").value = ""
             setCommentState("")
         }
     }
@@ -129,7 +128,7 @@ function ForumDetail({match}) {
             postRef.delete().then(() => {
                 console.log("Deleted post")
                 if (img) {
-                    storageRef.child(`forum/images/${id}`).delete().then(() => {}).catch(error => alert(error))
+                    storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(error => alert(error))
                 }
                 window.location.reload()
             }).catch(err => {
@@ -190,13 +189,15 @@ function ForumDetail({match}) {
                 console.log("Fetched from post")
                 handlePostDoc(doc)
                 if (doc.data().img) {
-                    storageRef.child(`forum/images/${id}`).getDownloadURL().then(url => {
+                    storageRef.child(`forum/images/${match.params.id}`).getDownloadURL().then(url => {
                         setSrc(url)
+                        setLoading(false)
                         setLoaded(true)
                     }).catch(err => {
                         console.log("Error: ", err)
                     })
                 } else {
+                    setLoading(false)
                     setLoaded(true)
                 }
             } else {
@@ -245,7 +246,7 @@ function ForumDetail({match}) {
         )
     })
 
-    if (!loaded) {
+    if (loading) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
@@ -283,7 +284,7 @@ function ForumDetail({match}) {
                                 </div>
                             : 
                                 <div>
-                                    <img id={"img" + id} src={src} className="post-image"/> 
+                                    <img src={src} className="post-image"/> 
                                 </div>)
                             } 
                             <div className="post-footer">
@@ -301,13 +302,14 @@ function ForumDetail({match}) {
                             </div>
                         </div>
                     </div>
-                    <div className="comment-input">
-                        <form onSubmit={handleSubmit}>
-                            <textarea name="comment" id="comment" className="comment-textarea" onChange={handleChange} placeholder="Comment here" required></textarea>  
-                            <button className="comment-button"><span>Comment </span></button>
-                        </form>
-                    </div>    
                     <div className="comment-section">
+                        <div className="comment-input">
+                            <form onSubmit={handleSubmit}>
+                                <textarea className="comment-textarea" onChange={handleChange} placeholder="Comment here" value={commentState} maxlength="1000" required></textarea>
+                                <div>{commentState.length} / 1000 characters</div>
+                                <button className="comment-button"><span>Comment </span></button>
+                            </form>
+                        </div>
                         {commentSection}
                     </div>
                 </div>
