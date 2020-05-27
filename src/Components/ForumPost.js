@@ -18,6 +18,7 @@ function ForumPost(props) {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
     const day = date.getDate()
+    const creatorId = props.post.creatorId
     const creatorDisplayName = props.post.creatorDisplayName
     const numLikes = props.post.likes.length
     const numComments = props.post.numComments
@@ -74,7 +75,7 @@ function ForumPost(props) {
                     </div>)
                 }
                 <div className="post-footer">
-                    <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>
+                    <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
                     <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
                 </div>
             </Link>

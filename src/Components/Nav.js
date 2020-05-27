@@ -8,6 +8,7 @@ import logo from '../Images/TaskFloat_Logo_White.png'
 
 function Nav() {
     const {currentUser} = useContext(AuthContext)
+    const userId = currentUser.uid
     const profilePic = currentUser.photoURL
     return (
         <nav>
@@ -34,7 +35,7 @@ function Nav() {
                     <li><FontAwesomeIcon className="nav-icon" icon={solidIcons.faBug}/></li>
                 </a>
                 <ReactTooltip effect="solid" delayShow={500} scrollHide={false}/>
-                <Link to={'/profile'} className="nav-link" data-tip="Profile" data-offset="{'bottom': -6}">
+                <Link to={'/user/' + userId} className="nav-link" data-tip="Profile" data-offset="{'bottom': -6}">
                     <li><img src={profilePic} alt="Profile Picture" className="nav-img"/></li>
                 </Link>
                 <ReactTooltip effect="solid" delayShow={500} scrollHide={false}/>

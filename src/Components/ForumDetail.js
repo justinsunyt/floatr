@@ -288,7 +288,7 @@ function ForumDetail({match}) {
                                 </div>)
                             } 
                             <div className="post-footer">
-                                <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>
+                                <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
                                 <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
                                 <div style={{color: "#888888"}}>{mod && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
                             </div>

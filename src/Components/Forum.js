@@ -24,17 +24,17 @@ function Forum(props) {
     const userRef = firebase.firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
-        let filteredForum = []
+        let newForum = []
         snap.forEach(post => {
             const postData = post.data()
             postData.id = post.id
-            filteredForum.push(postData)
+            newForum.push(postData)
         })
-        if (forumState.length === filteredForum.length) {
+        if (forumState.length === newForum.length) {
             setQueryLimit(true)
         }
-        setForumState(filteredForum)
-        setLiked(filteredForum.map(post => (post.likes.includes(userId)) ? true : false))
+        setForumState(newForum)
+        setLiked(newForum.map(post => (post.likes.includes(userId)) ? true : false))
         setLoading(false)
         setLoaded(true)
     }
@@ -98,17 +98,13 @@ function Forum(props) {
                             console.log("Error: ", err)
                         })
                     } else {
-                        if (classes.length !== 0) {
-                            forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
-                            .get().then(snap => {
-                                console.log("Fetched from forum")
-                                handleForumSnap(snap)
-                            }).catch(err => {
-                                console.log("Error: ", err)
-                            })
-                        } else {
-                            setLoading(false)
-                        }
+                        forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
+                        .get().then(snap => {
+                            console.log("Fetched from forum")
+                            handleForumSnap(snap)
+                        }).catch(err => {
+                            console.log("Error: ", err)
+                        })
                     }
                     console.log("Filter: ", filter)
                     console.log("Query size: ", querySize)
@@ -175,44 +171,38 @@ function Forum(props) {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
-                    {(filter === userId && forumState.length === 0) ? 
+                    {(classIds.length === 0) ? 
+                        <div>
+                            <div className="forum-header">
+                                <p>You haven't joined any classes yet!</p> 
+                            </div>
+                            <div className="forum-header">
+                                <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                            </div>
+                        </div>
+                    : 
+                    ((forumState.length === 0) ?
                         <div>
                             <div className='forum-header'>
-                                    <Link to={'/post'} className="post-link">
-                                        <button className="post-button">Add new post</button>
-                                    </Link>
-                                </div>
+                                <Link to={'/post'} className="post-link">
+                                    <button className="post-button">Add new post</button>
+                                </Link>
+                            </div>
                         </div>
-                    :
-                        (classIds.length === 0) ? 
-                            <div>
-                                <div className="forum-header">
-                                    <p>You haven't joined any classes yet!</p> 
-                                </div>
-                                <div className="forum-header">
-                                    <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
-                                </div>
-                            </div>
-                        : (forumState.length === 0) ?
-                            <div>
+                        :
+                        <div>
+                            {(filter.slice(5) === userId || filter.slice(0, 6) === "class/" || filter === "dashboard") && 
                                 <div className='forum-header'>
                                     <Link to={'/post'} className="post-link">
                                         <button className="post-button">Add new post</button>
                                     </Link>
                                 </div>
+                            }
+                            <div className='forum'>
+                                {forum}
                             </div>
-                            :
-                            <div>
-                                <div className='forum-header'>
-                                    <Link to={'/post'} className="post-link">
-                                        <button className="post-button">Add new post</button>
-                                    </Link>
-                                </div>
-                                <div className='forum'>
-                                    {forum}
-                                </div>
-                            </div>
-                    }
+                        </div>
+                    )}
                 </div>
             </CSSTransition>
         )

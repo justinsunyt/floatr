@@ -4,11 +4,11 @@ import './App.css'
 import Dashboard from './Components/Dashboard'
 import ForumDetail from './Components/ForumDetail'
 import ClassDetail from './Components/ClassDetail'
+import UserDetail from './Components/UserDetail'
 import Nav from './Components/Nav'
 import Login from './Components/Login'
 import AddPost from './Components/AddPost'
 import Class from './Components/Class'
-import Profile from './Components/Profile'
 import JoinClass from './Components/JoinClass'
 import Chat from './Components/Chat'
 import Chatroom from './Components/Chatroom'
@@ -29,9 +29,9 @@ function App() {
               <Route path="/login" component={Login}/>
               <PrivateRoute path="/post/:id" exact component={ForumDetail}/>
               <PrivateRoute path="/class/:id" exact component={ClassDetail}/>
+              <PrivateRoute path="/user/:id" exact component={UserDetail}/>
               <PrivateRoute path="/post" exact component={AddPost}/>
               <PrivateRoute path="/class" exact component={Class}/>
-              <PrivateRoute path="/profile" component={Profile}/> 
               <PrivateRoute path="/joinclass" component={JoinClass}/>
               <PrivateRoute path="/chat" exact component={Chat}/>
               <PrivateRoute path="/chatroom" exact component={Chatroom}/>
