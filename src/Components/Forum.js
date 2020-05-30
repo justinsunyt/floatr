@@ -21,6 +21,9 @@ function Forum(props) {
     const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const userDisplayName = currentUser.displayName
+    const userProfilePic = currentUser.photoURL
+    const today = firebase.firestore.Timestamp.now()
     const userRef = firebase.firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
@@ -41,7 +44,7 @@ function Forum(props) {
 
     function handleChange(id) {
         const postRef = forumRef.doc(id)
-        let newForumState = forumState
+        let newForumState = [...forumState]
         newForumState.forEach(post => {
             if (post.id === id) {
                 if (post.likes.includes(userId)) {
@@ -59,6 +62,32 @@ function Forum(props) {
         })
         setForumState(newForumState)
         setLiked(newForumState.map(post => (post.likes.includes(userId)) ? true : false))
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+        const {id} = event.target
+        const input = event.target.querySelector("input")
+        const postRef = forumRef.doc(id)
+        const commentsRef = postRef.collection("comments")
+        let newForumState = [...forumState]
+        newForumState.forEach(post => {
+            if (post.id === id) {
+                let newComment = {}
+                newComment.creatorId = userId
+                newComment.creatorDisplayName = userDisplayName
+                newComment.creatorProfilePic = userProfilePic
+                newComment.date = today
+                newComment.text = input.value
+                newComment.reports = []
+                commentsRef.add(newComment)
+                postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
+                console.log("Wrote to comments")
+                post.numComments ++
+                input.value = ""
+            }
+        })
+        setForumState(newForumState)
     }
 
     function handleScroll() {
@@ -169,7 +198,13 @@ function Forum(props) {
         }
     }, [atBottom])
 
-    const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
+    const forum = forumState.map((post, index) => {
+        return(
+            <div className="forum">
+                <ForumPost key={post.id} post={post} handleChange={handleChange} handleSubmit={handleSubmit} liked={liked[index]}/>
+            </div>
+        ) 
+    })
 
     if (loading) {
         return (
@@ -216,9 +251,7 @@ function Forum(props) {
                                 </Link>
                             </div>
                         }
-                        <div className='forum'>
-                            {forum}
-                        </div>
+                        {forum}
                     </div>
                 </CSSTransition>
             )

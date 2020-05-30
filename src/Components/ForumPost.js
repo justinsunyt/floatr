@@ -82,6 +82,11 @@ function ForumPost(props) {
             <div className="post-hr">
                 <hr />
             </div>
+            <div className="comment-input">
+                <form id={id} onSubmit={props.handleSubmit}>
+                    <input type="text" placeholder="Comment here" maxLength="1000" required></input>
+                </form>
+            </div>
         </div>
     )
 }
