@@ -196,15 +196,20 @@ function AddPost() {
                             <option value="" disabled selected hidden>Choose class</option>
                             {classOptions}
                         </select>
-                        <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange} required></textarea>
-                        <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
+                        <div className="forum">
+                            <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange} required></textarea>
+                            <div className="post-hr">
+                            <hr />
+                        </div>
+                            <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
+                        </div>
                         <div>
                             <input type="file" accept="image/*" id="file" name="file" onChange={handleChange} className="addpost-file"></input>
                             <label for="file"><span>Upload an image </span></label>
                         </div>
                         <img id="image" className="addpost-image"/>
                         <div>
-                            <button className="addpost-button"><span>Add post </span></button>
+                            <button className="short-button width-150"><span>Add post </span></button>
                         </div>
                         
                     </form>

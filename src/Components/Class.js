@@ -86,7 +86,7 @@ function Class() {
                             <p>You haven't joined any classes yet!</p> 
                         </div>
                         <div className="forum-header">
-                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                            <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>
                         </div>
                     </div>
                 </CSSTransition>
@@ -101,7 +101,7 @@ function Class() {
                         <div>
                             <div className='forum-header'>
                                     <Link to={'/joinclass'} className="post-link">
-                                        <button className="post-button">Join new classes</button>
+                                        <button className="long-button">Join new classes</button>
                                     </Link>
                                 </div>
                             <div className="forum">

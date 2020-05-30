@@ -73,7 +73,7 @@ function Settings() {
                 <div>
                     <div className="settings-header">
                         <h1>Settings</h1>
-                        <button className="login-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button> 
+                        <button className="short-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button> 
                     </div>
                     <div className="forum">
                         <form onSubmit={handleSubmit}>
@@ -94,8 +94,8 @@ function Settings() {
                             <div>
                                 <h3>Bio (optional)</h3>
                                 <div className="settings-input">
-                                    <textarea className="settings-textarea" onChange={handleChange} placeholder="Bio" maxLength="200" value={bio}></textarea>
-                                    <div style={{color: "#888888"}}>{bio.length} / 200 characters</div>
+                                    <textarea onChange={handleChange} placeholder="Bio" maxLength="200" value={bio}></textarea>
+                                    <div style={{color: "#888888", fontSize: "14px", textAlign: "right"}}>{bio.length} / 200 characters</div>
                                 </div>
                             </div>
                             <div className="post-hr">
@@ -108,7 +108,7 @@ function Settings() {
                             <div className="post-hr">
                                 <hr />
                             </div>
-                            <button className="comment-button"><span>Update </span></button>
+                            <button className="short-button"><span>Update </span></button>
                         </form>
                     </div>
                 </div>

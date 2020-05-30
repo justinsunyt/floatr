@@ -188,7 +188,7 @@ function Forum(props) {
                             <p>You haven't joined any classes yet!</p> 
                         </div>
                         <div className="forum-header">
-                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                            <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>
                         </div>
                     </div>
                 </CSSTransition>
@@ -212,7 +212,7 @@ function Forum(props) {
                         {(filter.slice(5) === userId || filter.slice(0, 6) === "class/" || filter === "dashboard") && 
                             <div className='forum-header'>
                                 <Link to={'/post'} className="post-link">
-                                    <button className="post-button">Add new post</button>
+                                    <button className="long-button">Add new post</button>
                                 </Link>
                             </div>
                         }

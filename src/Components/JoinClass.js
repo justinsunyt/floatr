@@ -112,7 +112,7 @@ function JoinClass() {
                     </div>
                     <div className="class-list">
                         {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
-                        {(classList.length > 0) && <button className="joinclass-submit" onClick={handleSubmit}><span>Join selected classes </span></button>}
+                        {(classList.length > 0) && <button className="short-button width-200" onClick={handleSubmit}><span>Join selected classes </span></button>}
                     </div>     
                 </div>
             </CSSTransition>

@@ -4,6 +4,7 @@
   --background-color: #f8fafe;
   --primary-shadow-color: rgba(0,0,0,0.2);
   --secondary-shadow-color: rgba(0,0,0,0.13);
+  --tertiary-shadow-color: rgba(0,0,0,0.08);
   --general-width: 640px;
   --unpadded-width: 700px;
   --border-radius: 6px;
@@ -16,6 +17,7 @@
 .content {
   padding-top: 75px;
   padding-bottom: 75px;
+  background-color: var(--background-color);
 }
 
 .dashboard {
@@ -24,7 +26,7 @@
 }
 
 .forum {
-  background-color: var(--background-color);
+  background-color: white;
   margin-left: auto;
   margin-right: auto;
   max-width: var(--general-width);
@@ -33,7 +35,7 @@
   align-items: left;
   border: 1px solid #efefef;
   border-radius: var(--border-radius);
-  box-shadow: 0 0 6px var(--secondary-shadow-color);
+  box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--secondary-shadow-color);
   padding: 30px;
   transition: all 0.5s ease;
 }
@@ -107,6 +109,7 @@
   flex-direction: row;
   align-self: flex-end;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .post-report {
@@ -133,10 +136,7 @@
 }
 
 .comment-input {
-  margin-bottom: 25px;
-  max-width: calc(var(--unpadded-width) - 20px);
-  margin-right: 20px;
-  transition: all 0.5s ease;
+  max-width: var(--unpadded-width);
 }
 
 .comment-section {
@@ -147,51 +147,6 @@
   display: flex;
   flex-direction: column;
   transition: all 0.5s ease;
-}
-.comment-button {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 8px;
-  padding-bottom: 15px;
-  padding-top: 15px;
-  width: 120px;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.comment-button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.3s;
-}
-
-.comment-button span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.3s;
-}
-
-.comment-button:hover span {
-  padding-right: 25px;
-}
-
-.comment-button:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
-.comment-textarea {
-  min-height: 80px;
 }
 
 .class-header {
@@ -253,69 +208,6 @@
   transition: all 0.5s;
 }
 
-.login-button {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 8px;
-  padding-bottom: 15px;
-  padding-top: 15px;
-  width: 120px;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin: 5px;
-}
-
-.login-button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.3s;
-}
-
-.login-button span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.3s;
-}
-
-.login-button:hover span {
-  padding-right: 25px;
-}
-
-.login-button:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
-.post-button {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 15px;
-  width: 100%;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin: auto;
-}
-
-.post-button:hover {
-  background-color: white;
-  color: var(--primary-color);
-  text-align: center;
-}
-
 .post-link {
   width: 100%;
 }
@@ -328,14 +220,11 @@
 }
 
 .addpost-title {
-  height: 17px;
-  max-width: calc(var(--unpadded-width) - 20px);
   resize: none;
 }
 
 .addpost-text {
   min-height: 120px;
-  max-width: calc(var(--unpadded-width) - 20px);
 }
 
 .addpost-file {
@@ -395,48 +284,6 @@
   display: block;
 }
 
-.addpost-button {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 8px;
-  padding-bottom: 15px;
-  padding-top: 15px;
-  width: 150px;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-.addpost-button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.3s;
-}
-
-.addpost-button span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.3s;
-}
-
-.addpost-button:hover span {
-  padding-right: 25px;
-}
-
-.addpost-button:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
 .like-button {
   cursor: pointer;
 }
@@ -450,91 +297,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-}
-
-.joinclass-button {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 8px;
-  padding-bottom: 15px;
-  padding-top: 15px;
-  width: 140px;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin: 5px;
-}
-
-.joinclass-button span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.3s;
-}
-
-.joinclass-button span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.3s;
-}
-
-.joinclass-button:hover span {
-  padding-right: 25px;
-}
-
-.joinclass-button:hover span:after {
-  opacity: 1;
-  right: 0;
-}
-
-.joinclass-submit {
-  display: inline-block;
-  border-radius: var(--border-radius);
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  padding: 8px;
-  padding-bottom: 15px;
-  padding-top: 15px;
-  width: 200px;
-  transition: all 0.3s;
-  cursor: pointer;
-  margin: 5px;
-  margin-top: 20px;
-}
-
-.joinclass-submit span {
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.3s;
-}
-
-.joinclass-submit span:after {
-  content: '\00bb';
-  position: absolute;
-  opacity: 0;
-  top: 0;
-  right: -20px;
-  transition: 0.3s;
-}
-
-.joinclass-submit:hover span {
-  padding-right: 25px;
-}
-
-.joinclass-submit:hover span:after {
-  opacity: 1;
-  right: 0;
 }
 
 .chat-rules {
@@ -674,14 +436,8 @@
 }
 
 .settings-input {
-  max-width: calc(var(--general-width) - 20px);
-  margin-right: 20px;
+  max-width: var(--general-width);
   transition: all 0.5s ease;
-}
-
-.settings-textarea {
-  min-height: 40px;
-  background-color: white;
 }
 
 .nav-links {
@@ -729,6 +485,77 @@
   transition: 0.3s all;
 }
 
+.short-button {
+  display: inline-block;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  padding: 8px;
+  padding-bottom: 15px;
+  padding-top: 15px;
+  width: 120px;
+  transition: all 0.3s;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.short-button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.3s;
+}
+
+.short-button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.3s;
+}
+
+.short-button:hover span {
+  padding-right: 25px;
+}
+
+.short-button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+.long-button {
+  display: inline-block;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  padding: 15px;
+  width: 100%;
+  transition: all 0.3s;
+  cursor: pointer;
+  margin: auto;
+}
+
+.long-button:hover {
+  background-color: white;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.width-150 {
+  width: 150px;
+}
+
+.width-200 {
+  width: 200px;
+}
+
 input[type=file] {
   font-family: 'Lato', sans-serif;
 }
@@ -766,13 +593,18 @@ nav {
 
 textarea {
   width: 100%;
-  padding: 10px;
+  min-height: 20px;
+  height: 20px;
+  font-size: 16px;
   font-family: 'Lato', sans-serif;
   resize: vertical;
-  border: 1px solid #efefef;
+  border: none;
   border-radius: var(--border-radius);
-  box-shadow: 0 0 6px var(--secondary-shadow-color);
-  background-color: var(--background-color);
+  background-color: white;
+}
+
+textarea:focus {
+  outline: none;
 }
 
 input {
@@ -783,18 +615,27 @@ button {
   font-family: 'Lato', sans-serif;
   transition-duration: 0.3s;
   border: none;
-  box-shadow: 0 0 6px var(--primary-shadow-color);
+  box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--primary-shadow-color);
+}
+
+button:focus {
+  outline: none;
 }
 
 select {
   font-family: 'Lato', sans-serif;
-  padding: 5px;
+  font-size: 16px;
+  padding: 10px;
   margin-bottom: 15px;
   min-width: 200px;
   border: 1px solid #efefef;
   border-radius: var(--border-radius);
-  box-shadow: 0 0 6px var(--secondary-shadow-color);
-  background-color: var(--background-color);
+  box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--primary-shadow-color);
+  background-color: white;
+}
+
+select:focus {
+  outline: none;
 }
 
 li {

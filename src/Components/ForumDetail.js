@@ -301,15 +301,20 @@ function ForumDetail({match}) {
                                 </div>
                             </div>
                         </div>
+                        <div className="post-hr">
+                            <hr />
+                        </div>
+                        <div>
+                            <div className="comment-input">
+                                <form onSubmit={handleSubmit}>
+                                    <textarea onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></textarea>
+                                    <div style={{color: "#888888", fontSize: "14px", textAlign: "right"}}>{commentState.length} / 1000 characters</div>
+                                    <button className="short-button"><span>Comment </span></button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div className="comment-section">
-                        <div className="comment-input">
-                            <form onSubmit={handleSubmit}>
-                                <textarea className="comment-textarea" onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></textarea>
-                                <div style={{color: "#888888"}}>{commentState.length} / 1000 characters</div>
-                                <button className="comment-button"><span>Comment </span></button>
-                            </form>
-                        </div>
                         {commentSection}
                     </div>
                 </div>
