@@ -97,7 +97,7 @@ function ForumDetail({match}) {
             console.log("Wrote to post")
             setPostState(newPostState)
         }
-        else if (type === "textarea") {
+        else if (type === "text") {
             setCommentState(value)
         }
     }
@@ -307,9 +307,8 @@ function ForumDetail({match}) {
                         <div>
                             <div className="comment-input">
                                 <form onSubmit={handleSubmit}>
-                                    <textarea onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></textarea>
-                                    <div style={{color: "#888888", fontSize: "14px", textAlign: "right"}}>{commentState.length} / 1000 characters</div>
-                                    <button className="short-button"><span>Comment </span></button>
+                                    <input type="text" onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></input>
+                                    <div className="character-count">{commentState.length} / 1000 characters</div>
                                 </form>
                             </div>
                         </div>

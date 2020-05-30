@@ -27,7 +27,7 @@ function AddPost() {
 
     function handleChange(event) {
         const {name, value, type, files, selectedIndex} = event.target
-        let newPostState = postState
+        let newPostState = [...postState]
         if (type === "file") {
             if (files[0].type.split('/')[0] === "image") {
                 if (files[0].size > 5242880) {
@@ -197,15 +197,16 @@ function AddPost() {
                             {classOptions}
                         </select>
                         <div className="forum">
-                            <textarea name="title" className="addpost-title" placeholder="Title" onChange={handleChange} required></textarea>
+                            <input type="text" name="title" className="addpost-title" placeholder="Title" value={postState[1]} onChange={handleChange} required></input>
                             <div className="post-hr">
-                            <hr />
-                        </div>
-                            <textarea name="text" className="addpost-text" placeholder="Text" onChange={handleChange}></textarea>
+                                <hr />
+                            </div>
+                            <textarea name="text" className="addpost-text" placeholder="Text" value={postState[2]} onChange={handleChange} maxLength="3000"></textarea>
+                            <div className="character-count">{postState[2].length} / 3000 characters</div>
                         </div>
                         <div>
                             <input type="file" accept="image/*" id="file" name="file" onChange={handleChange} className="addpost-file"></input>
-                            <label for="file"><span>Upload an image </span></label>
+                            <label for="file">Upload an image</label>
                         </div>
                         <img id="image" className="addpost-image"/>
                         <div>
