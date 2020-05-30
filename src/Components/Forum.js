@@ -98,13 +98,19 @@ function Forum(props) {
                             console.log("Error: ", err)
                         })
                     } else {
-                        forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
-                        .get().then(snap => {
-                            console.log("Fetched from forum")
-                            handleForumSnap(snap)
-                        }).catch(err => {
-                            console.log("Error: ", err)
-                        })
+                        if (classes.length !== 0) {
+                            forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
+                            .get().then(snap => {
+                                console.log("Fetched from forum")
+                                handleForumSnap(snap)
+                            }).catch(err => {
+                                console.log("Error: ", err)
+                            })
+                        } else {
+                            setLoading(false)
+                            setLoaded(true)
+                            console.log("No joined classes")
+                        }
                     }
                     console.log("Filter: ", filter)
                     console.log("Query size: ", querySize)
@@ -143,13 +149,19 @@ function Forum(props) {
                         console.log("Error: ", err)
                     })
                 } else {
-                    forumRef.orderBy("date", "desc").limit(newQuery)
-                    .get().then(snap => {
-                        console.log("Fetched from forum")
-                        handleForumSnap(snap)
-                    }).catch(err => {
-                        console.log("Error: ", err)
-                    })
+                    if (classIds.length !== 0) {
+                        forumRef.where("classId", "in", classIds).orderBy("date", "desc").limit(newQuery)
+                        .get().then(snap => {
+                            console.log("Fetched from forum")
+                            handleForumSnap(snap)
+                        }).catch(err => {
+                            console.log("Error: ", err)
+                        })
+                    } else {
+                        setLoading(false)
+                        setLoaded(true)
+                        console.log("No joined classes")
+                    }
                 }
                 console.log("Query size: ", newQuery)
                 setQuerySize(newQuery)
@@ -168,44 +180,49 @@ function Forum(props) {
     } else if (!userInitiated) {
         return <Redirect to="/settings"/>
     } else {
-        return(
-            <CSSTransition in={loaded} timeout={300} classNames="fade">
-                <div>
-                    {(classIds.length === 0) ? 
-                        <div>
-                            <div className="forum-header">
-                                <p>You haven't joined any classes yet!</p> 
-                            </div>
-                            <div className="forum-header">
-                                <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
-                            </div>
+        if (classIds.length === 0) {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className="forum-header">
+                            <p>You haven't joined any classes yet!</p> 
                         </div>
-                    : 
-                    ((forumState.length === 0) ?
-                        <div>
+                        <div className="forum-header">
+                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                        </div>
+                    </div>
+                </CSSTransition>
+            )
+        } else if (forumState.length === 0) {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className='forum-header'>
+                            <Link to={'/post'} className="post-link">
+                                <button className="post-button">Add new post</button>
+                            </Link>
+                        </div>
+                    </div>
+                </CSSTransition>
+            )
+        } else {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        {(filter.slice(5) === userId || filter.slice(0, 6) === "class/" || filter === "dashboard") && 
                             <div className='forum-header'>
                                 <Link to={'/post'} className="post-link">
                                     <button className="post-button">Add new post</button>
                                 </Link>
                             </div>
+                        }
+                        <div className='forum'>
+                            {forum}
                         </div>
-                        :
-                        <div>
-                            {(filter.slice(5) === userId || filter.slice(0, 6) === "class/" || filter === "dashboard") && 
-                                <div className='forum-header'>
-                                    <Link to={'/post'} className="post-link">
-                                        <button className="post-button">Add new post</button>
-                                    </Link>
-                                </div>
-                            }
-                            <div className='forum'>
-                                {forum}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </CSSTransition>
-        )
+                    </div>
+                </CSSTransition>
+            )
+        }
     }
 }
 

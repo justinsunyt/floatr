@@ -7,7 +7,7 @@ import {CSSTransition} from 'react-transition-group'
 function ClassDetail({match}) {
     const classRef = firebase.firestore().collection("classes").doc(match.params.id)
     const [classState, setClassState] = useState({
-        "id" : 0,
+        "id" : "",
         "name" : "",
         "students" : []
     })

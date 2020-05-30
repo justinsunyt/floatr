@@ -8,7 +8,7 @@ import {CSSTransition} from 'react-transition-group'
 function Class() {
     const classesRef = firebase.firestore().collection("classes")
     const {currentUser} = useContext(AuthContext)
-    const [classState, setClassState] = useState([])
+    const [classesState, setClassesState] = useState([{students: []}])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [userInitiated, setUserInitiated] = useState(false)
@@ -23,7 +23,7 @@ function Class() {
             cl.id = doc.id
             classes.push(cl)
         })
-        setClassState(classes)
+        setClassesState(classes)
         setLoading(false)
         setLoaded(true)
     }
@@ -50,11 +50,22 @@ function Class() {
         textDecoration: "none"
     }
 
-    const classList = classState.map(cl => {
+    const classList = classesState.map(cl => {
         return (
-            <Link to={'/class/' + cl.id} style={linkStyle}>
-                <p>{cl.name}</p>
-            </Link>
+            <div>
+                <div className="class-item">
+                    <Link to={'/class/' + cl.id} style={linkStyle}>
+                        <h3>{cl.name}</h3>
+                        <div className="class-footer">
+                            {cl.students.length > 0 && cl.students.length + ((cl.students.length === 1) ? " student" : " students")}
+                        </div>
+                    </Link>
+                    
+                </div>
+                <div className="post-hr">
+                    <hr />
+                </div>
+            </div>
         )
     })
 
@@ -67,21 +78,40 @@ function Class() {
     } else if (!userInitiated) {
         return <Redirect to="settings"/>
     } else {
-        return (
-            <CSSTransition in={loaded} timeout={300} classNames="fade">
-                <div>
-                    <div className="class-header">
-                        <h1>Classes</h1>
-                        <Link to="/joinclass">
-                            <button className="joinclass-button"><span>Join class </span></button>
-                        </Link>
+        if (classesState.length === 0) {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className="forum-header">
+                            <p>You haven't joined any classes yet!</p> 
+                        </div>
+                        <div className="forum-header">
+                            <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                        </div>
                     </div>
-                    <div className="class-list">
-                        {classList}
+                </CSSTransition>
+            )
+        } else {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className="class-header">
+                            <h1>Classes</h1>
+                        </div>
+                        <div>
+                            <div className='forum-header'>
+                                    <Link to={'/joinclass'} className="post-link">
+                                        <button className="post-button">Join new classes</button>
+                                    </Link>
+                                </div>
+                            <div className="forum">
+                                {classList}
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </CSSTransition>
-        )
+                </CSSTransition>
+            )
+        }
     }
 }
 

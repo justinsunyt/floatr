@@ -208,6 +208,17 @@
   transition: all 0.5s ease;
 }
 
+.class-item {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+}
+
+.class-footer {
+  align-self: flex-end;
+  text-align: right;
+}
+
 .profile-header {
   margin: auto;
   margin-top: 10px;
@@ -716,24 +727,6 @@
 .fade-exit-active {
   opacity: 0;
   transition: 0.3s all;
-}
-
-.menu-enter {
-  opacity: 0;
-  transform: translateY(-50px);
-}
-.menu-enter-active {
-  opacity: 1;
-  transform: translateY(0px);
-  transition: 0.3s ease all;
-}
-.menu-exit {
-  opacity: 1;
-}
-.menu-exit-active {
-  opacity: 0;
-  transform: translateY(-50px);
-  transition: 0.3s ease all;
 }
 
 input[type=file] {

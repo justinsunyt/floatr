@@ -19,6 +19,7 @@ function UserDetail({match}) {
     const userId = currentUser.uid
 
     useEffect(() => {
+        setLoaded(false)
         setLoading(true)
         userRef.get().then(doc => {
             if ((doc.exists && match.params.id === userId) || (doc.exists && match.params.id !== userId)) {
