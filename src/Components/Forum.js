@@ -21,27 +21,30 @@ function Forum(props) {
     const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
+    const userDisplayName = currentUser.displayName
+    const userProfilePic = currentUser.photoURL
+    const today = firebase.firestore.Timestamp.now()
     const userRef = firebase.firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
-        let filteredForum = []
+        let newForum = []
         snap.forEach(post => {
             const postData = post.data()
             postData.id = post.id
-            filteredForum.push(postData)
+            newForum.push(postData)
         })
-        if (forumState.length === filteredForum.length) {
+        if (forumState.length === newForum.length) {
             setQueryLimit(true)
         }
-        setForumState(filteredForum)
-        setLiked(filteredForum.map(post => (post.likes.includes(userId)) ? true : false))
+        setForumState(newForum)
+        setLiked(newForum.map(post => (post.likes.includes(userId)) ? true : false))
         setLoading(false)
         setLoaded(true)
     }
 
     function handleChange(id) {
         const postRef = forumRef.doc(id)
-        let newForumState = forumState
+        let newForumState = [...forumState]
         newForumState.forEach(post => {
             if (post.id === id) {
                 if (post.likes.includes(userId)) {
@@ -59,6 +62,32 @@ function Forum(props) {
         })
         setForumState(newForumState)
         setLiked(newForumState.map(post => (post.likes.includes(userId)) ? true : false))
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault()
+        const {id} = event.target
+        const input = event.target.querySelector("input")
+        const postRef = forumRef.doc(id)
+        const commentsRef = postRef.collection("comments")
+        let newForumState = [...forumState]
+        newForumState.forEach(post => {
+            if (post.id === id) {
+                let newComment = {}
+                newComment.creatorId = userId
+                newComment.creatorDisplayName = userDisplayName
+                newComment.creatorProfilePic = userProfilePic
+                newComment.date = today
+                newComment.text = input.value
+                newComment.reports = []
+                commentsRef.add(newComment)
+                postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
+                console.log("Wrote to comments")
+                post.numComments ++
+                input.value = ""
+            }
+        })
+        setForumState(newForumState)
     }
 
     function handleScroll() {
@@ -108,6 +137,8 @@ function Forum(props) {
                             })
                         } else {
                             setLoading(false)
+                            setLoaded(true)
+                            console.log("No joined classes")
                         }
                     }
                     console.log("Filter: ", filter)
@@ -147,13 +178,19 @@ function Forum(props) {
                         console.log("Error: ", err)
                     })
                 } else {
-                    forumRef.orderBy("date", "desc").limit(newQuery)
-                    .get().then(snap => {
-                        console.log("Fetched from forum")
-                        handleForumSnap(snap)
-                    }).catch(err => {
-                        console.log("Error: ", err)
-                    })
+                    if (classIds.length !== 0) {
+                        forumRef.where("classId", "in", classIds).orderBy("date", "desc").limit(newQuery)
+                        .get().then(snap => {
+                            console.log("Fetched from forum")
+                            handleForumSnap(snap)
+                        }).catch(err => {
+                            console.log("Error: ", err)
+                        })
+                    } else {
+                        setLoading(false)
+                        setLoaded(true)
+                        console.log("No joined classes")
+                    }
                 }
                 console.log("Query size: ", newQuery)
                 setQuerySize(newQuery)
@@ -161,7 +198,13 @@ function Forum(props) {
         }
     }, [atBottom])
 
-    const forum = forumState.map((post, index) => <ForumPost key={post.id} post={post} handleChange={handleChange} liked={liked[index]}/>)
+    const forum = forumState.map((post, index) => {
+        return(
+            <div className="forum">
+                <ForumPost key={post.id} post={post} handleChange={handleChange} handleSubmit={handleSubmit} liked={liked[index]}/>
+            </div>
+        ) 
+    })
 
     if (loading) {
         return (
@@ -172,38 +215,47 @@ function Forum(props) {
     } else if (!userInitiated) {
         return <Redirect to="/settings"/>
     } else {
-        return(
-            <CSSTransition in={loaded} timeout={300} classNames="fade">
-                <div>
-                    {(filter === userId && forumState.length === 0) ? 
-                        <div>
-                            <div className='forum-header'>
-                                    <Link to={'/post'} className="post-link">
-                                        <button className="post-button">Add new post</button>
-                                    </Link>
-                                </div>
+        if (classIds.length === 0) {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className="forum-header">
+                            <p>You haven't joined any classes yet!</p> 
                         </div>
-                    :
-                        (!Array.isArray(classIds) || !classIds.length) ? 
-                            <div className="class-list">
-                                <p>You haven't joined any classes yet!</p>
-                                <Link to="/joinclass"><button className="joinclass-button"><span>Join class </span></button></Link>
+                        <div className="forum-header">
+                            <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>
+                        </div>
+                    </div>
+                </CSSTransition>
+            )
+        } else if (forumState.length === 0) {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        <div className='forum-header'>
+                            <Link to={'/post'} className="post-link">
+                                <button className="post-button">Add new post</button>
+                            </Link>
+                        </div>
+                    </div>
+                </CSSTransition>
+            )
+        } else {
+            return (
+                <CSSTransition in={loaded} timeout={300} classNames="fade">
+                    <div>
+                        {(filter.slice(5) === userId || filter.slice(0, 6) === "class/" || filter === "dashboard") && 
+                            <div className='forum-header'>
+                                <Link to={'/post'} className="post-link">
+                                    <button className="long-button">Add new post</button>
+                                </Link>
                             </div>
-                        :
-                            <div>
-                                <div className='forum-header'>
-                                    <Link to={'/post'} className="post-link">
-                                        <button className="post-button">Add new post</button>
-                                    </Link>
-                                </div>
-                                <div className='forum'>
-                                    {forum}
-                                </div>
-                            </div>
-                    }
-                </div>
-            </CSSTransition>
-        )
+                        }
+                        {forum}
+                    </div>
+                </CSSTransition>
+            )
+        }
     }
 }
 

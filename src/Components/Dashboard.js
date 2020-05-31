@@ -1,10 +1,12 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import Forum from './Forum'
+import {AuthContext} from '../Auth'
+
 
 function Dashboard() {
     return(
         <div className="dashboard">
-            <Forum filter=""/>
+            <Forum filter="dashboard"/>
         </div>
     )
 }

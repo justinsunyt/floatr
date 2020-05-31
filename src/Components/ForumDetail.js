@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react'
 import * as firebase from 'firebase'
 import {Link} from 'react-router-dom'
 import {AuthContext} from '../Auth'
+import ReactTooltip from 'react-tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
@@ -37,6 +38,7 @@ function ForumDetail({match}) {
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
+    const userProfilePic = currentUser.photoURL
     const today = firebase.firestore.Timestamp.now()
 
     let title = postState.title
@@ -97,7 +99,7 @@ function ForumDetail({match}) {
             console.log("Wrote to post")
             setPostState(newPostState)
         }
-        else if (type === "textarea") {
+        else if (type === "text") {
             setCommentState(value)
         }
     }
@@ -110,6 +112,7 @@ function ForumDetail({match}) {
             let newComment = {}
             newComment.creatorId = userId
             newComment.creatorDisplayName = userDisplayName
+            newComment.creatorProfilePic = userProfilePic
             newComment.date = today
             newComment.text = commentState
             newComment.reports = []
@@ -219,6 +222,7 @@ function ForumDetail({match}) {
         const commentId = comment.id
         const creatorId = comment.creatorId
         const creatorDisplayName = comment.creatorDisplayName
+        const creatorProfilePic = comment.creatorProfilePic
         const text = comment.text
         const date = comment.date.toDate()
         const year = date.getFullYear()
@@ -228,20 +232,22 @@ function ForumDetail({match}) {
 
         return(
             <div>
-                <p><b>{creatorDisplayName}</b> - {month} / {day} / {year}</p>
-                <p>{text}</p>
-                <div className="post-footer-btns">
-                    <div className="post-report" onClick = {() => handleReportComment(commentId)} style={linkStyle}>
-                    {comment.reports.includes(userId) ? <FontAwesomeIcon icon={solidIcons.faFlag}/> : <FontAwesomeIcon icon={regularIcons.faFlag}/>}
+                <div className="comment-content">
+                    <Link to={"/user/" + creatorId}><img className="comment-img" src={creatorProfilePic}></img></Link>
+                    <div className="comment-text" data-tip={mod && (commentReports + ((commentReports === 1) ? " report" : " reports"))}>
+                        <div><b>{creatorDisplayName}</b> - {month} / {day} / {year}</div>
+                        {text}
                     </div>
-                    <div className="post-delete" onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
-                        {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
-                    </div>        
+                    {mod && <ReactTooltip effect="solid" delayShow={500} scrollHide={false}/>}
+                    <div className="comment-btns">
+                        <div onClick = {() => handleReportComment(commentId)} style={linkStyle}>
+                            {comment.reports.includes(userId) ? <FontAwesomeIcon icon={solidIcons.faFlag}/> : <FontAwesomeIcon icon={regularIcons.faFlag}/>}
+                        </div>
+                        <div onClick = {() => handleDeleteComment(commentId)} style={linkStyle}>
+                            {(mod || (creatorId === userId)) && <FontAwesomeIcon icon={regularIcons.faTrashAlt}/>}
+                        </div>       
+                    </div>
                 </div>
-                <div style={{marginTop: "10px", color: "#888888"}}>
-                    {mod && (commentReports + ((commentReports === 1) ? " report" : " reports"))}
-                </div> 
-                <br/>
             </div>
         )
     })
@@ -288,7 +294,7 @@ function ForumDetail({match}) {
                                 </div>)
                             } 
                             <div className="post-footer">
-                                <div>Posted by <u>{creatorDisplayName}</u> - {month} / {day} / {year}</div>
+                                <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
                                 <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>
                                 <div style={{color: "#888888"}}>{mod && (numReports + ((numReports === 1) ? " report" : " reports"))}</div>  
                             </div>
@@ -301,16 +307,18 @@ function ForumDetail({match}) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="comment-section">
+                        <div className="post-hr">
+                            <hr />
+                        </div>
                         <div className="comment-input">
                             <form onSubmit={handleSubmit}>
-                                <textarea className="comment-textarea" onChange={handleChange} placeholder="Comment here" value={commentState} maxlength="1000" required></textarea>
-                                <div>{commentState.length} / 1000 characters</div>
-                                <button className="comment-button"><span>Comment </span></button>
+                                <input type="text" onChange={handleChange} placeholder="Comment here" value={commentState} maxLength="1000" required></input>
+                                <div className="character-count">{commentState.length} / 1000 characters</div>
                             </form>
                         </div>
-                        {commentSection}
+                        <div className="comment-section">
+                            {commentSection}
+                        </div>
                     </div>
                 </div>
             </CSSTransition>

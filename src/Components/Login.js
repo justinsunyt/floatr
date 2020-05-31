@@ -24,7 +24,7 @@ function Login()
             <center>
             <h1>Welcome to TaskFloat</h1>
             <p>Please login with your Google Account to continue</p>
-            <button className="login-button" onClick={handleLogin}><span>Login </span></button>
+            <button className="short-button" onClick={handleLogin}><span>Login </span></button>
             </center>
         </div>
       
