@@ -1,7 +1,5 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import Forum from './Forum'
-import {AuthContext} from '../Auth'
-
 
 function Dashboard() {
     return(
