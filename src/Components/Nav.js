@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
-import logo from '../Images/TaskFloat_Logo_White.png'
 
 function Nav() {
     const {currentUser} = useContext(AuthContext)
@@ -13,8 +12,7 @@ function Nav() {
     return (
         <nav>
             <Link to={'/'} className="nav-logo">
-                <img src={logo} className="logo"/>
-                <h1>TaskFloat</h1>
+                <h1>floatr</h1>
             </Link>
             <ul className="nav-links">
                 <Link to={'/post'} className="nav-link" data-tip="Add new post" data-offset="{'bottom': -6}">

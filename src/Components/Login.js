@@ -22,7 +22,7 @@ function Login()
     return(
         <div>
             <center>
-            <h1>Welcome to TaskFloat</h1>
+            <h1>floatr</h1>
             <p>Please login with your Google Account to continue</p>
             <button className="short-button" onClick={handleLogin}><span>Login </span></button>
             </center>

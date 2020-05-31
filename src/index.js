@@ -5,22 +5,18 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import * as firebase from 'firebase'
 
-var config = {
-    apiKey: "AIzaSyC445QrpYA0qEhP3xk9aP_WcarUJhlnNLE",
-    authDomain: "taskfloat.firebaseapp.com",
-    databaseURL: "https://taskfloat.firebaseio.com",
-    projectId: "taskfloat",
-    storageBucket: "taskfloat.appspot.com",
-    messagingSenderId: "462541476562",
-    appId: "1:462541476562:web:d1c6ffda73b18ccae2930b",
-    measurementId: "G-XBFQG6TSP8"
+const config = {
+    apiKey: "AIzaSyDh95KqApEM_wXQwI2MdR1zq_-uPeGSQLI",
+    authDomain: "floatrrr.firebaseapp.com",
+    databaseURL: "https://floatrrr.firebaseio.com",
+    projectId: "floatrrr",
+    storageBucket: "floatrrr.appspot.com",
+    messagingSenderId: "61394019572",
+    appId: "1:61394019572:web:50dca8cc23c2eda5232aa1",
+    measurementId: "G-P7ZX0S46DQ"
 }
 firebase.initializeApp(config)
 
-
 ReactDOM.render(<App />, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
