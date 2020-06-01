@@ -234,7 +234,7 @@ function Forum(props) {
                     <div>
                         <div className='forum-header'>
                             <Link to={'/post'} className="post-link">
-                                <button className="post-button">Add new post</button>
+                                <button className="long-button">Add new post</button>
                             </Link>
                         </div>
                     </div>
