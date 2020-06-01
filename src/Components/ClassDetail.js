@@ -7,10 +7,11 @@ import {CSSTransition} from 'react-transition-group'
 function ClassDetail({match}) {
     const classRef = firebase.firestore().collection("classes").doc(match.params.id)
     const [classState, setClassState] = useState({
-        "id" : 0,
+        "id" : "",
         "name" : "",
         "students" : []
     })
+    const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     let className = classState.name
     let numStudents = classState.students.length
@@ -18,12 +19,13 @@ function ClassDetail({match}) {
     useEffect(() => {
         classRef.get().then(doc => {
             setClassState(doc.data())
+            setLoading(false)
             setLoaded(true)
         }).catch(err => {
             console.log("Error: ", err)
         })
     }, [])
-    if (!loaded) {
+    if (loading) {
         return (
             <div className="forum-header">
                 <ReactLoading type="bars" color="black" width="10%"/>
