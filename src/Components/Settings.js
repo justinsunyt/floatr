@@ -109,7 +109,7 @@ function Settings() {
                                 <hr />
                             </div>
                             <div className="settings-footer">
-                                <button className="short-button"><span>Update </span></button>
+                                <button className="long-button"><span>Update </span></button>
                             </div>
                         </form>
                     </div>

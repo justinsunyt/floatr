@@ -32,7 +32,7 @@ function Class() {
         userRef.get().then(doc => {
             if (doc.exists) {
                 setUserInitiated(true)
-                classesRef.where("students", "array-contains", userId)
+                classesRef.where("students", "array-contains", userId).orderBy("name")
                 .get().then(snap => {
                     console.log("Fetched from classes")
                     handleClassesSnap(snap)
