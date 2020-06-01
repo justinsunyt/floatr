@@ -4,10 +4,10 @@ import ReactLoading from 'react-loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
-import * as firebase from 'firebase'
+import {storage} from 'firebase/app'
 
 function ForumPost(props) {
-    const storageRef = firebase.storage().ref()
+    const storageRef = storage().ref()
     const [loaded, setLoaded] = useState(false)
     const [src, setSrc] = useState("")
     const id = props.post.id

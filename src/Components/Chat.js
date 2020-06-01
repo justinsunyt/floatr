@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from 'firebase/app'
 import {AuthContext} from '../Auth'
 import {Redirect} from 'react-router-dom'
 import {CSSTransition} from 'react-transition-group'
@@ -11,7 +11,7 @@ function Chat() {
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
-    const userRef = firebase.firestore().collection("users").doc(userId)
+    const userRef = firestore().collection("users").doc(userId)
 
     useEffect(() => {
         userRef.get().then(doc => {

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from 'firebase/app'
 import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
 import {Link, Redirect} from 'react-router-dom'
@@ -8,8 +8,8 @@ import {CSSTransition} from 'react-transition-group'
 
 function Forum(props) {
     const filter = props.filter
-    const classesRef = firebase.firestore().collection("classes")
-    const forumRef = firebase.firestore().collection("forum")
+    const classesRef = firestore().collection("classes")
+    const forumRef = firestore().collection("forum")
     const [forumState, setForumState] = useState([])
     const [querySize, setQuerySize] = useState(10)
     const [queryLimit, setQueryLimit] = useState(false)
@@ -23,8 +23,8 @@ function Forum(props) {
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
-    const today = firebase.firestore.Timestamp.now()
-    const userRef = firebase.firestore().collection("users").doc(userId)
+    const today = firestore.Timestamp.now()
+    const userRef = firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
         let newForum = []
@@ -81,7 +81,7 @@ function Forum(props) {
                 newComment.text = input.value
                 newComment.reports = []
                 commentsRef.add(newComment)
-                postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
+                postRef.update({numComments: firestore.FieldValue.increment(1)})
                 console.log("Wrote to comments")
                 post.numComments ++
                 input.value = ""

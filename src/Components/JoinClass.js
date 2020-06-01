@@ -1,11 +1,11 @@
 import React, {useEffect, useState, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from 'firebase/app'
 import {AuthContext} from '../Auth'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
-    const classesRef = firebase.firestore().collection("classes")
+    const classesRef = firestore().collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)

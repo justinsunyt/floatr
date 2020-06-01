@@ -1,14 +1,13 @@
 import React, {useContext} from 'react'
 import {Redirect} from 'react-router-dom'
-import firebase from 'firebase'
+import {auth} from 'firebase/app'
 import {AuthContext} from '../Auth'
 
-function Login()
-{
-    const provider = new firebase.auth.GoogleAuthProvider();
+function Login() {
+    const provider = new auth.GoogleAuthProvider();
 
     function handleLogin() {
-        firebase.auth().signInWithPopup(provider).then().catch(error => {
+        auth().signInWithPopup(provider).then().catch(error => {
             alert(error)
         })
     }

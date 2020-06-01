@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore, storage} from 'firebase/app'
 import {Link} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 import ReactTooltip from 'react-tooltip'
@@ -10,10 +10,10 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
-    const postRef = firebase.firestore().collection("forum").doc(match.params.id)
+    const postRef = firestore().collection("forum").doc(match.params.id)
     const commentsRef = postRef.collection("comments")
-    const userRef = firebase.firestore().collection("users")
-    const storageRef = firebase.storage().ref()
+    const userRef = firestore().collection("users")
+    const storageRef = storage().ref()
     const [postState, setPostState] = useState({
         "class" : "",
         "classId" : "",
@@ -39,7 +39,7 @@ function ForumDetail({match}) {
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
-    const today = firebase.firestore.Timestamp.now()
+    const today = firestore.Timestamp.now()
 
     let title = postState.title
     let text = postState.text
@@ -117,7 +117,7 @@ function ForumDetail({match}) {
             newComment.text = commentState
             newComment.reports = []
             commentsRef.add(newComment)
-            postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
+            postRef.update({numComments: firestore.FieldValue.increment(1)})
             console.log("Wrote to comments")
             setCommentState("")
         }
@@ -143,7 +143,7 @@ function ForumDetail({match}) {
     function handleDeleteComment(commentId) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
             commentsRef.doc(commentId).delete().then(() => {
-                postRef.update({numComments: firebase.firestore.FieldValue.increment(-1)})
+                postRef.update({numComments: firestore.FieldValue.increment(-1)})
                 console.log("Deleted comment")
             }).catch(err => {
                 console.log("Error: ", err)

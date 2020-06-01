@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from 'firebase/app'
 import {AuthContext} from '../Auth'
 import Forum from './Forum'
 import {Link, Redirect} from 'react-router-dom'
@@ -10,7 +10,7 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function UserDetail({match}) {
-    const userRef = firebase.firestore().collection("users").doc(match.params.id)
+    const userRef = firestore().collection("users").doc(match.params.id)
     const [userState, setUserState] = useState({})
     const [userInitiated, setUserInitiated] = useState(false)
     const [loading, setLoading] = useState(true)

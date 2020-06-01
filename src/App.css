@@ -439,7 +439,7 @@
   align-items: center;
   align-self: center;
   transition: all 0.5s;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .logo {
@@ -727,7 +727,7 @@ body::-webkit-scrollbar-thumb {
     display: none;
   }
   .nav-logo {
-    font-size: 12px;
+    font-size: 14px;
   }
   .nav-links {
     width: 40%;

@@ -1,14 +1,14 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore, storage} from 'firebase/app'
 import {AuthContext} from '../Auth'
 import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
-    const forumRef = firebase.firestore().collection("forum")
-    const classesRef = firebase.firestore().collection("classes")
-    const storageRef = firebase.storage().ref()
+    const forumRef = firestore().collection("forum")
+    const classesRef = firestore().collection("classes")
+    const storageRef = storage().ref()
     const [classState, setClassState] = useState([{
         "id" : "",
         "name" : "",
@@ -21,9 +21,9 @@ function AddPost() {
     const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
-    const userRef = firebase.firestore().collection("users").doc(userId)
+    const userRef = firestore().collection("users").doc(userId)
     const userDisplayName = currentUser.displayName
-    const today = firebase.firestore.Timestamp.now()
+    const today = firestore.Timestamp.now()
 
     function handleChange(event) {
         const {name, value, type, files, selectedIndex} = event.target
@@ -87,10 +87,10 @@ function AddPost() {
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {
-                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            case storage.TaskState.PAUSED: // or 'paused'
                                 console.log('Upload is paused')
                                 break
-                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                            case storage.TaskState.RUNNING: // or 'running'
                                 console.log('Upload is running')
                                 break
                         }
@@ -117,10 +117,10 @@ function AddPost() {
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
                         switch (snapshot.state) {
-                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                            case storage.TaskState.PAUSED: // or 'paused'
                                 console.log('Upload is paused')
                                 break
-                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                            case storage.TaskState.RUNNING: // or 'running'
                                 console.log('Upload is running')
                                 break
                         }
@@ -151,7 +151,7 @@ function AddPost() {
         userRef.get().then(doc => {
             if (doc.exists) {
                 setUserInitiated(true)
-                classesRef.where("students", "array-contains", userId)
+                classesRef.where("students", "array-contains", userId).orderBy("name")
                 .get().then(snap => {
                     console.log("Fetched from classes")
                     let newClassState = []

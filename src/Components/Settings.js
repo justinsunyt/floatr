@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react'
-import * as firebase from 'firebase'
+import {firestore, auth} from 'firebase/app'
 import {AuthContext} from '../Auth'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as brandIcons from '@fortawesome/free-brands-svg-icons'
@@ -15,7 +15,7 @@ function Settings() {
     const displayName = currentUser.displayName
     const profilePic = currentUser.photoURL
     const [userState, setUserState] = useState({mod: false, bio: "", displayName: displayName, profilePic: profilePic})
-    const usersRef = firebase.firestore().collection("users").doc(userId)
+    const usersRef = firestore().collection("users").doc(userId)
 
     let bio = userState.bio && userState.bio
 
@@ -73,7 +73,7 @@ function Settings() {
                 <div>
                     <div className="settings-header">
                         <h1>Settings</h1>
-                        <button className="short-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button> 
+                        <button className="short-button" onClick={() => auth().signOut()}><span>Sign out </span></button> 
                     </div>
                     <div className="forum">
                         <form onSubmit={handleSubmit}>

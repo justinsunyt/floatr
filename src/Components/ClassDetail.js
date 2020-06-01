@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import Forum from './Forum'
-import * as firebase from 'firebase'
+import {firestore} from 'firebase/app'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ClassDetail({match}) {
-    const classRef = firebase.firestore().collection("classes").doc(match.params.id)
+    const classRef = firestore().collection("classes").doc(match.params.id)
     const [classState, setClassState] = useState({
         "id" : "",
         "name" : "",
