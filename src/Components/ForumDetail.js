@@ -96,7 +96,6 @@ function ForumDetail({match}) {
                 setLiked(true)
             }
             postRef.set(newPostState)
-            console.log("Wrote to post")
             setPostState(newPostState)
         }
         else if (type === "text") {
@@ -118,7 +117,6 @@ function ForumDetail({match}) {
             newComment.reports = []
             commentsRef.add(newComment)
             postRef.update({numComments: firestore.FieldValue.increment(1)})
-            console.log("Wrote to comments")
             setCommentState("")
         }
     }
@@ -129,7 +127,6 @@ function ForumDetail({match}) {
                 comments.forEach(comment => comment.delete())
             })
             postRef.delete().then(() => {
-                console.log("Deleted post")
                 if (img) {
                     storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(error => alert(error))
                 }
@@ -144,7 +141,6 @@ function ForumDetail({match}) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
             commentsRef.doc(commentId).delete().then(() => {
                 postRef.update({numComments: firestore.FieldValue.increment(-1)})
-                console.log("Deleted comment")
             }).catch(err => {
                 console.log("Error: ", err)
             })
@@ -159,7 +155,6 @@ function ForumDetail({match}) {
                 let newPostState = postState
                 newPostState.reports.push(userId)
                 postRef.set(newPostState)
-                console.log("Wrote to post")
                 setPostState(newPostState)
             }
         }
@@ -175,7 +170,6 @@ function ForumDetail({match}) {
                     if (window.confirm("Are you sure you want to report this comment?\nThis action is irreversible")) {
                         comment.reports.push(userId)
                         commentsRef.doc(commentId).set(comment)
-                        console.log("Wrote to comments")
                         setCommentsState(newCommentsState)
                     }
                 }
@@ -189,7 +183,6 @@ function ForumDetail({match}) {
         })
         const unsubscribePost = postRef.onSnapshot(doc => {
             if (doc.exists) {
-                console.log("Fetched from post")
                 handlePostDoc(doc)
                 if (doc.data().img) {
                     storageRef.child(`forum/images/${match.params.id}`).getDownloadURL().then(url => {
@@ -208,7 +201,6 @@ function ForumDetail({match}) {
             }
         })
         const unsubscribeComments = commentsRef.orderBy("date", "desc").onSnapshot(snap => {
-            console.log("Fetched from comments")
             handleCommentsSnap(snap)
         })  
         return () => {

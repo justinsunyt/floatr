@@ -24,7 +24,6 @@ function UserDetail({match}) {
         userRef.get().then(doc => {
             if ((doc.exists && match.params.id === userId) || (doc.exists && match.params.id !== userId)) {
                 setUserInitiated(true)
-                console.log("Fetched from users")
                 let newUserState = doc.data()
                 newUserState.id = doc.id
                 setUserState(newUserState)

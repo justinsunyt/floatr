@@ -79,7 +79,6 @@ function AddPost() {
             if (postState[2] === "" && postState[3] === true) {
                 newPost.img = true
                 forumRef.add(newPost).then(docRef => {
-                    console.log("Wrote to forum")
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
                         setLoaded(false)
@@ -97,9 +96,6 @@ function AddPost() {
                     }, function(error) {
                         alert(error)
                     }, function() {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        console.log('File available at', downloadURL);
-                        })
                         window.location.reload()
                     })
                 }).catch(err => {
@@ -109,7 +105,6 @@ function AddPost() {
                 newPost.text = postState[2]
                 newPost.img = true
                 forumRef.add(newPost).then(docRef => {
-                    console.log("Wrote to forum")
                     const uploadTask = storageRef.child(`forum/images/${docRef.id}`).put(file)
                     uploadTask.on('state_changed', function(snapshot) {
                         setLoaded(false)
@@ -127,9 +122,6 @@ function AddPost() {
                     }, function(error) {
                         alert(error)
                     }, function() {
-                        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        console.log('File available at', downloadURL);
-                        })
                         window.location.reload()
                     })
                 }).catch(err => {
@@ -138,7 +130,6 @@ function AddPost() {
             } else {
                 newPost.text = postState[2]
                 forumRef.add(newPost).then(() => {
-                    console.log("Wrote to forum")
                     window.location.reload()
                 }).catch(err => {
                     console.log("Error: ", err)
@@ -153,7 +144,6 @@ function AddPost() {
                 setUserInitiated(true)
                 classesRef.where("students", "array-contains", userId).orderBy("name")
                 .get().then(snap => {
-                    console.log("Fetched from classes")
                     let newClassState = []
                     snap.forEach(doc => {
                         let cl = doc.data()

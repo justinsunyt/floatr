@@ -40,7 +40,6 @@ function Settings() {
     function handleSubmit(event) {
         event.preventDefault()
         usersRef.set(userState).then(() => {
-            console.log("Wrote to users")
             window.location.reload()
         })
         .catch(err => {
@@ -51,7 +50,6 @@ function Settings() {
     useEffect(() => {
         usersRef.get().then(doc => {
             if (doc.exists) {
-                console.log("Fetched from users")
                 handleUserDoc(doc.data())
             } else {
                 setLoading(false)

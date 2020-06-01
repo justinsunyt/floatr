@@ -63,7 +63,6 @@ function JoinClass() {
             classState.forEach(cl => {
                 if (cl.students.includes(userId)) {
                     classesRef.doc(cl.id).set(cl).then(() => {
-                        console.log("Wrote to classes")
                     }).catch(err => {
                         console.log("Error: ", err)
                     })
@@ -75,7 +74,6 @@ function JoinClass() {
 
     useEffect(() => {
         classesRef.orderBy("name").get().then(snap => {
-            console.log("Fetched from classes")
             handleClassesSnap(snap)
         }).catch(err => {
             console.log("Error: ", err)

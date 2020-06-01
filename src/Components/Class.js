@@ -34,7 +34,6 @@ function Class() {
                 setUserInitiated(true)
                 classesRef.where("students", "array-contains", userId).orderBy("name")
                 .get().then(snap => {
-                    console.log("Fetched from classes")
                     handleClassesSnap(snap)
                 }).catch(err => {
                     console.log("Error: ", err)

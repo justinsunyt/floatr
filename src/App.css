@@ -468,7 +468,7 @@
 }
 
 .nav-links {
-  width: 13%;
+  width: 15%;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -730,10 +730,10 @@ body::-webkit-scrollbar-thumb {
     font-size: 14px;
   }
   .nav-links {
-    width: 40%;
+    width: 50%;
   }
   .nav-icon {
-    font-size: 12px;
+    font-size: 14px;
   }
   .nav-img {
     height: 22px;

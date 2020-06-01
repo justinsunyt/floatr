@@ -57,7 +57,6 @@ function Forum(props) {
                     post.likes.push(userId)
                 }
                 postRef.set(post)
-                console.log("Wrote to post")
             }
         })
         setForumState(newForumState)
@@ -82,7 +81,6 @@ function Forum(props) {
                 newComment.reports = []
                 commentsRef.add(newComment)
                 postRef.update({numComments: firestore.FieldValue.increment(1)})
-                console.log("Wrote to comments")
                 post.numComments ++
                 input.value = ""
             }
@@ -104,7 +102,6 @@ function Forum(props) {
                 setUserInitiated(true)
                 classesRef.where("students", "array-contains", userId)
                 .get().then(snap => {
-                    console.log("Fetched from classes")
                     let classes = []
                     snap.forEach(doc => {
                         classes.push(doc.id)
@@ -113,7 +110,6 @@ function Forum(props) {
                     if (filter.slice(0, 6) === "class/") {
                         forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
                         .get().then(snap => {
-                            console.log("Fetched from forum")
                             handleForumSnap(snap)
                         }).catch(err => {
                             console.log("Error: ", err)
@@ -121,7 +117,6 @@ function Forum(props) {
                     } else if (filter.slice(0, 5) === "user/"){
                         forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
                         .get().then(snap => {
-                            console.log("Fetched from forum")
                             handleForumSnap(snap)
                         }).catch(err => {
                             console.log("Error: ", err)
@@ -130,7 +125,6 @@ function Forum(props) {
                         if (classes.length !== 0) {
                             forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
                             .get().then(snap => {
-                                console.log("Fetched from forum")
                                 handleForumSnap(snap)
                             }).catch(err => {
                                 console.log("Error: ", err)
@@ -138,11 +132,8 @@ function Forum(props) {
                         } else {
                             setLoading(false)
                             setLoaded(true)
-                            console.log("No joined classes")
                         }
                     }
-                    console.log("Filter: ", filter)
-                    console.log("Query size: ", querySize)
                 }).catch(err => {
                     console.log("Error: ", err)
                 })
@@ -164,7 +155,6 @@ function Forum(props) {
                 if (filter.slice(0, 6) === "class/") {
                     forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(newQuery)
                     .get().then(snap => {
-                        console.log("Fetched from forum")
                         handleForumSnap(snap)
                     }).catch(err => {
                         console.log("Error: ", err)
@@ -172,7 +162,6 @@ function Forum(props) {
                 } else if (filter.slice(0, 5) === "user/"){
                     forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(newQuery)
                     .get().then(snap => {
-                        console.log("Fetched from forum")
                         handleForumSnap(snap)
                     }).catch(err => {
                         console.log("Error: ", err)
@@ -181,7 +170,6 @@ function Forum(props) {
                     if (classIds.length !== 0) {
                         forumRef.where("classId", "in", classIds).orderBy("date", "desc").limit(newQuery)
                         .get().then(snap => {
-                            console.log("Fetched from forum")
                             handleForumSnap(snap)
                         }).catch(err => {
                             console.log("Error: ", err)
@@ -189,10 +177,8 @@ function Forum(props) {
                     } else {
                         setLoading(false)
                         setLoaded(true)
-                        console.log("No joined classes")
                     }
                 }
-                console.log("Query size: ", newQuery)
                 setQuerySize(newQuery)
             }
         }
