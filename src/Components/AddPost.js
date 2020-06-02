@@ -18,6 +18,7 @@ function AddPost() {
     const [file, setFile] = useState()
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [redirect, setRedirect] = useState(false)
     const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
@@ -96,7 +97,7 @@ function AddPost() {
                     }, function(error) {
                         alert(error)
                     }, function() {
-                        window.location.reload()
+                        setRedirect(true)
                     })
                 }).catch(err => {
                     console.log("Error: ", err)
@@ -122,7 +123,7 @@ function AddPost() {
                     }, function(error) {
                         alert(error)
                     }, function() {
-                        window.location.reload()
+                        setRedirect(true)
                     })
                 }).catch(err => {
                     console.log("Error: ", err)
@@ -130,7 +131,7 @@ function AddPost() {
             } else {
                 newPost.text = postState[2]
                 forumRef.add(newPost).then(() => {
-                    window.location.reload()
+                    setRedirect(true)
                 }).catch(err => {
                     console.log("Error: ", err)
                 })
@@ -170,12 +171,14 @@ function AddPost() {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>   
         )
     } else if (!userInitiated) {
         return <Redirect to="settings"/>
+    } else if (redirect) {
+        return <Redirect to="/"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">

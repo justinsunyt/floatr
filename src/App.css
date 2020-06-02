@@ -304,6 +304,8 @@
 
 .like-button {
   cursor: pointer;
+  z-index: 69;
+  position: relative;
 }
 
 .like-checkbox {
@@ -510,6 +512,22 @@
 .fade-exit-active {
   opacity: 0;
   transition: 0.3s all;
+}
+
+.loading-large {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 120px;
+  width: 120px;
+}
+
+.loading-small {
+  margin: auto;
+  text-align: center;
+  height: 60px;
+  width: 60px;
 }
 
 .short-button {

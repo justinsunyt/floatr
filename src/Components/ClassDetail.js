@@ -27,9 +27,9 @@ function ClassDetail({match}) {
     }, [])
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>  
         )
     } else {
         return(

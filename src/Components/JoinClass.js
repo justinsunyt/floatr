@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import {firestore} from 'firebase/app'
 import {AuthContext} from '../Auth'
+import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
@@ -10,6 +11,7 @@ function JoinClass() {
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [redirect, setRedirect] = useState(false)
     const userId = currentUser.uid
 
     let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
@@ -68,7 +70,7 @@ function JoinClass() {
                     })
                 }
             })
-            window.location.reload()
+            setRedirect(true)
         }
     }
 
@@ -97,10 +99,12 @@ function JoinClass() {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>
         )
+    } else if (redirect) {
+        return <Redirect to="/class"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">

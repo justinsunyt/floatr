@@ -49,7 +49,7 @@ function ForumPost(props) {
                     from <u>{className}</u>
                 </Link>
                 <label align="right" className="like-button">
-                    <input 
+                    <input
                         type="checkbox" 
                         checked={liked} 
                         onChange={() => props.handleChange(id)}
@@ -66,8 +66,8 @@ function ForumPost(props) {
                     {text}
                 </div>
                 {img && (!loaded ? 
-                    <div className="forum-header">
-                        <ReactLoading type="bars" color="black" width="10%"/>
+                    <div className="loading-small">
+                        <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000} delay={1000}/>
                     </div>
                 : 
                     <div>

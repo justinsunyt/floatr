@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import {firestore, storage} from 'firebase/app'
-import {Link} from 'react-router-dom'
+import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 import ReactTooltip from 'react-tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -34,6 +34,7 @@ function ForumDetail({match}) {
     const [liked, setLiked] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [redirect, setRedirect] = useState(false)
     const [src, setSrc] = useState("")
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
@@ -124,16 +125,19 @@ function ForumDetail({match}) {
     function handleDeletePost() {
         if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
             commentsRef.get().then(comments => {
-                comments.forEach(comment => comment.delete())
-            })
-            postRef.delete().then(() => {
-                if (img) {
-                    storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(error => alert(error))
-                }
-                window.location.reload()
+                comments.forEach(comment => {
+                    comment.ref.delete()
+                })
+                postRef.delete().then(() => {
+                    if (img) {
+                        storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(err => alert(err))
+                    }
+                }).catch(err => {
+                    console.log("Error: ", err)
+                }) 
             }).catch(err => {
                 console.log("Error: ", err)
-            }) 
+            })  
         }
     }
 
@@ -198,6 +202,7 @@ function ForumDetail({match}) {
                 }
             } else {
                 alert("This post has been deleted")
+                setRedirect(true)
             }
         })
         const unsubscribeComments = commentsRef.orderBy("date", "desc").onSnapshot(snap => {
@@ -246,10 +251,12 @@ function ForumDetail({match}) {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>  
         )
+    } else if (redirect) {
+        return <Redirect to="/"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">
