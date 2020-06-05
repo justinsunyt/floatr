@@ -18,13 +18,11 @@ function Forum(props) {
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [liked, setLiked] = useState([])
-    const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
     const today = firestore.Timestamp.now()
-    const userRef = firestore().collection("users").doc(userId)
 
     function handleForumSnap(snap) {
         let newForum = []
@@ -97,49 +95,42 @@ function Forum(props) {
     }
 
     useEffect(() => {
-        userRef.get().then(doc => {
-            if (doc.exists) {
-                setUserInitiated(true)
-                classesRef.where("students", "array-contains", userId)
+        classesRef.where("students", "array-contains", userId)
+        .get().then(snap => {
+            let classes = []
+            snap.forEach(doc => {
+                classes.push(doc.id)
+            })
+            setClassIds(classes)
+            if (filter.slice(0, 6) === "class/") {
+                forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
                 .get().then(snap => {
-                    let classes = []
-                    snap.forEach(doc => {
-                        classes.push(doc.id)
-                    })
-                    setClassIds(classes)
-                    if (filter.slice(0, 6) === "class/") {
-                        forumRef.where("classId", "==", filter.slice(6)).orderBy("date", "desc").limit(querySize)
-                        .get().then(snap => {
-                            handleForumSnap(snap)
-                        }).catch(err => {
-                            console.log("Error: ", err)
-                        })
-                    } else if (filter.slice(0, 5) === "user/"){
-                        forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
-                        .get().then(snap => {
-                            handleForumSnap(snap)
-                        }).catch(err => {
-                            console.log("Error: ", err)
-                        })
-                    } else {
-                        if (classes.length !== 0) {
-                            forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
-                            .get().then(snap => {
-                                handleForumSnap(snap)
-                            }).catch(err => {
-                                console.log("Error: ", err)
-                            })
-                        } else {
-                            setLoading(false)
-                            setLoaded(true)
-                        }
-                    }
+                    handleForumSnap(snap)
+                }).catch(err => {
+                    console.log("Error: ", err)
+                })
+            } else if (filter.slice(0, 5) === "user/"){
+                forumRef.where("creatorId", "==", filter.slice(5)).orderBy("date", "desc").limit(querySize)
+                .get().then(snap => {
+                    handleForumSnap(snap)
                 }).catch(err => {
                     console.log("Error: ", err)
                 })
             } else {
-                setLoading(false)
+                if (classes.length !== 0) {
+                    forumRef.where("classId", "in", classes).orderBy("date", "desc").limit(querySize)
+                    .get().then(snap => {
+                        handleForumSnap(snap)
+                    }).catch(err => {
+                        console.log("Error: ", err)
+                    })
+                } else {
+                    setLoading(false)
+                    setLoaded(true)
+                }
             }
+        }).catch(err => {
+            console.log("Error: ", err)
         })
 
         window.addEventListener("scroll", handleScroll)
@@ -198,15 +189,13 @@ function Forum(props) {
                 <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>
         )
-    } else if (!userInitiated) {
-        return <Redirect to="/settings"/>
     } else {
         if (classIds.length === 0) {
             return (
                 <CSSTransition in={loaded} timeout={300} classNames="fade">
                     <div>
                         <div className="forum-header">
-                            <p>You haven't joined any classes yet!</p> 
+                            <h3>You haven't joined any classes yet!</h3> 
                         </div>
                         <div className="forum-header">
                             <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>
@@ -222,6 +211,9 @@ function Forum(props) {
                             <Link to={'/post'} className="post-link">
                                 <button className="long-button">Add new post</button>
                             </Link>
+                        </div>
+                        <div className="forum-header">
+                            <h3>Post something :)</h3>
                         </div>
                     </div>
                 </CSSTransition>

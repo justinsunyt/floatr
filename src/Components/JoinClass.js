@@ -13,19 +13,27 @@ function JoinClass() {
     const [loaded, setLoaded] = useState(false)
     const [redirect, setRedirect] = useState(false)
     const userId = currentUser.uid
+    const userRef = firestore().collection("users").doc(userId)
 
     let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
     
     function handleClassesSnap(snap) {
         let classes = []
+        let joinedClasses = []
         snap.forEach(doc => {
+            console.log(doc.data())
             let cl = {}
             cl = doc.data()
             cl.id = doc.id
             if (!cl.students.includes(userId)) {
                 classes.push(cl)
+            } else {
+                joinedClasses.push(cl)
             }
         })
+        if (joinedClasses.length > 0) {
+            userRef.update({userStage: 2})
+        }
         setClassState(classes)
         setLoading(false)
         setLoaded(true)
@@ -70,6 +78,7 @@ function JoinClass() {
                     })
                 }
             })
+            userRef.update({userStage: 2})
             setRedirect(true)
         }
     }
@@ -84,15 +93,23 @@ function JoinClass() {
 
     const classList = classState.map((cl, index) => {
         return (
-            <div className="joinclass-item">
-                <p>{cl.name}</p>
-                <input 
-                    type="checkbox" 
-                    checked={checked[index]} 
-                    onChange={() => handleChange(cl.id)}
-                    align="right"
-                    id="like"
-                />
+            <div>
+                <div className="post-header">
+                    <div className="joinclass-text"><b>{cl.name}</b></div>
+                    <input 
+                        type="checkbox" 
+                        checked={checked[index]} 
+                        onChange={() => handleChange(cl.id)}
+                        id="like"
+                        className="like-button"
+                    />
+                </div>
+                <div className="class-footer">
+                    {cl.students.length > 0 && cl.students.length + ((cl.students.length === 1) ? " student" : " students")}
+                </div>
+                <div className="post-hr">
+                    <hr />
+                </div>
             </div>
         )
     })
@@ -110,12 +127,16 @@ function JoinClass() {
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
                     <div className="class-header">
-                        <h1>Join Class</h1>
+                        <h1>Join New Classes</h1>
                     </div>
-                    <div className="class-list">
-                        {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
-                        {(classList.length > 0) && <button className="short-button width-200" onClick={handleSubmit}><span>Join selected classes </span></button>}
-                    </div>     
+                    <div className="forum">
+                        {(classList.length === 0) ? <b>You have joined all available classes!</b> : classList}
+                        {(classList.length > 0) && 
+                            <div className="joinclass-footer">
+                                <button className="long-button" onClick={handleSubmit}><span>Join selected classes </span></button>
+                            </div>
+                        }
+                    </div>
                 </div>
             </CSSTransition>
         )

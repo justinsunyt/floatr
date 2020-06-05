@@ -12,7 +12,6 @@ import {CSSTransition} from 'react-transition-group'
 function UserDetail({match}) {
     const userRef = firestore().collection("users").doc(match.params.id)
     const [userState, setUserState] = useState({})
-    const [userInitiated, setUserInitiated] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
@@ -23,7 +22,6 @@ function UserDetail({match}) {
         setLoading(true)
         userRef.get().then(doc => {
             if ((doc.exists && match.params.id === userId) || (doc.exists && match.params.id !== userId)) {
-                setUserInitiated(true)
                 let newUserState = doc.data()
                 newUserState.id = doc.id
                 setUserState(newUserState)
@@ -45,8 +43,6 @@ function UserDetail({match}) {
                 <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>  
         )
-    } else if (!userInitiated) {
-        return <Redirect to="settings"/>
     } else {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">

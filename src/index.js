@@ -10,7 +10,7 @@ import 'firebase/storage'
 
 const config = {
     apiKey: "AIzaSyDh95KqApEM_wXQwI2MdR1zq_-uPeGSQLI",
-    authDomain: "floatrrr.firebaseapp.com",
+    authDomain: "floatr.net",
     databaseURL: "https://floatrrr.firebaseio.com",
     projectId: "floatrrr",
     storageBucket: "floatrrr.appspot.com",

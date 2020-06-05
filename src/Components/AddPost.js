@@ -19,10 +19,8 @@ function AddPost() {
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [redirect, setRedirect] = useState(false)
-    const [userInitiated, setUserInitiated] = useState(false)
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
-    const userRef = firestore().collection("users").doc(userId)
     const userDisplayName = currentUser.displayName
     const today = firestore.Timestamp.now()
 
@@ -140,26 +138,19 @@ function AddPost() {
     }
 
     useEffect(() => {
-        userRef.get().then(doc => {
-            if (doc.exists) {
-                setUserInitiated(true)
-                classesRef.where("students", "array-contains", userId).orderBy("name")
-                .get().then(snap => {
-                    let newClassState = []
-                    snap.forEach(doc => {
-                        let cl = doc.data()
-                        cl.id = doc.id
-                        newClassState.push(cl)
-                    })
-                    setClassState(newClassState)
-                    setLoading(false)
-                    setLoaded(true)
-                }).catch(err => {
-                    console.log("Error: ", err)
-                })
-            } else {
-                setLoading(false)
-            }
+        classesRef.where("students", "array-contains", userId).orderBy("name")
+        .get().then(snap => {
+            let newClassState = []
+            snap.forEach(doc => {
+                let cl = doc.data()
+                cl.id = doc.id
+                newClassState.push(cl)
+            })
+            setClassState(newClassState)
+            setLoading(false)
+            setLoaded(true)
+        }).catch(err => {
+            console.log("Error: ", err)
         })
     }, [])
 
@@ -175,8 +166,6 @@ function AddPost() {
                 <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>   
         )
-    } else if (!userInitiated) {
-        return <Redirect to="settings"/>
     } else if (redirect) {
         return <Redirect to="/"/>
     } else {

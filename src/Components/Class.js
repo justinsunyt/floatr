@@ -58,8 +58,7 @@ function Class() {
                         <div className="class-footer">
                             {cl.students.length > 0 && cl.students.length + ((cl.students.length === 1) ? " student" : " students")}
                         </div>
-                    </Link>
-                    
+                    </Link>   
                 </div>
                 <div className="post-hr">
                     <hr />
