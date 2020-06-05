@@ -78,8 +78,9 @@ function JoinClass() {
                     })
                 }
             })
-            userRef.update({userStage: 2})
-            setRedirect(true)
+            userRef.update({userStage: 2}).then(() => {
+                setRedirect(true)
+            })
         }
     }
 
@@ -129,14 +130,16 @@ function JoinClass() {
                     <div className="class-header">
                         <h1>Join New Classes</h1>
                     </div>
-                    <div className="forum">
-                        {(classList.length === 0) ? <b>You have joined all available classes!</b> : classList}
-                        {(classList.length > 0) && 
+                    {(classList.length === 0) ? 
+                        <center><h3>You have joined all available classes!</h3></center>
+                    :
+                        <div className="forum">
+                            {classList}
                             <div className="joinclass-footer">
                                 <button className="long-button" onClick={handleSubmit}><span>Join selected classes </span></button>
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </CSSTransition>
         )

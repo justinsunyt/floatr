@@ -81,7 +81,7 @@ function Class() {
                 <CSSTransition in={loaded} timeout={300} classNames="fade">
                     <div>
                         <div className="forum-header">
-                            <p>You haven't joined any classes yet!</p> 
+                            <h3>You haven't joined any classes yet!</h3> 
                         </div>
                         <div className="forum-header">
                             <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>

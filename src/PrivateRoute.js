@@ -18,6 +18,17 @@ const PrivateRoute = ({component: RouteComponent, ...rest}) => {
         } else {
             return <Redirect to='/settings'/>
         }
+    } else if (userStage === 1) {
+        if (rest.path === "/joinclass") {
+            return (
+                <Route
+                    {...rest}
+                    render={routeProps => <RouteComponent {...routeProps} />}
+                />
+            )
+        } else {
+            return <Redirect to='/joinclass'/>
+        }
     } else {
         return (
             <Route
