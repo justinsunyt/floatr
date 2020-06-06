@@ -34,6 +34,8 @@ export const AuthProvider = ({children}) => {
                         setUserStage(0)
                         setLoading(false)
                     }
+                }, err => {
+                    console.log(err)
                 })
                 if (!user) {
                     unsubscribe()
