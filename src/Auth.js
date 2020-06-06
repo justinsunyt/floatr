@@ -1,36 +1,45 @@
 import React, {useState, useEffect} from 'react'
-import {auth} from 'firebase/app'
 import ReactLoading from 'react-loading'
-import {firestore} from 'firebase/app'
+import {auth, firestore} from './firebase'
 
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({children}) => {
     const [currentUser, setCurrentUser] = useState(null)
-    const [userStage, setUserStage] = useState(0)
+    const [userStage, setUserStage] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        auth().onAuthStateChanged(user => {
+        let hasLoggedIn = false
+        let userRef = null
+        auth.onAuthStateChanged(user => {
             setCurrentUser(user)
-            if (user !== null) {
-                const userRef = firestore().collection("users").doc(user.uid)
+            if (user) {
+                hasLoggedIn = true
+            }
+            if (hasLoggedIn) {
+                if (user) {
+                    userRef = firestore.collection("users").doc(user.uid)
+                }
                 const unsubscribe = userRef.onSnapshot(doc => {
                     if (doc.exists) {
                         if (!doc.data().userStage) {
                             setUserStage(0)
+                            setLoading(false)
                         } else {
                             setUserStage(doc.data().userStage)
+                            setLoading(false)
                         }
                     } else {
                         setUserStage(0)
+                        setLoading(false)
                     }
-                    setLoading(false)
                 })
-                return () => {
+                if (!user) {
                     unsubscribe()
                 }
-            } else {
+            }
+            if (!user) {
                 setLoading(false)
             }
         })

@@ -1,14 +1,15 @@
 import React, {useState, useEffect, useContext} from 'react'
-import {firestore, storage} from 'firebase/app'
+import * as firebase from 'firebase/app'
+import {firestore, storage} from '../firebase'
 import {AuthContext} from '../Auth'
 import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function AddPost() {
-    const forumRef = firestore().collection("forum")
-    const classesRef = firestore().collection("classes")
-    const storageRef = storage().ref()
+    const forumRef = firestore.collection("forum")
+    const classesRef = firestore.collection("classes")
+    const storageRef = storage.ref()
     const [classState, setClassState] = useState([{
         "id" : "",
         "name" : "",
@@ -22,7 +23,7 @@ function AddPost() {
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
-    const today = firestore.Timestamp.now()
+    const today = firebase.firestore.FieldValue.serverTimestamp()
 
     function handleChange(event) {
         const {name, value, type, files, selectedIndex} = event.target
@@ -84,17 +85,10 @@ function AddPost() {
                         setLoading(true)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
-                        switch (snapshot.state) {
-                            case storage.TaskState.PAUSED: // or 'paused'
-                                console.log('Upload is paused')
-                                break
-                            case storage.TaskState.RUNNING: // or 'running'
-                                console.log('Upload is running')
-                                break
-                        }
                     }, function(error) {
                         alert(error)
                     }, function() {
+                        setLoading(false)
                         setRedirect(true)
                     })
                 }).catch(err => {
@@ -110,17 +104,10 @@ function AddPost() {
                         setLoading(true)
                         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                         console.log('Upload is ' + progress + '% done')
-                        switch (snapshot.state) {
-                            case storage.TaskState.PAUSED: // or 'paused'
-                                console.log('Upload is paused')
-                                break
-                            case storage.TaskState.RUNNING: // or 'running'
-                                console.log('Upload is running')
-                                break
-                        }
                     }, function(error) {
                         alert(error)
                     }, function() {
+                        setLoading(false)
                         setRedirect(true)
                     })
                 }).catch(err => {

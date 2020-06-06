@@ -1,19 +1,19 @@
 import React, {useEffect, useState, useContext} from 'react'
-import {firestore} from 'firebase/app'
+import {firestore} from '../firebase'
 import {AuthContext} from '../Auth'
 import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
-    const classesRef = firestore().collection("classes")
+    const classesRef = firestore.collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [redirect, setRedirect] = useState(false)
     const userId = currentUser.uid
-    const userRef = firestore().collection("users").doc(userId)
+    const userRef = firestore.collection("users").doc(userId)
 
     let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
     
@@ -21,7 +21,6 @@ function JoinClass() {
         let classes = []
         let joinedClasses = []
         snap.forEach(doc => {
-            console.log(doc.data())
             let cl = {}
             cl = doc.data()
             cl.id = doc.id

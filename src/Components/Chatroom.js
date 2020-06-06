@@ -1,6 +1,4 @@
-import React, {useState, useEffect} from 'react'
-import {firestore} from 'firebase/app'
-import {AuthContext} from '../Auth'
+import React, {useState} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import Message from './Message'
 

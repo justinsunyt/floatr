@@ -1,15 +1,16 @@
 import React, {useState, useEffect, useContext} from 'react'
-import {firestore} from 'firebase/app'
+import * as firebase from 'firebase/app'
+import {firestore} from '../firebase'
 import ForumPost from './ForumPost'
 import {AuthContext} from '../Auth'
-import {Link, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function Forum(props) {
     const filter = props.filter
-    const classesRef = firestore().collection("classes")
-    const forumRef = firestore().collection("forum")
+    const classesRef = firestore.collection("classes")
+    const forumRef = firestore.collection("forum")
     const [forumState, setForumState] = useState([])
     const [querySize, setQuerySize] = useState(10)
     const [queryLimit, setQueryLimit] = useState(false)
@@ -22,7 +23,7 @@ function Forum(props) {
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
-    const today = firestore.Timestamp.now()
+    const today = firebase.firestore.FieldValue.serverTimestamp()
 
     function handleForumSnap(snap) {
         let newForum = []

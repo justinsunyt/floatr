@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
-import {firestore, storage} from 'firebase/app'
+import * as firebase from 'firebase/app'
+import {firestore, storage} from '../firebase'
 import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 import ReactTooltip from 'react-tooltip'
@@ -10,10 +11,10 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
-    const postRef = firestore().collection("forum").doc(match.params.id)
+    const postRef = firestore.collection("forum").doc(match.params.id)
     const commentsRef = postRef.collection("comments")
-    const userRef = firestore().collection("users")
-    const storageRef = storage().ref()
+    const userRef = firestore.collection("users")
+    const storageRef = storage.ref()
     const [postState, setPostState] = useState({
         "class" : "",
         "classId" : "",
@@ -40,7 +41,7 @@ function ForumDetail({match}) {
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
-    const today = firestore.Timestamp.now()
+    const today = firebase.firestore.FieldValue.serverTimestamp()
 
     let title = postState.title
     let text = postState.text
