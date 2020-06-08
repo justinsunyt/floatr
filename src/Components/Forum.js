@@ -79,7 +79,7 @@ function Forum(props) {
                 newComment.text = input.value
                 newComment.reports = []
                 commentsRef.add(newComment)
-                postRef.update({numComments: firestore.FieldValue.increment(1)})
+                postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
                 post.numComments ++
                 input.value = ""
             }

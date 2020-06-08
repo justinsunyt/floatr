@@ -1,47 +1,40 @@
 import React, {useState, useEffect} from 'react'
 import ReactLoading from 'react-loading'
+import * as firebase from 'firebase/app'
 import {auth, firestore} from './firebase'
 
-export const AuthContext = React.createContext()
+export const AuthContext = React.createContext({currentUser: null, userStage: null, incrementUserStage: () => {}})
 
-export const AuthProvider = ({children}) => {
+function AuthProvider({children}) {
     const [currentUser, setCurrentUser] = useState(null)
     const [userStage, setUserStage] = useState(null)
     const [loading, setLoading] = useState(true)
 
+    const incrementUserStage = (callback) => {
+        firestore.collection("users").doc(currentUser.uid).update({userStage: firebase.firestore.FieldValue.increment(1)}).then(() => {
+            setUserStage(prevStage => {
+                return (prevStage + 1)
+            })
+            callback()
+        }).catch(err => console.log(err))
+    }
+    
     useEffect(() => {
-        let hasLoggedIn = false
-        let userRef = null
         auth.onAuthStateChanged(user => {
+            setLoading(true)
             setCurrentUser(user)
             if (user) {
-                hasLoggedIn = true
-            }
-            if (hasLoggedIn) {
-                if (user) {
-                    userRef = firestore.collection("users").doc(user.uid)
-                }
-                const unsubscribe = userRef.onSnapshot(doc => {
+                const userRef = firestore.collection("users").doc(user.uid)
+                userRef.get().then(doc => {
                     if (doc.exists) {
-                        if (!doc.data().userStage) {
-                            setUserStage(0)
-                            setLoading(false)
-                        } else {
-                            setUserStage(doc.data().userStage)
-                            setLoading(false)
-                        }
+                        setUserStage(doc.data().userStage)
                     } else {
                         setUserStage(0)
-                        setLoading(false)
                     }
-                }, err => {
-                    console.log(err)
+                    setLoading(false)
                 })
-                if (!user) {
-                    unsubscribe()
-                }
-            }
-            if (!user) {
+            } else {
+                setUserStage(0)
                 setLoading(false)
             }
         })
@@ -55,9 +48,11 @@ export const AuthProvider = ({children}) => {
         )
     } else {
         return(
-            <AuthContext.Provider value={{currentUser: currentUser, userStage: userStage}}>
+            <AuthContext.Provider value={{currentUser, userStage, incrementUserStage}}>
                 {children}
             </AuthContext.Provider>
         )
     }
 }
+
+export {AuthProvider}

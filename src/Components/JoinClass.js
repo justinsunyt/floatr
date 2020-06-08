@@ -7,37 +7,16 @@ import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
     const classesRef = firestore.collection("classes")
-    const {currentUser} = useContext(AuthContext)
+    const {currentUser, userStage, incrementUserStage} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
-    const [redirect, setRedirect] = useState(false)
+    const [redirectToHome, setRedirectToHome] = useState(false)
+    const [redirectToClass, setRedirectToClass] = useState(false)
     const userId = currentUser.uid
-    const userRef = firestore.collection("users").doc(userId)
 
     let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
     
-    function handleClassesSnap(snap) {
-        let classes = []
-        let joinedClasses = []
-        snap.forEach(doc => {
-            let cl = {}
-            cl = doc.data()
-            cl.id = doc.id
-            if (!cl.students.includes(userId)) {
-                classes.push(cl)
-            } else {
-                joinedClasses.push(cl)
-            }
-        })
-        if (joinedClasses.length > 0) {
-            userRef.update({userStage: 2})
-        }
-        setClassState(classes)
-        setLoading(false)
-        setLoaded(true)
-    }
-
     function handleChange(id) {
         let newClasses = classState
         newClasses = newClasses.map(cl => {
@@ -77,15 +56,34 @@ function JoinClass() {
                     })
                 }
             })
-            userRef.update({userStage: 2}).then(() => {
-                setRedirect(true)
-            })
+            if (userStage === 1) {
+                incrementUserStage(() => setRedirectToHome(true))
+            } else {
+                setRedirectToClass(true)
+            }
         }
     }
 
     useEffect(() => {
         classesRef.orderBy("name").get().then(snap => {
-            handleClassesSnap(snap)
+            let classes = []
+            let joinedClasses = []
+            snap.forEach(doc => {
+                let cl = {}
+                cl = doc.data()
+                cl.id = doc.id
+                if (!cl.students.includes(userId)) {
+                    classes.push(cl)
+                } else {
+                    joinedClasses.push(cl)
+                }
+            })
+            if (joinedClasses.length > 0 && userStage === 1) {
+                incrementUserStage(() => {})
+            }
+            setClassState(classes)
+            setLoading(false)
+            setLoaded(true)
         }).catch(err => {
             console.log("Error: ", err)
         })
@@ -120,8 +118,10 @@ function JoinClass() {
                 <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>
         )
-    } else if (redirect) {
+    } else if (redirectToClass) {
         return <Redirect to="/class"/>
+    } else if (redirectToHome) {
+        return <Redirect to="/"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">
