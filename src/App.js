@@ -26,13 +26,13 @@ function App() {
           <div className="content">
             <Switch>
               <PrivateRoute path="/" exact component={Dashboard}/>
-              <Route path="/login" component={Login}/>
+              <Route path="/login" exact component={Login}/>
               <PrivateRoute path="/post/:id" exact component={ForumDetail}/>
               <PrivateRoute path="/class/:id" exact component={ClassDetail}/>
               <PrivateRoute path="/user/:id" exact component={UserDetail}/>
               <PrivateRoute path="/post" exact component={AddPost}/>
               <PrivateRoute path="/class" exact component={Class}/>
-              <PrivateRoute path="/joinclass" component={JoinClass}/>
+              <PrivateRoute path="/joinclass" exact component={JoinClass}/>
               <PrivateRoute path="/chat" exact component={Chat}/>
               <PrivateRoute path="/chatroom" exact component={Chatroom}/>
               <PrivateRoute path="/settings" exact component={Settings}/>

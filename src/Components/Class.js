@@ -1,19 +1,19 @@
 import React, {useEffect, useState, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from '../firebase'
 import {AuthContext} from '../Auth'
 import {Link, Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function Class() {
-    const classesRef = firebase.firestore().collection("classes")
+    const classesRef = firestore.collection("classes")
     const {currentUser} = useContext(AuthContext)
     const [classesState, setClassesState] = useState([{students: []}])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [userInitiated, setUserInitiated] = useState(false)
     const userId = currentUser.uid
-    const userRef = firebase.firestore().collection("users").doc(userId)
+    const userRef = firestore.collection("users").doc(userId)
 
     function handleClassesSnap(snap) {
         let classes = []
@@ -32,9 +32,8 @@ function Class() {
         userRef.get().then(doc => {
             if (doc.exists) {
                 setUserInitiated(true)
-                classesRef.where("students", "array-contains", userId)
+                classesRef.where("students", "array-contains", userId).orderBy("name")
                 .get().then(snap => {
-                    console.log("Fetched from classes")
                     handleClassesSnap(snap)
                 }).catch(err => {
                     console.log("Error: ", err)
@@ -52,15 +51,14 @@ function Class() {
 
     const classList = classesState.map(cl => {
         return (
-            <div>
+            <div key={cl.id}>
                 <div className="class-item">
                     <Link to={'/class/' + cl.id} style={linkStyle}>
                         <h3>{cl.name}</h3>
                         <div className="class-footer">
                             {cl.students.length > 0 && cl.students.length + ((cl.students.length === 1) ? " student" : " students")}
                         </div>
-                    </Link>
-                    
+                    </Link>   
                 </div>
                 <div className="post-hr">
                     <hr />
@@ -71,8 +69,8 @@ function Class() {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
             </div>   
         )
     } else if (!userInitiated) {
@@ -83,7 +81,7 @@ function Class() {
                 <CSSTransition in={loaded} timeout={300} classNames="fade">
                     <div>
                         <div className="forum-header">
-                            <p>You haven't joined any classes yet!</p> 
+                            <h3>You haven't joined any classes yet!</h3> 
                         </div>
                         <div className="forum-header">
                             <Link to="/joinclass"><button className="short-button width-150"><span>Join class </span></button></Link>

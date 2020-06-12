@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react'
 import Forum from './Forum'
-import * as firebase from 'firebase'
+import {firestore} from '../firebase'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ClassDetail({match}) {
-    const classRef = firebase.firestore().collection("classes").doc(match.params.id)
+    const classRef = firestore.collection("classes").doc(match.params.id)
     const [classState, setClassState] = useState({
         "id" : "",
         "name" : "",
@@ -25,11 +25,12 @@ function ClassDetail({match}) {
             console.log("Error: ", err)
         })
     }, [])
+
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>  
         )
     } else {
         return(

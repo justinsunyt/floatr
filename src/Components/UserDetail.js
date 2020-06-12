@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from '../firebase'
 import {AuthContext} from '../Auth'
 import Forum from './Forum'
 import {Link, Redirect} from 'react-router-dom'
@@ -10,9 +10,8 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function UserDetail({match}) {
-    const userRef = firebase.firestore().collection("users").doc(match.params.id)
+    const userRef = firestore.collection("users").doc(match.params.id)
     const [userState, setUserState] = useState({})
-    const [userInitiated, setUserInitiated] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const {currentUser} = useContext(AuthContext)
@@ -23,8 +22,6 @@ function UserDetail({match}) {
         setLoading(true)
         userRef.get().then(doc => {
             if ((doc.exists && match.params.id === userId) || (doc.exists && match.params.id !== userId)) {
-                setUserInitiated(true)
-                console.log("Fetched from users")
                 let newUserState = doc.data()
                 newUserState.id = doc.id
                 setUserState(newUserState)
@@ -42,12 +39,10 @@ function UserDetail({match}) {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>  
         )
-    } else if (!userInitiated) {
-        return <Redirect to="settings"/>
     } else {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">

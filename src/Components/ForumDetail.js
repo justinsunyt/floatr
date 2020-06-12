@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
-import * as firebase from 'firebase'
-import {Link} from 'react-router-dom'
+import * as firebase from 'firebase/app'
+import {firestore, storage} from '../firebase'
+import {Link, Redirect} from 'react-router-dom'
 import {AuthContext} from '../Auth'
 import ReactTooltip from 'react-tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,10 +11,10 @@ import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function ForumDetail({match}) {
-    const postRef = firebase.firestore().collection("forum").doc(match.params.id)
+    const postRef = firestore.collection("forum").doc(match.params.id)
     const commentsRef = postRef.collection("comments")
-    const userRef = firebase.firestore().collection("users")
-    const storageRef = firebase.storage().ref()
+    const userRef = firestore.collection("users")
+    const storageRef = storage.ref()
     const [postState, setPostState] = useState({
         "class" : "",
         "classId" : "",
@@ -34,12 +35,13 @@ function ForumDetail({match}) {
     const [liked, setLiked] = useState(false)
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [redirect, setRedirect] = useState(false)
     const [src, setSrc] = useState("")
     const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
-    const today = firebase.firestore.Timestamp.now()
+    const today = firebase.firestore.FieldValue.serverTimestamp()
 
     let title = postState.title
     let text = postState.text
@@ -96,7 +98,6 @@ function ForumDetail({match}) {
                 setLiked(true)
             }
             postRef.set(newPostState)
-            console.log("Wrote to post")
             setPostState(newPostState)
         }
         else if (type === "text") {
@@ -118,7 +119,6 @@ function ForumDetail({match}) {
             newComment.reports = []
             commentsRef.add(newComment)
             postRef.update({numComments: firebase.firestore.FieldValue.increment(1)})
-            console.log("Wrote to comments")
             setCommentState("")
         }
     }
@@ -126,25 +126,26 @@ function ForumDetail({match}) {
     function handleDeletePost() {
         if (window.confirm("Are you sure you want to delete this post?\nThis action is irreversible")) {
             commentsRef.get().then(comments => {
-                comments.forEach(comment => comment.delete())
-            })
-            postRef.delete().then(() => {
-                console.log("Deleted post")
-                if (img) {
-                    storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(error => alert(error))
-                }
-                window.location.reload()
+                comments.forEach(comment => {
+                    comment.ref.delete()
+                })
+                postRef.delete().then(() => {
+                    if (img) {
+                        storageRef.child(`forum/images/${match.params.id}`).delete().then(() => {}).catch(err => alert(err))
+                    }
+                }).catch(err => {
+                    console.log("Error: ", err)
+                }) 
             }).catch(err => {
                 console.log("Error: ", err)
-            }) 
+            })  
         }
     }
 
     function handleDeleteComment(commentId) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
             commentsRef.doc(commentId).delete().then(() => {
-                postRef.update({numComments: firebase.firestore.FieldValue.increment(-1)})
-                console.log("Deleted comment")
+                postRef.update({numComments: firestore.FieldValue.increment(-1)})
             }).catch(err => {
                 console.log("Error: ", err)
             })
@@ -159,7 +160,6 @@ function ForumDetail({match}) {
                 let newPostState = postState
                 newPostState.reports.push(userId)
                 postRef.set(newPostState)
-                console.log("Wrote to post")
                 setPostState(newPostState)
             }
         }
@@ -175,7 +175,6 @@ function ForumDetail({match}) {
                     if (window.confirm("Are you sure you want to report this comment?\nThis action is irreversible")) {
                         comment.reports.push(userId)
                         commentsRef.doc(commentId).set(comment)
-                        console.log("Wrote to comments")
                         setCommentsState(newCommentsState)
                     }
                 }
@@ -189,7 +188,6 @@ function ForumDetail({match}) {
         })
         const unsubscribePost = postRef.onSnapshot(doc => {
             if (doc.exists) {
-                console.log("Fetched from post")
                 handlePostDoc(doc)
                 if (doc.data().img) {
                     storageRef.child(`forum/images/${match.params.id}`).getDownloadURL().then(url => {
@@ -205,10 +203,10 @@ function ForumDetail({match}) {
                 }
             } else {
                 alert("This post has been deleted")
+                setRedirect(true)
             }
         })
         const unsubscribeComments = commentsRef.orderBy("date", "desc").onSnapshot(snap => {
-            console.log("Fetched from comments")
             handleCommentsSnap(snap)
         })  
         return () => {
@@ -254,10 +252,12 @@ function ForumDetail({match}) {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>  
         )
+    } else if (redirect) {
+        return <Redirect to="/"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">
