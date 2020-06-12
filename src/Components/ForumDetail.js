@@ -268,15 +268,14 @@ function ForumDetail({match}) {
                                 <Link to={'/class/' + classId} style={linkStyle}>
                                     from <u>{className}</u>
                                 </Link>
-                                <label align="right" className="like-button">
-                                    <input 
+                                <label align="right" className="like-button-label">
+                                    <input
                                         type="checkbox" 
                                         checked={liked} 
                                         onChange={handleChange}
-                                        align="right"
                                         className="like-checkbox"
                                     />
-                                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
+                                <b><div className="like-button">{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</div></b></label>
                             </div>
                             <div className="post-title">
                                 <h2 className="post-title">{title}</h2>
