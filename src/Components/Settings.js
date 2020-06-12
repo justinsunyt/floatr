@@ -1,34 +1,24 @@
 import React, { useContext, useState, useEffect } from 'react'
-import * as firebase from 'firebase'
+import {firestore, auth} from '../firebase'
 import {AuthContext} from '../Auth'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as brandIcons from '@fortawesome/free-brands-svg-icons'
 import ReactLoading from 'react-loading'
+import {Redirect} from 'react-router-dom'
 import {CSSTransition} from 'react-transition-group'
 
 function Settings() {
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
-    const {currentUser} = useContext(AuthContext)
+    const {currentUser, userStage, incrementUserStage} = useContext(AuthContext)
     const userId = currentUser.uid
     const userEmail = currentUser.email
     const displayName = currentUser.displayName
     const profilePic = currentUser.photoURL
-    const [userState, setUserState] = useState({mod: false, bio: "", displayName: displayName, profilePic: profilePic})
-    const usersRef = firebase.firestore().collection("users").doc(userId)
+    const [userState, setUserState] = useState({mod: false, bio: "", displayName: displayName, profilePic: profilePic, userStage: 0})
+    const usersRef = firestore.collection("users").doc(userId)
 
     let bio = userState.bio && userState.bio
-
-    function handleUserDoc(doc) {
-        let newUserState = {}
-        newUserState = doc
-        if (!newUserState.bio) {
-            newUserState.bio = ""
-        }
-        setUserState(newUserState)
-        setLoading(false)
-        setLoaded(true)
-    }
 
     function handleChange(event) {
         const {value} = event.target
@@ -40,8 +30,11 @@ function Settings() {
     function handleSubmit(event) {
         event.preventDefault()
         usersRef.set(userState).then(() => {
-            console.log("Wrote to users")
-            window.location.reload()
+            if (userStage === 0) {
+                incrementUserStage(() => {})
+            } else {
+                window.location.reload()
+            }
         })
         .catch(err => {
             console.log("Error: ", err)
@@ -51,8 +44,9 @@ function Settings() {
     useEffect(() => {
         usersRef.get().then(doc => {
             if (doc.exists) {
-                console.log("Fetched from users")
-                handleUserDoc(doc.data())
+                setUserState(doc.data())
+                setLoading(false)
+                setLoaded(true)
             } else {
                 setLoading(false)
             }
@@ -63,17 +57,17 @@ function Settings() {
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>
         )
     } else {
         return(
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
                     <div className="settings-header">
-                        <h1>Settings</h1>
-                        <button className="short-button" onClick={() => firebase.auth().signOut()}><span>Sign out </span></button> 
+                        <h1>{userStage === 0 ? "Get started!" : "Settings"}</h1>
+                        <button className="short-button" onClick={() => auth.signOut()}><span>Sign out </span></button> 
                     </div>
                     <div className="forum">
                         <form onSubmit={handleSubmit}>
@@ -109,7 +103,7 @@ function Settings() {
                                 <hr />
                             </div>
                             <div className="settings-footer">
-                                <button className="short-button"><span>Update </span></button>
+                                <button className="long-button"><span>{userStage === 0 ? "Submit to continue" : "Update"} </span></button>
                             </div>
                         </form>
                     </div>

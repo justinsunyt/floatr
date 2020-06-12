@@ -4,10 +4,10 @@ import ReactLoading from 'react-loading'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 import * as regularIcons from '@fortawesome/free-regular-svg-icons'
-import * as firebase from 'firebase'
+import {storage} from '../firebase'
 
 function ForumPost(props) {
-    const storageRef = firebase.storage().ref()
+    const storageRef = storage.ref()
     const [loaded, setLoaded] = useState(false)
     const [src, setSrc] = useState("")
     const id = props.post.id
@@ -49,11 +49,10 @@ function ForumPost(props) {
                     from <u>{className}</u>
                 </Link>
                 <label align="right" className="like-button">
-                    <input 
+                    <input
                         type="checkbox" 
                         checked={liked} 
                         onChange={() => props.handleChange(id)}
-                        align="right"
                         className="like-checkbox"
                     />
                 <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
@@ -66,19 +65,19 @@ function ForumPost(props) {
                     {text}
                 </div>
                 {img && (!loaded ? 
-                    <div className="forum-header">
-                        <ReactLoading type="bars" color="black" width="10%"/>
+                    <div className="loading-small">
+                        <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000} delay={1000}/>
                     </div>
                 : 
                     <div>
                         <img id={"img" + id} src={src} className="post-image"/> 
                     </div>)
                 }
-                <div className="post-footer">
-                    <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
-                    <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
-                </div>
             </Link>
+            <div className="post-footer">
+                <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
+                <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
+            </div>
             <div className="post-hr">
                 <hr />
             </div>

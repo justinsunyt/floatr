@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "floatrrr"
+    "default": "floatrrr",
+    "develop": "taskfloat"
   }
 }

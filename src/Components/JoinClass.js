@@ -1,34 +1,22 @@
 import React, {useEffect, useState, useContext} from 'react'
-import * as firebase from 'firebase'
+import {firestore} from '../firebase'
 import {AuthContext} from '../Auth'
+import {Redirect} from 'react-router-dom'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
 function JoinClass() {
-    const classesRef = firebase.firestore().collection("classes")
-    const {currentUser} = useContext(AuthContext)
+    const classesRef = firestore.collection("classes")
+    const {currentUser, userStage, incrementUserStage} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
+    const [redirectToHome, setRedirectToHome] = useState(false)
+    const [redirectToClass, setRedirectToClass] = useState(false)
     const userId = currentUser.uid
 
     let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
     
-    function handleClassesSnap(snap) {
-        let classes = []
-        snap.forEach(doc => {
-            let cl = {}
-            cl = doc.data()
-            cl.id = doc.id
-            if (!cl.students.includes(userId)) {
-                classes.push(cl)
-            }
-        })
-        setClassState(classes)
-        setLoading(false)
-        setLoaded(true)
-    }
-
     function handleChange(id) {
         let newClasses = classState
         newClasses = newClasses.map(cl => {
@@ -63,20 +51,39 @@ function JoinClass() {
             classState.forEach(cl => {
                 if (cl.students.includes(userId)) {
                     classesRef.doc(cl.id).set(cl).then(() => {
-                        console.log("Wrote to classes")
                     }).catch(err => {
                         console.log("Error: ", err)
                     })
                 }
             })
-            window.location.reload()
+            if (userStage === 1) {
+                incrementUserStage(() => setRedirectToHome(true))
+            } else {
+                setRedirectToClass(true)
+            }
         }
     }
 
     useEffect(() => {
         classesRef.orderBy("name").get().then(snap => {
-            console.log("Fetched from classes")
-            handleClassesSnap(snap)
+            let classes = []
+            let joinedClasses = []
+            snap.forEach(doc => {
+                let cl = {}
+                cl = doc.data()
+                cl.id = doc.id
+                if (!cl.students.includes(userId)) {
+                    classes.push(cl)
+                } else {
+                    joinedClasses.push(cl)
+                }
+            })
+            if (joinedClasses.length > 0 && userStage === 1) {
+                incrementUserStage(() => {})
+            }
+            setClassState(classes)
+            setLoading(false)
+            setLoaded(true)
         }).catch(err => {
             console.log("Error: ", err)
         })
@@ -84,36 +91,54 @@ function JoinClass() {
 
     const classList = classState.map((cl, index) => {
         return (
-            <div className="joinclass-item">
-                <p>{cl.name}</p>
-                <input 
-                    type="checkbox" 
-                    checked={checked[index]} 
-                    onChange={() => handleChange(cl.id)}
-                    align="right"
-                    id="like"
-                />
+            <div key={cl.id}>
+                <div className="post-header">
+                    <div className="joinclass-text"><b>{cl.name}</b></div>
+                    <input 
+                        type="checkbox" 
+                        checked={checked[index]} 
+                        onChange={() => handleChange(cl.id)}
+                        id="like"
+                        className="like-button"
+                    />
+                </div>
+                <div className="class-footer">
+                    {cl.students.length > 0 && cl.students.length + ((cl.students.length === 1) ? " student" : " students")}
+                </div>
+                <div className="post-hr">
+                    <hr />
+                </div>
             </div>
         )
     })
 
     if (loading) {
         return (
-            <div className="forum-header">
-                <ReactLoading type="bars" color="black" width="10%"/>
-            </div>   
+            <div className="loading-large">
+                <ReactLoading type="balls" color="#ff502f" width="100%" delay={1000}/>
+            </div>
         )
+    } else if (redirectToClass) {
+        return <Redirect to="/class"/>
+    } else if (redirectToHome) {
+        return <Redirect to="/"/>
     } else {
         return (
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
                     <div className="class-header">
-                        <h1>Join Class</h1>
+                        <h1>Join New Classes</h1>
                     </div>
-                    <div className="class-list">
-                        {(!Array.isArray(classList) || !classList.length) ? "You have joined all available classes!" : classList}
-                        {(classList.length > 0) && <button className="short-button width-200" onClick={handleSubmit}><span>Join selected classes </span></button>}
-                    </div>     
+                    {(classList.length === 0) ? 
+                        <center><h3>You have joined all available classes!</h3></center>
+                    :
+                        <div className="forum">
+                            {classList}
+                            <div className="joinclass-footer">
+                                <button className="long-button" onClick={handleSubmit}><span>Join selected classes </span></button>
+                            </div>
+                        </div>
+                    }
                 </div>
             </CSSTransition>
         )

@@ -15,14 +15,7 @@
   text-align: center;
 }
 
-.content {
-  padding-top: 75px;
-  padding-bottom: 75px;
-  background-color: var(--background-color);
-}
-
 .dashboard {
-  display: grid;
   transition: all 0.5s ease;
 }
 
@@ -30,7 +23,7 @@
   background-color: white;
   margin-left: auto;
   margin-right: auto;
-  margin-bottom: 20px;
+  margin-top: 20px;
   max-width: var(--general-width);
   display: flex;
   flex-direction: column;
@@ -44,8 +37,6 @@
 
 .forum-header {
   margin: auto;
-  margin-top: 25px;
-  margin-bottom: 20px;
   display: flex;
   text-align: center;
   max-width: var(--unpadded-width);
@@ -194,13 +185,14 @@
 
 .class-header {
   margin: auto;
-  margin-top: 25px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 40px;
   text-align: center;
 }
 
 .class-list {
   margin: auto;
+  margin-bottom: 40px;
   text-align: center;
   max-width: 500px;
   transition: all 0.5s ease;
@@ -219,9 +211,8 @@
 
 .profile-header {
   margin: auto;
-  margin-top: 10px;
   text-align: right;
-  max-width: var(--general-width);
+  max-width: var(--unpadded-width);
   transition: all 0.5s;
 }
 
@@ -230,8 +221,8 @@
   flex-direction: row;
   align-items: center;
   margin: auto;
-  margin-bottom: 50px;
-  max-width: var(--general-width);
+  margin-bottom: 40px;
+  max-width: var(--unpadded-width);
   transition: all 0.5s
 }
 
@@ -257,7 +248,7 @@
 
 .addpost-input {
   margin: auto;
-  margin-top: 50px;
+  margin-top: 40px;
   max-width: var(--unpadded-width);
   display: block;
 }
@@ -276,7 +267,7 @@
 	opacity: 0;
 	overflow: hidden;
 	position: absolute;
-	z-index: -1;
+  z-index: -1;
 }
 
 .addpost-file + label {
@@ -286,7 +277,8 @@
   padding: 15px;
   border-radius: var(--border-radius);
   border: 1px solid var(--secondary-color);
-  margin-top: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   cursor: pointer;
   min-width: 120px;
   box-shadow: 0 0 6px var(--primary-shadow-color);
@@ -300,28 +292,33 @@
 
 .addpost-image {
   width: 100%;
-  display: none;
   align-self: center;
+  display: none;
 }
 
 .addpost-image-active {
-  margin-top: 15px;
+  margin-bottom: 20px;
   display: block;
 }
 
 .like-button {
   cursor: pointer;
+  align-self: flex-end;
 }
 
 .like-checkbox {
   display: none;
 }
 
-.joinclass-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+.joinclass-text {
+  font-size: 18px;
+}
+
+.joinclass-footer {
+  margin: auto;
+  margin-top: 30px;
+  width: 100%;
+  text-align: center;
 }
 
 .chat-rules {
@@ -437,18 +434,31 @@
   transform: translateX(0%);
 }
 
-.nav-logo {
+.nav-name {
   display: flex;
   flex-direction: row;
   color: white;
   text-decoration: none;
   justify-content: space-evenly;
   align-items: center;
+  align-self: center;
   transition: all 0.5s;
   font-size: 18px;
 }
 
-.logo {
+.mobile-nav-name {
+  display: flex;
+  flex-direction: row;
+  color: white;
+  text-decoration: none;
+  justify-content: space-evenly;
+  align-items: center;
+  align-self: center;
+  transition: all 0.5s;
+  font-size: 12px;
+}
+
+.nav-logo {
   height: 48px;
   width: 48px;
   color: white;
@@ -456,13 +466,16 @@
 
 .settings-header {
   margin: auto;
-  margin-top: 25px;
-  margin-bottom: 50px;
+  margin-top: 20px;
+  margin-bottom: 40px;
   text-align: center;
+  max-width: var(--unpadded-width);
 }
 
 .settings-footer {
   margin: auto;
+  margin-top: 30px;
+  width: 100%;
   text-align: center;
 }
 
@@ -472,31 +485,30 @@
 }
 
 .nav-links {
-  width: 13%;
+  width: 350px;
+  padding-left: 26px;
+  padding-right: 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
   list-style: none;
   transition: all 0.5s;
+  font-size: 18px;
 }
 
 .nav-link {
-  float: left;
   text-align: center;
   padding: 12px;
   color: white;
   text-decoration: none;
 }
 
-.nav-icon {
-  transition: all 0.5s;
-}
-
 .nav-img {
-  float: left;
+  display: block;
   text-align: center;
-  height: 28px;
-  width: 28px;
+  height: 22px;
+  width: 22px;
+  padding: 0;
   border-radius: 50%;
   transition: all 0.5s;
 }
@@ -516,6 +528,22 @@
   transition: 0.3s all;
 }
 
+.loading-large {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 120px;
+  width: 120px;
+}
+
+.loading-small {
+  margin: auto;
+  text-align: center;
+  height: 60px;
+  width: 60px;
+}
+
 .short-button {
   display: inline-block;
   border-radius: var(--border-radius);
@@ -530,7 +558,7 @@
   width: 120px;
   transition: all 0.3s;
   cursor: pointer;
-  margin-top: 10px;
+  margin: auto;
 }
 
 .short-button span {
@@ -626,13 +654,23 @@ nav {
   justify-content: space-around;
   align-items: center;
   height: 60px;
+  width: 100%;
   background-color: var(--primary-color);
   position: fixed;
   top: 0;
-  bottom: 0;
-  right: 0;
   left: 0;
-  margin-bottom: 50px;
+  box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--primary-shadow-color);
+  z-index: 69;
+}
+
+.mobile-nav {
+  display: none;
+  height: 60px;
+  width: 100%;
+  background-color: var(--primary-color);
+  position: fixed;
+  top: 0;
+  left: 0;
   box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--primary-shadow-color);
   z-index: 69;
 }
@@ -672,7 +710,6 @@ select {
   font-family: 'Lato', sans-serif;
   font-size: 16px;
   padding: 10px;
-  margin-bottom: 15px;
   min-width: 200px;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
@@ -686,6 +723,17 @@ select:focus {
 
 li {
   float: left;
+}
+
+html, body {
+  overflow: auto;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background-color: var(--background-color);
+  padding: 80px 20px 20px 20px;
+  margin: 0;
 }
 
 body::-webkit-scrollbar {
@@ -718,21 +766,26 @@ body::-webkit-scrollbar-thumb {
   .chat-form {
     margin-left: -40%;
   }
-  .logo {
+  .nav-logo, .nav-name {
     display: none;
   }
-  .nav-logo {
-    font-size: 12px;
-  }
   .nav-links {
-    width: 40%;
+    width: 100%;
   }
-  .nav-icon {
-    font-size: 12px;
+  .mobile-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .nav-img {
-    height: 22px;
-    width: 22px;
+  nav {
+    position: fixed;
+    bottom: 0!important;
+    left: 0!important;
+    top: initial;
+    height: 60px;
+  }
+  body {
+    padding-bottom: 80px;
   }
 }
 
