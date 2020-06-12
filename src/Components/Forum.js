@@ -178,8 +178,8 @@ function Forum(props) {
 
     const forum = forumState.map((post, index) => {
         return(
-            <div className="forum">
-                <ForumPost key={post.id} post={post} handleChange={handleChange} handleSubmit={handleSubmit} liked={liked[index]}/>
+            <div key={post.id} className="forum">
+                <ForumPost post={post} handleChange={handleChange} handleSubmit={handleSubmit} liked={liked[index]}/>
             </div>
         ) 
     })

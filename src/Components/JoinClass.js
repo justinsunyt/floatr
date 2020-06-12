@@ -91,7 +91,7 @@ function JoinClass() {
 
     const classList = classState.map((cl, index) => {
         return (
-            <div>
+            <div key={cl.id}>
                 <div className="post-header">
                     <div className="joinclass-text"><b>{cl.name}</b></div>
                     <input 

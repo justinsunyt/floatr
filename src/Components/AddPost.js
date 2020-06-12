@@ -143,7 +143,7 @@ function AddPost() {
 
     const classOptions = classState.map(cl => {
         if (cl.students.includes(userId)) {
-            return <option value={cl.id}>{cl.name}</option>
+            return <option value={cl.id} key={cl.id}>{cl.name}</option>
         }
     })
 
@@ -161,8 +161,8 @@ function AddPost() {
                 <div className="addpost-input">
                     <h2>Create a post</h2>
                     <form onSubmit={handleSubmit}>
-                        <select name="class" onChange={handleChange}>
-                            <option value="" disabled selected hidden>Choose class</option>
+                        <select name="class" onChange={handleChange} defaultValue="">
+                            <option value="" disabled hidden>Choose class</option>
                             {classOptions}
                         </select>
                         <div className="forum">
@@ -175,7 +175,7 @@ function AddPost() {
                         </div>
                         <div>
                             <input type="file" accept="image/*" id="file" name="file" onChange={handleChange} className="addpost-file"></input>
-                            <label for="file">Upload an image</label>
+                            <label htmlFor="file">Upload an image</label>
                         </div>
                         <img id="image" className="addpost-image"/>
                         <div>

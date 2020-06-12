@@ -51,7 +51,7 @@ function Class() {
 
     const classList = classesState.map(cl => {
         return (
-            <div>
+            <div key={cl.id}>
                 <div className="class-item">
                     <Link to={'/class/' + cl.id} style={linkStyle}>
                         <h3>{cl.name}</h3>

@@ -73,11 +73,11 @@ function ForumPost(props) {
                         <img id={"img" + id} src={src} className="post-image"/> 
                     </div>)
                 }
-                <div className="post-footer">
-                    <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
-                    <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
-                </div>
             </Link>
+            <div className="post-footer">
+                <div>Posted by <Link to={'/user/' + creatorId} style={linkStyle}><u>{creatorDisplayName}</u></Link> - {month} / {day} / {year}</div>
+                <div>{numComments} {(numComments === 1) ? "comment" : "comments"}</div>      
+            </div>
             <div className="post-hr">
                 <hr />
             </div>
