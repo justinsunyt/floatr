@@ -229,7 +229,7 @@ function ForumDetail({match}) {
         const commentReports = comment.reports.length
 
         return(
-            <div>
+            <div key={commentId}>
                 <div className="comment-content">
                     <Link to={"/user/" + creatorId}><img className="comment-img" src={creatorProfilePic}></img></Link>
                     <div className="comment-text" data-tip={mod && (commentReports + ((commentReports === 1) ? " report" : " reports"))}>
