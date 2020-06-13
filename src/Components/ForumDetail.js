@@ -42,6 +42,7 @@ function ForumDetail({match}) {
     const userDisplayName = currentUser.displayName
     const userProfilePic = currentUser.photoURL
     const today = firebase.firestore.FieldValue.serverTimestamp()
+    const todayDate = new Date()
 
     let title = postState.title
     let text = postState.text
@@ -145,7 +146,7 @@ function ForumDetail({match}) {
     function handleDeleteComment(commentId) {
         if (window.confirm("Are you sure you want to delete this comment?\nThis action is irreversible")) {
             commentsRef.doc(commentId).delete().then(() => {
-                postRef.update({numComments: firestore.FieldValue.increment(-1)})
+                postRef.update({numComments: firebase.firestore.FieldValue.increment(-1)})
             }).catch(err => {
                 console.log("Error: ", err)
             })
@@ -222,7 +223,7 @@ function ForumDetail({match}) {
         const creatorDisplayName = comment.creatorDisplayName
         const creatorProfilePic = comment.creatorProfilePic
         const text = comment.text
-        const date = comment.date.toDate()
+        const date = comment.date ? comment.date.toDate() : todayDate
         const year = date.getFullYear()
         const month = date.getMonth() + 1
         const day = date.getDate()
@@ -233,7 +234,7 @@ function ForumDetail({match}) {
                 <div className="comment-content">
                     <Link to={"/user/" + creatorId}><img className="comment-img" src={creatorProfilePic}></img></Link>
                     <div className="comment-text" data-tip={mod && (commentReports + ((commentReports === 1) ? " report" : " reports"))}>
-                        <div><b>{creatorDisplayName}</b> - {month} / {day} / {year}</div>
+                        <div><b>{creatorDisplayName}</b> {date && <span>- {month} / {day} / {year}</span>}</div>
                         {text}
                     </div>
                     {mod && <ReactTooltip effect="solid" delayShow={500} scrollHide={false}/>}
