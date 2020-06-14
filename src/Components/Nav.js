@@ -31,7 +31,7 @@ function Nav() {
                             <li><FontAwesomeIcon icon={solidIcons.faUsers}/></li>
                         </Link>
 
-                        <a href="https://forms.gle/MZRy6D3pqP4K95gZ8" className="nav-link" data-tip="Report bugs" data-offset="{'bottom': -6}">
+                        <a href="https://forms.gle/MZRy6D3pqP4K95gZ8" className="nav-link" data-tip="Report bugs" data-offset="{'bottom': -6}" target="_blank">
                             <li><FontAwesomeIcon icon={solidIcons.faBug}/></li>
                         </a>
 
