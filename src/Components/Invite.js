@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import ReactLoading from 'react-loading'
 
-function Chat() {
+function Invite() {
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
 
@@ -22,8 +22,8 @@ function Chat() {
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
                     <div className="class-header">
-                        <h1>Chat</h1>
-                        <h3>Chat is coming soon!</h3>
+                        <h1>Invite friends</h1>
+                        <h3>Invites are coming soon!</h3>
                     </div>
                 </div>
             </CSSTransition>
@@ -31,4 +31,4 @@ function Chat() {
     }
 }
 
-export default Chat
+export default Invite
