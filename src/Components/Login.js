@@ -18,7 +18,7 @@ function Login() {
         auth.signInWithPopup(provider).then(() => {
             setLoading(false)
         }).catch(error => {
-            alert(error)
+            console.log(error)
         })
     }
 
@@ -55,8 +55,8 @@ function Login() {
                         <p>As students ourselves, we designed the platform to be student driven. Each school community will be maintained by student administrators to foster a <span style={{color: "#ff502f"}}>private and positive</span> environment.</p>
                     </div>
                 </div>
-                <div className="login-join-container">
-                    <div className="login-join" onClick={handleLogin}>
+                <div className="login-join-container" onClick={handleLogin}>
+                    <div className="login-join">
                         <div style={{textAlign: "left", maxWidth: "350px", marginRight: "50px"}}>
                             <h1>Join floatr</h1>
                             <p>Login with your Google account if you have received an invite code.</p>
@@ -66,13 +66,13 @@ function Login() {
                 </div>
                 <a style={{color: "white", textDecoration: "none"}} href="https://forms.gle/BuBwcRdJQ9VK4eYj8" target="_blank">
                     <div className="login-apply-container">
-                            <div className="login-apply">
-                                <FontAwesomeIcon icon={solidIcons.faAngleLeft} size={"3x"}/>
-                                <div style={{textAlign: "right", maxWidth: "350px", marginLeft: "50px"}}>
-                                    <h1>Join the watchlist</h1>
-                                    <p>Apply for the watchlist if your school is not invovlved yet.</p>
-                                </div>
+                        <div className="login-apply">
+                            <FontAwesomeIcon icon={solidIcons.faAngleLeft} size={"3x"}/>
+                            <div style={{textAlign: "right", maxWidth: "350px", marginLeft: "50px"}}>
+                                <h1>Join the watchlist</h1>
+                                <p>Apply for the watchlist if your school is not invovlved yet.</p>
                             </div>
+                        </div>
                     </div>
                 </a>
             </div>
