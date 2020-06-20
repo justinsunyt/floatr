@@ -50,7 +50,9 @@ function UserDetail({match}) {
                     <div className="profile-header">
                         {(userState.id === userId) && 
                             <div>
-                                <Link to="/settings" data-tip="Settings" data-offset="{'bottom': 3}"><FontAwesomeIcon className="profile-settings" icon={solidIcons.faCog}/></Link>
+                                <Link to="/settings" data-tip="Settings" data-offset="{'bottom': 3}">
+                                    <FontAwesomeIcon className="profile-settings" icon={solidIcons.faCog}/>
+                                </Link>
                                 <ReactTooltip effect="solid" delayShow={500} scrollHide={false} place="bottom"/>
                             </div>
                         }

@@ -4,13 +4,12 @@ import {AuthContext} from '../Auth'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as brandIcons from '@fortawesome/free-brands-svg-icons'
 import ReactLoading from 'react-loading'
-import {Redirect} from 'react-router-dom'
 import {CSSTransition} from 'react-transition-group'
 
 function Settings() {
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
-    const {currentUser, userStage, incrementUserStage} = useContext(AuthContext)
+    const {currentUser} = useContext(AuthContext)
     const userId = currentUser.uid
     const userEmail = currentUser.email
     const displayName = currentUser.displayName
@@ -30,11 +29,7 @@ function Settings() {
     function handleSubmit(event) {
         event.preventDefault()
         usersRef.set(userState).then(() => {
-            if (userStage === 0) {
-                incrementUserStage(() => {})
-            } else {
-                window.location.reload()
-            }
+            window.location.reload()
         })
         .catch(err => {
             console.log("Error: ", err)
@@ -66,7 +61,7 @@ function Settings() {
             <CSSTransition in={loaded} timeout={300} classNames="fade">
                 <div>
                     <div className="settings-header">
-                        <h1>{userStage === 0 ? "Get started!" : "Settings"}</h1>
+                        <h1>Settings</h1>
                         <button className="short-button" onClick={() => auth.signOut()}><span>Sign out </span></button> 
                     </div>
                     <div className="forum">
@@ -103,7 +98,7 @@ function Settings() {
                                 <hr />
                             </div>
                             <div className="settings-footer">
-                                <button className="long-button"><span>{userStage === 0 ? "Submit to continue" : "Update"} </span></button>
+                                <button className="long-button"><span>Update </span></button>
                             </div>
                         </form>
                     </div>
