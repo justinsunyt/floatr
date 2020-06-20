@@ -8,7 +8,7 @@ const PrivateRoute = ({component: RouteComponent, ...rest}) => {
     if (!currentUser) {
         return <Redirect to='/login'/>
     } else if (userStage === 0) {
-        if (rest.path === "/settings") {
+        if (rest.path === "/join") {
             return (
                 <Route
                     {...rest}
@@ -16,7 +16,7 @@ const PrivateRoute = ({component: RouteComponent, ...rest}) => {
                 />
             )
         } else {
-            return <Redirect to='/settings'/>
+            return <Redirect to='/join'/>
         }
     } else if (userStage === 1) {
         if (rest.path === "/joinclass") {

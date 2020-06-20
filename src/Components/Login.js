@@ -48,11 +48,15 @@ function Login() {
                 <div className="login-description-container">
                     <div className="login-description">
                         <h1>What is <span style={{color: "#0055ff"}}>floatr</span>?</h1>
-                        <p>floatr is a student-made social platform for students within a school. Our mission is to create student-driven communities that are a <span style={{color: "#ff502f"}}>safe space</span> for all without school affiliation.</p>
+                        <p>floatr is a student-made social platform for made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are a <span style={{color: "#ff502f"}}>safe space</span> for all without school affiliation.</p>
                     </div>
                     <div className="login-description">
                         <h1><span style={{color: "#0055ff"}}>Students</span> First</h1>
                         <p>As students ourselves, we designed the platform to be student driven. Each school community will be maintained by student administrators to foster a <span style={{color: "#ff502f"}}>private and positive</span> environment.</p>
+                    </div>
+                    <div className="login-description">
+                        <h1>Access Codes</h1>
+                        <p>Currently, floatr is only limited to students of <span style={{color: "#ff502f"}}>Harvard-Westlake</span>. To restrict access, access codes are given through email invites to people with HW student emails. However, you are welcome to use any Google account to login to floatr.</p>
                     </div>
                 </div>
                 <div className="login-join-container" onClick={handleLogin}>
