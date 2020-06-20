@@ -19,7 +19,7 @@
     "react-loading": "^2.0.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "react-tooltip": "^4.2.6",
+    "react-tooltip": "^4.2.7",
     "react-transition-group": "^4.4.1"
   },
   "scripts": {
