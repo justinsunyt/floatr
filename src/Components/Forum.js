@@ -204,21 +204,6 @@ function Forum(props) {
                     </div>
                 </CSSTransition>
             )
-        } else if (forumState.length === 0) {
-            return (
-                <CSSTransition in={loaded} timeout={300} classNames="fade">
-                    <div>
-                        <div className='forum-header'>
-                            <Link to={'/post'} className="post-link">
-                                <button className="long-button">Add new post</button>
-                            </Link>
-                        </div>
-                        <div className="forum-header">
-                            <h3>Post something :)</h3>
-                        </div>
-                    </div>
-                </CSSTransition>
-            )
         } else {
             return (
                 <CSSTransition in={loaded} timeout={300} classNames="fade">
@@ -230,7 +215,13 @@ function Forum(props) {
                                 </Link>
                             </div>
                         }
-                        {forum}
+                        {forumState.length === 0 ? 
+                            <div className="forum-header">
+                                <h3>Nothing to see here :)</h3>
+                            </div>
+                        : 
+                            forum
+                        }
                     </div>
                 </CSSTransition>
             )

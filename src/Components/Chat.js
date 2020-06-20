@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect} from 'react'
 import {CSSTransition} from 'react-transition-group'
 import ReactLoading from 'react-loading'
 

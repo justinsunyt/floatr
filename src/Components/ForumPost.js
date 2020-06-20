@@ -48,14 +48,14 @@ function ForumPost(props) {
                 <Link to={'/class/' + classId} style={linkStyle}>
                     from <u>{className}</u>
                 </Link>
-                <label align="right" className="like-button">
+                <label align="right" className="like-button-label">
                     <input
                         type="checkbox" 
                         checked={liked} 
                         onChange={() => props.handleChange(id)}
                         className="like-checkbox"
                     />
-                <b>{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</b></label>
+                <b><div className="like-button">{liked ? <FontAwesomeIcon icon={solidIcons.faHeart} color="#ff502f"/> : <FontAwesomeIcon icon={regularIcons.faHeart}/>} {numLikes}</div></b></label>
             </div>
             <Link to={'/post/' + id} style={linkStyle}>  
                 <div className="post-title">
