@@ -9,7 +9,7 @@ admin.initializeApp({
 const classesRef = admin.firestore().collection("classes")
 
 const parser = parse({
-    columns: ["name"],
+    columns: ["name", "subject"],
     from: 2
 }, (err, data) => {
     if (err) {
