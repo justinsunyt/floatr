@@ -48,7 +48,7 @@ function Login() {
                 <div className="login-description-container">
                     <div className="login-description">
                         <h1>What is <span style={{color: "#0055ff"}}>floatr</span>?</h1>
-                        <p>floatr is a student-made social platform for made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are a <span style={{color: "#ff502f"}}>safe space</span> for all without school affiliation.</p>
+                        <p>floatr is a student-made social platform made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are a <span style={{color: "#ff502f"}}>safe space</span> for all without school affiliation.</p>
                     </div>
                     <div className="login-description">
                         <h1><span style={{color: "#0055ff"}}>Students</span> First</h1>
