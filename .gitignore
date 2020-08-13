@@ -10,6 +10,8 @@
 
 # production
 /build
+/secrets
+/src/configs
 
 # misc
 .DS_Store

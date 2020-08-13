@@ -45,7 +45,7 @@ function Invite() {
         <div className="addpost-input">
             <h2>Enter your access code to continue</h2>
             <form onSubmit={handleSubmit}>
-                <div className="forum">
+                <div className="textbox">
                     <input type="text" name="title" className="addpost-title" placeholder="Enter code here" value={codeState} onChange={handleChange} required></input>
                 </div>
             </form>

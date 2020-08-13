@@ -4,7 +4,7 @@ import * as firebase from 'firebase/app'
 import {auth} from '../firebase'
 import {AuthContext} from '../Auth'
 import ReactLoading from 'react-loading'
-import Ocean from '../Images/Background/Ocean.jpg'
+import Ocean from '../images/Background/Ocean.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as solidIcons from '@fortawesome/free-solid-svg-icons'
 
@@ -48,7 +48,7 @@ function Login() {
                 <div className="login-description-container">
                     <div className="login-description">
                         <h1>What is <span style={{color: "#0055ff"}}>floatr</span>?</h1>
-                        <p>floatr is a student-made social platform for made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are a <span style={{color: "#ff502f"}}>safe space</span> for all without school affiliation.</p>
+                        <p>floatr is a student-made social platform made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are <span style={{color: "#ff502f"}}>safe spaces</span> for all without school affiliation.</p>
                     </div>
                     <div className="login-description">
                         <h1><span style={{color: "#0055ff"}}>Students</span> First</h1>
