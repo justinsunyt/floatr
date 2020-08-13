@@ -9,9 +9,9 @@ import prodConfig from './configs/prodConfig'
 let config = {}
 
 if (process.env.NODE_ENV === "production") {
-    config = devConfig
-} else {
     config = prodConfig
+} else {
+    config = devConfig
 }
 
 firebase.initializeApp(config)
