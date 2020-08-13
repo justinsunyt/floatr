@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import {firestore} from '../firebase'
 import {AuthContext} from '../Auth'
 import {Redirect} from 'react-router-dom'
+import algoliasearch from 'algoliasearch'
 import ReactLoading from 'react-loading'
 import {CSSTransition} from 'react-transition-group'
 
@@ -9,19 +10,22 @@ function JoinClass() {
     const classesRef = firestore.collection("classes")
     const {currentUser, userStage, incrementUserStage} = useContext(AuthContext)
     const [classState, setClassState] = useState([])
+    const [filteredState, setFilteredState] = useState([])
     const [loading, setLoading] = useState(true)
     const [loaded, setLoaded] = useState(false)
     const [redirectToHome, setRedirectToHome] = useState(false)
     const [redirectToClass, setRedirectToClass] = useState(false)
     const userId = currentUser.uid
+    const client = algoliasearch('5MTZD7Z6CS', '85e0d43ba8a4b481872ae0a894d814e3');
+    const index = client.initIndex(process.env.NODE_ENV === 'production' ? 'prod_classes' : 'dev_classes');
 
-    let checked = classState.map(cl => (cl.students.includes(userId)) ? true : false)
+    let checked = filteredState.map(cl => (cl.students.includes(userId)) ? true : false)
     
     function handleChange(id) {
         let newClasses = classState
         newClasses = newClasses.map(cl => {
             let newClass = cl
-            if (cl.id === id) {
+            if (cl.objectID === id) {
                 if (cl.students.includes(userId)) {
                     const filteredStudents = cl.students.filter(value => {
                         if (value !== userId) {
@@ -50,7 +54,7 @@ function JoinClass() {
         } else {
             classState.forEach(cl => {
                 if (cl.students.includes(userId)) {
-                    classesRef.doc(cl.id).set(cl).then(() => {
+                    classesRef.doc(cl.objectID).set(cl).then(() => {
                     }).catch(err => {
                         console.log("Error: ", err)
                     })
@@ -64,14 +68,26 @@ function JoinClass() {
         }
     }
 
+    function handleSearch(event) {
+        const {value} = event.target
+        index.search(value, {hitsPerPage: 1000}).then(({hits}) => {
+            let classes = []
+            hits.forEach(cl => {
+                classState.forEach(c => {
+                    if (cl.objectID === c.objectID) {
+                        classes.push(c)
+                    }
+                })
+            })
+            setFilteredState(classes)
+        })
+    }
+
     useEffect(() => {
-        classesRef.orderBy("name").get().then(snap => {
+        index.search("", {hitsPerPage: 1000}).then(({hits}) => {
             let classes = []
             let joinedClasses = []
-            snap.forEach(doc => {
-                let cl = {}
-                cl = doc.data()
-                cl.id = doc.id
+            hits.forEach(cl => {
                 if (!cl.students.includes(userId)) {
                     classes.push(cl)
                 } else {
@@ -82,22 +98,21 @@ function JoinClass() {
                 incrementUserStage(() => {})
             }
             setClassState(classes)
+            setFilteredState(classes)
             setLoading(false)
             setLoaded(true)
-        }).catch(err => {
-            console.log("Error: ", err)
         })
     }, [])
 
-    const classList = classState.map((cl, index) => {
+    const classList = filteredState.map((cl, index) => {
         return (
-            <div key={cl.id}>
+            <div key={cl.objectID}>
                 <div className="post-header">
                     <div className="joinclass-text"><b>{cl.name}</b></div>
                     <input 
                         type="checkbox" 
                         checked={checked[index]} 
-                        onChange={() => handleChange(cl.id)}
+                        onChange={() => handleChange(cl.objectID)}
                         id="like"
                         className="like-button"
                     />
@@ -128,9 +143,14 @@ function JoinClass() {
                 <div>
                     <div className="class-header">
                         <h1>Join New Classes</h1>
+                        <form>
+                            <div className="textbox" style={{marginTop: "40px"}}>
+                                <input type="text" name="title" className="addpost-title" placeholder="Search" onChange={handleSearch} required></input>
+                            </div>
+                        </form>
                     </div>
                     {(classList.length === 0) ? 
-                        <center><h3>You have joined all available classes!</h3></center>
+                        <center><h3>No available classes! Try searching for something else</h3></center>
                     :
                         <div className="forum">
                             {classList}

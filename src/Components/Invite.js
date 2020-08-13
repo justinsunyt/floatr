@@ -61,7 +61,7 @@ function Invite() {
         <div className="addpost-input">
             <h2>Invite your friends to floatr!</h2>
             <form onSubmit={handleSubmit}>
-                <div className="forum">
+                <div className="textbox">
                     <input type="text" name="title" className="addpost-title" placeholder="address@hwemail.com" value={addressState} onChange={handleChange} required></input>
                 </div>
             </form>

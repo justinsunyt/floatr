@@ -185,16 +185,7 @@
 .class-header {
   margin: auto;
   margin-top: 20px;
-  margin-bottom: 40px;
   text-align: center;
-}
-
-.class-list {
-  margin: auto;
-  margin-bottom: 40px;
-  text-align: center;
-  max-width: 500px;
-  transition: all 0.5s ease;
 }
 
 .class-item {
@@ -922,6 +913,16 @@
 
 .width-200 {
   width: 200px;
+}
+
+.textbox {
+  background-color: white;
+  margin: auto;
+  max-width: var(--general-width);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 15px 0 var(--tertiary-shadow-color), 0 2px 4px 0 var(--secondary-shadow-color);
+  padding: 20px 30px;
 }
 
 input[type=file] {
