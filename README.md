@@ -2,8 +2,6 @@
 
 Check it out at [floatr.net][floatr]
 
-<br />
-
 ### What is floatr?
 floatr is a student-made social platform made by Harvard-Westlake students for students of HW. Our mission is to create student-driven communities that are safe spaces for all without school affiliation.
 
